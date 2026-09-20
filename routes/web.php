@@ -15,12 +15,28 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.process');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// =========================
+// AUTHENTICATION
+// =========================
 
-Route::get('/register', [RegisterController::class, 'showRegister'])->name('register');
-Route::post('/register', [RegisterController::class, 'register'])->name('register.process');
+Route::get('/login', [AuthController::class, 'showLogin'])
+    ->name('login');
+
+Route::post('/login', [AuthController::class, 'login'])
+    ->name('login.process');
+
+Route::post('/logout', [AuthController::class, 'logout'])
+    ->name('logout');
+
+Route::get('/register', [RegisterController::class, 'showRegister'])
+    ->name('register');
+
+Route::post('/register', [RegisterController::class, 'register'])
+    ->name('register.process');
+
+// =========================
+// FORGOT & RESET PASSWORD
+// =========================
 
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPassword'])
     ->name('password.request');
@@ -34,15 +50,27 @@ Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showRese
 Route::post('/reset-password', [ResetPasswordController::class, 'resetPassword'])
     ->name('password.update');
 
+// =========================
+// USER
+// =========================
 
 Route::middleware(['auth', 'role:user'])->group(function () {
 
+    // Dashboard
     Route::get('/user/dashboard', function () {
         return view('user.dashboard');
     })->name('user.dashboard');
 
+    // =========================
+    // KENDARAAN
+    // =========================
+
     Route::resource('/user/vehicles', VehicleController::class)
         ->names('vehicles');
+
+    // =========================
+    // PROFILE
+    // =========================
 
     Route::get('/user/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
@@ -50,11 +78,19 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::put('/user/profile', [ProfileController::class, 'update'])
         ->name('profile.update');
 
+    // =========================
+    // CHARGING STATION
+    // =========================
+
     Route::get('/user/stations', [StationController::class, 'index'])
         ->name('stations.index');
 
     Route::get('/user/stations/{id}', [StationController::class, 'show'])
         ->name('stations.show');
+
+    // =========================
+    // CHARGING
+    // =========================
 
     Route::get('/user/charging/{charger}/create', [ChargingController::class, 'create'])
         ->name('charging.create');
@@ -71,26 +107,66 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/user/charging/{session}/cancel', [ChargingController::class, 'cancel'])
         ->name('charging.cancel');
 
-    Route::get('/user/payment/{session}/create', [PaymentController::class, 'create'])
-        ->name('payment.create');
+    // =========================
+    // PEMBAYARAN
+    // =========================
 
-    Route::post('/user/payment/{session}/process', [PaymentController::class, 'process'])
-        ->name('payment.process');
+    // Pilih Metode Pembayaran
+    Route::get(
+        '/user/payment/{session}/create',
+        [PaymentController::class, 'create']
+    )->name('payment.create');
 
-    Route::get('/user/payment/{payment}/verify', [PaymentController::class, 'verify'])
-        ->name('payment.verify');
+    // Proses Pembayaran
+    Route::post(
+        '/user/payment/{session}/process',
+        [PaymentController::class, 'process']
+    )->name('payment.process');
 
-    Route::post('/user/payment/{payment}/confirm', [PaymentController::class, 'confirm'])
-        ->name('payment.confirm');
+    // Verifikasi Pembayaran
+    Route::get(
+        '/user/payment/{payment}/verify',
+        [PaymentController::class, 'verify']
+    )->name('payment.verify');
 
-    Route::get('/user/payment/{payment}/status', [PaymentController::class, 'status'])
-        ->name('payment.status');
+    // Konfirmasi Pembayaran
+    Route::post(
+        '/user/payment/{payment}/confirm',
+        [PaymentController::class, 'confirm']
+    )->name('payment.confirm');
 
-    Route::get('/user/payment/{payment}/invoice', [PaymentController::class, 'invoice'])
-        ->name('payment.invoice');
+    // Status Pembayaran
+    Route::get(
+        '/user/payment/{payment}/status',
+        [PaymentController::class, 'status']
+    )->name('payment.status');
+
+    // Waiting Pembayaran
+    Route::get(
+        '/user/payment/{payment}/waiting',
+        [PaymentController::class, 'waiting']
+    )->name('payment.waiting');
+
+    // Complete Pembayaran
+    Route::post(
+        '/user/payment/{payment}/complete',
+        [PaymentController::class, 'complete']
+    )->name('payment.complete');
+
+    // Invoice / Struk
+    Route::get(
+        '/user/payment/{payment}/invoice',
+        [PaymentController::class, 'invoice']
+    )->name('payment.invoice');
+
+    // =========================
+    // NOTIFICATIONS
+    // =========================
 
     Route::get('/user/notifications', function () {
         return view('notifications.index');
     })->name('notifications.index');
 
+    Route::get('/user/history', [ChargingController::class, 'history'])
+    ->name('charging.history');
 });

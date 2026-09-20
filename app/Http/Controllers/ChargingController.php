@@ -5,44 +5,76 @@ namespace App\Http\Controllers;
 use App\Models\Charger;
 use App\Models\ChargingSession;
 use App\Models\Tariff;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ChargingController extends Controller
 {
-    // ==========================================
-    // 13. PILIH CHARGER
-    // ==========================================
-
     public function create(Charger $charger)
     {
         if ($charger->status !== 'tersedia') {
-            return back()->with(
-                'error',
-                'Charger tidak tersedia.'
-            );
+            return back()->with('error', 'Charger tidak tersedia.');
         }
 
-        return view(
-            'user.charging.create',
-            compact('charger')
-        );
+        $vehicles = Auth::user()->vehicles;
+
+        if ($vehicles->isEmpty()) {
+            return redirect()
+                ->route('vehicles.create')
+                ->with('error', 'Silakan tambahkan kendaraan terlebih dahulu.');
+        }
+
+        return view('user.charging.create', compact(
+            'charger',
+            'vehicles'
+        ));
     }
 
-
-    // ==========================================
-    // 14. MULAI SESI CHARGING
-    // ==========================================
-
-    public function start(Charger $charger)
+    public function start(Request $request, Charger $charger)
     {
+        $validated = $request->validate([
+            'id_vehicle' => ['required', 'integer'],
+        ]);
+
         if ($charger->status !== 'tersedia') {
+            return back()->with('error', 'Charger tidak tersedia.');
+        }
+
+        $vehicle = Auth::user()
+            ->vehicles()
+            ->where('id_vehicle', $validated['id_vehicle'])
+            ->first();
+
+        if (!$vehicle) {
             return back()->with(
                 'error',
-                'Charger tidak tersedia.'
+                'Kendaraan tidak ditemukan.'
             );
         }
 
-        // Cari tarif aktif
+        /*
+        |--------------------------------------------------------------------------
+        | CEK TIPE KONEKTOR
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            strtolower(trim($vehicle->tipe_konektor))
+            !==
+            strtolower(trim($charger->tipe_konektor))
+        ) {
+            return back()->with(
+                'error',
+                'Tipe konektor kendaraan tidak sesuai dengan charger.'
+            );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK TARIF
+        |--------------------------------------------------------------------------
+        */
+
         $tariff = Tariff::where(
                 'id_location',
                 $charger->id_location
@@ -57,35 +89,24 @@ class ChargingController extends Controller
             );
         }
 
-        // Ambil kendaraan pertama milik user
-        $vehicle = Auth::user()
-            ->vehicles()
-            ->first();
+        /*
+        |--------------------------------------------------------------------------
+        | BUAT SESI
+        |--------------------------------------------------------------------------
+        */
 
-        if (!$vehicle) {
-            return redirect()
-                ->route('vehicles.create')
-                ->with(
-                    'error',
-                    'Silakan tambahkan kendaraan terlebih dahulu.'
-                );
-        }
-
-        // Buat sesi charging
         $session = ChargingSession::create([
             'id_user' => Auth::user()->id_user,
             'id_vehicle' => $vehicle->id_vehicle,
             'id_charger' => $charger->id_charger,
             'id_tariff' => $tariff->id_tariff,
             'waktu_mulai' => now(),
-            'waktu_selesai' => null,
             'energi_kwh' => 0,
             'durasi_menit' => 0,
             'total_biaya' => 0,
             'status' => 'berlangsung',
         ]);
 
-        // Ubah status charger
         $charger->update([
             'status' => 'digunakan',
         ]);
@@ -101,24 +122,17 @@ class ChargingController extends Controller
             );
     }
 
-
-    // ==========================================
-    // 15. MONITOR SESI CHARGING
-    // ==========================================
-
     public function monitor(ChargingSession $session)
     {
-        // Pastikan sesi milik user yang sedang login
-        if (
-            $session->id_user !==
-            Auth::user()->id_user
-        ) {
+        // Cek apakah sesi milik user yang sedang login
+        if ($session->id_user !== Auth::user()->id_user) {
             abort(
                 403,
-                'Anda tidak memiliki akses ke sesi ini.'
+                'Anda tidak memiliki akses ke sesi charging ini.'
             );
         }
 
+        // Load data yang diperlukan
         $session->load([
             'charger',
             'vehicle',
@@ -131,14 +145,13 @@ class ChargingController extends Controller
         );
     }
 
-
     // ==========================================
-    // 16. HENTIKAN SESI CHARGING
-    // ==========================================
+// BATALKAN SESI CHARGING
+// ==========================================
 
-    public function stop(ChargingSession $session)
+    public function cancel(ChargingSession $session)
     {
-        // Pastikan sesi milik user
+        // Cek apakah session milik user yang login
         if (
             $session->id_user !==
             Auth::user()->id_user
@@ -149,95 +162,50 @@ class ChargingController extends Controller
             );
         }
 
-        // Pastikan sesi masih berlangsung
+
+        // ==========================================
+        // CEK STATUS SESSION
+        // ==========================================
+
         if ($session->status !== 'berlangsung') {
+
             return back()->with(
                 'error',
                 'Sesi charging sudah tidak berlangsung.'
             );
         }
 
-        // Hitung waktu selesai
-        $waktuSelesai = now();
 
-        // Hitung durasi
-        $durasiMenit = $session
-            ->waktu_mulai
-            ->diffInMinutes($waktuSelesai);
+        // ==========================================
+        // UBAH STATUS SESSION
+        // ==========================================
 
-        // Untuk sementara energi dibuat berdasarkan
-        // durasi dan daya charger
-        $energiKwh =
-            ($durasiMenit / 60)
-            * $session->charger->daya_kw;
-
-        // Hitung biaya
-        $totalBiaya =
-            $energiKwh
-            * $session->tariff->harga_per_kwh;
-
-        // Simpan hasil sesi
-        $session->update([
-            'waktu_selesai' => $waktuSelesai,
-            'durasi_menit' => $durasiMenit,
-            'energi_kwh' => round($energiKwh, 2),
-            'total_biaya' => round($totalBiaya, 2),
-            'status' => 'selesai',
-        ]);
-
-        // Charger kembali tersedia
-        $session->charger->update([
-            'status' => 'tersedia',
-        ]);
-
-        return redirect()
-            ->route(
-                'charging.monitor',
-                $session->id_session
-            )
-            ->with(
-                'success',
-                'Sesi charging berhasil dihentikan.'
-            );
-    }
-
-
-    // ==========================================
-    // 17. BATALKAN SESI CHARGING
-    // ==========================================
-
-    public function cancel(ChargingSession $session)
-    {
-        // Pastikan sesi milik user
-        if (
-            $session->id_user !==
-            Auth::user()->id_user
-        ) {
-            abort(
-                403,
-                'Anda tidak memiliki akses ke sesi ini.'
-            );
-        }
-
-        // Hanya sesi berlangsung yang bisa dibatalkan
-        if ($session->status !== 'berlangsung') {
-            return back()->with(
-                'error',
-                'Sesi charging sudah tidak dapat dibatalkan.'
-            );
-        }
-
-        // Ubah status sesi
         $session->update([
             'waktu_selesai' => now(),
             'status' => 'dibatalkan',
+            'energi_kwh' => 0,
+            'durasi_menit' => 0,
             'total_biaya' => 0,
         ]);
 
-        // Charger kembali tersedia
-        $session->charger->update([
-            'status' => 'tersedia',
-        ]);
+
+        // ==========================================
+        // KEMBALIKAN CHARGER
+        // ==========================================
+
+        $session->load('charger');
+
+        if ($session->charger) {
+
+            $session->charger->update([
+                'status' => 'tersedia',
+            ]);
+        }
+
+
+        // ==========================================
+        // KEMBALI KE MONITOR
+        // ==========================================
 
         return redirect()
             ->route(
@@ -248,5 +216,173 @@ class ChargingController extends Controller
                 'success',
                 'Sesi charging berhasil dibatalkan.'
             );
+    }
+
+    public function stop(ChargingSession $session)
+    {
+        // ==========================================
+        // CEK KEPEMILIKAN SESSION
+        // ==========================================
+
+        if (
+            $session->id_user !==
+            Auth::user()->id_user
+        ) {
+            abort(
+                403,
+                'Anda tidak memiliki akses ke sesi ini.'
+            );
+        }
+
+
+        // ==========================================
+        // CEK STATUS
+        // ==========================================
+
+        if ($session->status !== 'berlangsung') {
+            return back()->with(
+                'error',
+                'Sesi charging sudah tidak berlangsung.'
+            );
+        }
+
+
+        // ==========================================
+        // LOAD DATA
+        // ==========================================
+
+        $session->load([
+            'charger',
+            'tariff',
+        ]);
+
+
+        // ==========================================
+        // WAKTU SELESAI
+        // ==========================================
+
+        $waktuSelesai = now();
+
+
+        // ==========================================
+        // HITUNG DURASI
+        // ==========================================
+
+        $elapsedSeconds = max(
+            0,
+            $session->waktu_mulai->diffInSeconds(
+                $waktuSelesai
+            )
+        );
+
+
+        $durasiMenit = max(
+            1,
+            (int) ceil($elapsedSeconds / 60)
+        );
+
+
+        // ==========================================
+        // HITUNG ENERGI
+        // ==========================================
+
+        $dayaKw = (float) $session->charger->daya_kw;
+
+
+        $energiKwh = (
+            $dayaKw
+            * $elapsedSeconds
+            / 3600
+        );
+
+
+        // ==========================================
+        // HITUNG BIAYA
+        // ==========================================
+
+        $hargaPerKwh = (float)
+            $session->tariff->harga_per_kwh;
+
+
+        $biayaEnergi =
+            $energiKwh
+            * $hargaPerKwh;
+
+
+        $biayaParkir = (float)
+            $session->tariff->biaya_parkir;
+
+
+        $biayaMinimum = (float)
+            $session->tariff->biaya_minimum;
+
+
+        $totalBiaya = max(
+            $biayaMinimum,
+            $biayaEnergi + $biayaParkir
+        );
+
+
+        // ==========================================
+        // SIMPAN HASIL
+        // ==========================================
+
+        $session->update([
+            'waktu_selesai' => $waktuSelesai,
+
+            // Simpan energi setelah perhitungan biaya
+            'energi_kwh' => round($energiKwh, 2),
+
+            'durasi_menit' => $durasiMenit,
+
+            'total_biaya' => round(
+                $totalBiaya,
+                2
+            ),
+
+            'status' => 'selesai',
+        ]);
+
+
+        // ==========================================
+        // CHARGER KEMBALI TERSEDIA
+        // ==========================================
+
+        $session->charger->update([
+            'status' => 'tersedia',
+        ]);
+
+
+        // ==========================================
+        // KEMBALI KE MONITOR
+        // ==========================================
+
+        return redirect()
+            ->route(
+                'charging.monitor',
+                $session->id_session
+            )
+            ->with(
+                'success',
+                'Charging selesai. Silakan lanjut ke pembayaran.'
+            );
+    }
+
+    public function history()
+    {
+        $sessions = ChargingSession::with([
+            'charger',
+            'vehicle',
+            'tariff',
+            'payment',
+        ])
+        ->where('id_user', Auth::user()->id_user)
+        ->orderByDesc('waktu_mulai')
+        ->get();
+
+        return view(
+            'user.charging.history',
+            compact('sessions')
+        );
     }
 }

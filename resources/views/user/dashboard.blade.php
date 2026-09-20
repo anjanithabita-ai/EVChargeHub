@@ -604,11 +604,14 @@
 
         </a>
 
-        <a href="{{ route('stations.index') }}" class="menu-item">
+        <a
+            href="{{ route('charging.history') }}"
+            class="menu-item"
+        >
 
-            <span class="menu-icon">⚡</span>
+            <span class="menu-icon">🕐</span>
 
-            <span>Charging</span>
+            <span>Riwayat Charging</span>
 
         </a>
 
@@ -965,12 +968,12 @@
                     transaksi pembayaran.
                 </p>
 
-                <a
-                    href="#"
-                    class="info-button"
-                >
-                    Lihat Riwayat →
-                </a>
+            <a
+                href="{{ route('charging.history') }}"
+                class="info-button"
+            >
+                Lihat Riwayat →
+            </a>
 
             </div>
 

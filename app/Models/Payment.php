@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Models;
-use App\Models\ChargingSession;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ChargingSession;
 
 class Payment extends Model
 {
@@ -11,6 +11,8 @@ class Payment extends Model
 
     protected $primaryKey = 'id_payment';
 
+    // Tabel payments hanya memiliki created_at,
+    // tidak memiliki updated_at
     public $timestamps = false;
 
     protected $fillable = [
@@ -25,6 +27,7 @@ class Payment extends Model
     protected $casts = [
         'jumlah' => 'decimal:2',
         'waktu_pembayaran' => 'datetime',
+        'created_at' => 'datetime',
     ];
 
     public function session()

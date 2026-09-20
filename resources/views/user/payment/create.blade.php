@@ -5,17 +5,22 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Pembayaran - EVChargeHub</title>
 
+
     <style>
+
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
             font-family: Arial, sans-serif;
             background: #f5f7fa;
+            color: #212529;
         }
 
         .container {
@@ -28,7 +33,7 @@
             background: white;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
         }
 
         h1 {
@@ -41,6 +46,11 @@
             margin-bottom: 25px;
         }
 
+
+        /* =========================
+           INFORMASI TRANSAKSI
+        ========================= */
+
         .info {
             padding: 12px 0;
             border-bottom: 1px solid #eee;
@@ -50,6 +60,11 @@
         .label {
             font-weight: bold;
         }
+
+
+        /* =========================
+           TOTAL
+        ========================= */
 
         .total {
             margin-top: 20px;
@@ -70,6 +85,11 @@
             color: #0f5132;
         }
 
+
+        /* =========================
+           METODE PEMBAYARAN
+        ========================= */
+
         .payment-title {
             margin-top: 30px;
             margin-bottom: 15px;
@@ -84,10 +104,16 @@
             padding: 15px;
             margin-bottom: 10px;
             cursor: pointer;
+            transition: .2s;
         }
 
         .method:hover {
             background: #f8f9fa;
+        }
+
+        .method:has(input:checked) {
+            border-color: #198754;
+            background: #f0fff6;
         }
 
         .method input {
@@ -106,9 +132,33 @@
             font-size: 14px;
         }
 
-        /* ========================= */
-        /* QRIS */
-        /* ========================= */
+
+        /* =========================
+           SUB OPTIONS
+        ========================= */
+
+        .sub-options {
+            display: none;
+            margin: 10px 0 18px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .sub-options select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            margin-top: 8px;
+            background: white;
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           QRIS
+        ========================= */
 
         .qris-container {
             display: none;
@@ -139,7 +189,7 @@
             background: white;
             padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.10);
+            box-shadow: 0 3px 10px rgba(0,0,0,.1);
         }
 
         .qris-box img {
@@ -155,12 +205,6 @@
             color: #0f5132;
         }
 
-        .qris-id {
-            margin-top: 5px;
-            color: #777;
-            font-size: 13px;
-        }
-
         .qris-warning {
             margin-top: 15px;
             padding: 10px;
@@ -169,6 +213,11 @@
             border-radius: 8px;
             font-size: 13px;
         }
+
+
+        /* =========================
+           BUTTON
+        ========================= */
 
         .buttons {
             display: flex;
@@ -187,7 +236,6 @@
             font-size: 15px;
             cursor: pointer;
             font-family: Arial, sans-serif;
-            box-sizing: border-box;
         }
 
         .btn-payment {
@@ -198,6 +246,11 @@
             background: #0b5ed7;
         }
 
+        .btn-payment:disabled {
+            background: #9bbcf5;
+            cursor: not-allowed;
+        }
+
         .btn-back {
             background: #6c757d;
         }
@@ -205,6 +258,11 @@
         .btn-back:hover {
             background: #5c636a;
         }
+
+
+        /* =========================
+           ALERT
+        ========================= */
 
         .alert {
             padding: 12px 15px;
@@ -223,26 +281,60 @@
             margin-top: 10px;
         }
 
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            .container {
+                margin: 20px auto;
+                padding: 15px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+        }
+
     </style>
 
 </head>
 
+
 <body>
+
 
 <div class="container">
 
     <div class="card">
 
+
         <h1>
             Pembayaran
         </h1>
+
 
         <div class="subtitle">
             Pilih metode pembayaran untuk menyelesaikan transaksi charging.
         </div>
 
 
-        {{-- Pesan error --}}
+        {{-- =========================================
+             ERROR
+        ========================================== --}}
+
         @if(session('error'))
 
             <div class="alert alert-error">
@@ -252,9 +344,9 @@
         @endif
 
 
-        {{-- ========================================= --}}
-        {{-- INFORMASI CHARGING --}}
-        {{-- ========================================= --}}
+        {{-- =========================================
+             INFORMASI CHARGER
+        ========================================== --}}
 
         <div class="info">
 
@@ -266,6 +358,10 @@
 
         </div>
 
+
+        {{-- =========================================
+             KENDARAAN
+        ========================================== --}}
 
         <div class="info">
 
@@ -279,6 +375,10 @@
         </div>
 
 
+        {{-- =========================================
+             NOMOR POLISI
+        ========================================== --}}
+
         <div class="info">
 
             <span class="label">
@@ -290,16 +390,47 @@
         </div>
 
 
+        {{-- =========================================
+             ENERGI
+        ========================================== --}}
+
         <div class="info">
 
             <span class="label">
                 Energi:
             </span>
 
-            {{ $session->energi_kwh }} kWh
+            {{ number_format(
+                (float) $session->energi_kwh,
+                2,
+                ',',
+                '.'
+            ) }}
+
+            kWh
 
         </div>
 
+
+        {{-- =========================================
+             DURASI
+        ========================================== --}}
+
+        <div class="info">
+
+            <span class="label">
+                Durasi Charging:
+            </span>
+
+            {{ $session->durasi_menit }}
+            menit
+
+        </div>
+
+
+        {{-- =========================================
+             TARIF
+        ========================================== --}}
 
         <div class="info">
 
@@ -307,19 +438,23 @@
                 Tarif:
             </span>
 
-            Rp {{ number_format(
-                $session->tariff->harga_per_kwh,
+            Rp
+
+            {{ number_format(
+                (float) $session->tariff->harga_per_kwh,
                 0,
                 ',',
                 '.'
-            ) }}/kWh
+            ) }}
+
+            /kWh
 
         </div>
 
 
-        {{-- ========================================= --}}
-        {{-- TOTAL --}}
-        {{-- ========================================= --}}
+        {{-- =========================================
+             TOTAL
+        ========================================== --}}
 
         <div class="total">
 
@@ -329,8 +464,10 @@
 
             <div class="total-price">
 
-                Rp {{ number_format(
-                    $session->total_biaya,
+                Rp
+
+                {{ number_format(
+                    (float) $session->total_biaya,
                     0,
                     ',',
                     '.'
@@ -341,9 +478,9 @@
         </div>
 
 
-        {{-- ========================================= --}}
-        {{-- METODE PEMBAYARAN --}}
-        {{-- ========================================= --}}
+        {{-- =========================================
+             PILIH METODE
+        ========================================== --}}
 
         <div class="payment-title">
             Pilih Metode Pembayaran
@@ -351,6 +488,7 @@
 
 
         <form
+            id="payment-form"
             action="{{ route(
                 'payment.process',
                 $session->id_session
@@ -361,7 +499,10 @@
             @csrf
 
 
-            {{-- E-Wallet --}}
+            {{-- =====================================
+                 E-WALLET
+            ====================================== --}}
+
             <label class="method">
 
                 <input
@@ -369,65 +510,148 @@
                     name="metode"
                     value="ewallet"
                     required
-                    onchange="toggleQRIS()"
                 >
 
                 <span class="method-name">
-                    E-Wallet
+                    📱 E-Wallet
                 </span>
 
                 <span class="method-description">
-                    Pembayaran menggunakan dompet digital.
+                    GoPay, OVO, DANA, atau ShopeePay
                 </span>
 
             </label>
 
 
-            {{-- Card --}}
+            <div
+                class="sub-options"
+                id="ewallet-options"
+            >
+
+                <strong>
+                    Pilih E-Wallet
+                </strong>
+
+                <select
+                    name="ewallet"
+                    id="ewallet"
+                    disabled
+                >
+
+                    <option value="">
+                        -- Pilih E-Wallet --
+                    </option>
+
+                    <option value="gopay">
+                        GoPay
+                    </option>
+
+                    <option value="ovo">
+                        OVO
+                    </option>
+
+                    <option value="dana">
+                        DANA
+                    </option>
+
+                    <option value="shopeepay">
+                        ShopeePay
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            {{-- =====================================
+                 KARTU
+            ====================================== --}}
+
             <label class="method">
 
                 <input
                     type="radio"
                     name="metode"
                     value="card"
-                    onchange="toggleQRIS()"
                 >
 
                 <span class="method-name">
-                    Kartu
+                    💳 Kartu Debit / Kredit
                 </span>
 
                 <span class="method-description">
-                    Pembayaran menggunakan kartu.
+                    Pembayaran menggunakan kartu debit atau kredit
                 </span>
 
             </label>
 
 
-            {{-- QRIS --}}
+            <div
+                class="sub-options"
+                id="card-options"
+            >
+
+                <strong>
+                    Jenis Kartu
+                </strong>
+
+                <select
+                    name="card_type"
+                    id="card_type"
+                    disabled
+                >
+
+                    <option value="">
+                        -- Pilih Jenis Kartu --
+                    </option>
+
+                    <option value="visa">
+                        Visa
+                    </option>
+
+                    <option value="mastercard">
+                        Mastercard
+                    </option>
+
+                    <option value="debit">
+                        Kartu Debit
+                    </option>
+
+                </select>
+
+
+                <p style="font-size:13px;color:#777;margin-bottom:0;">
+
+                    Ini merupakan simulasi pembayaran.
+                    Pembayaran kartu sungguhan memerlukan payment gateway.
+
+                </p>
+
+            </div>
+
+
+            {{-- =====================================
+                 QRIS
+            ====================================== --}}
+
             <label class="method">
 
                 <input
                     type="radio"
                     name="metode"
                     value="qr"
-                    onchange="toggleQRIS()"
                 >
 
                 <span class="method-name">
-                    QRIS
+                    ▦ QRIS
                 </span>
 
                 <span class="method-description">
-                    Pembayaran menggunakan QRIS.
+                    Pembayaran menggunakan QRIS
                 </span>
 
             </label>
 
-
-            {{-- ========================================= --}}
-            {{-- QR CODE QRIS --}}
-            {{-- ========================================= --}}
 
             <div
                 id="qris-container"
@@ -438,9 +662,12 @@
                     Scan QRIS
                 </div>
 
+
                 <div class="qris-description">
-                    Silakan scan QR Code berikut menggunakan
-                    aplikasi pembayaran yang mendukung QRIS.
+
+                    QR Code simulasi untuk kebutuhan
+                    sistem EVChargeHub.
+
                 </div>
 
 
@@ -456,8 +683,10 @@
 
                 <div class="qris-amount">
 
-                    Rp {{ number_format(
-                        $session->total_biaya,
+                    Rp
+
+                    {{ number_format(
+                        (float) $session->total_biaya,
                         0,
                         ',',
                         '.'
@@ -466,7 +695,7 @@
                 </div>
 
 
-                <div class="qris-id">
+                <div style="margin-top:5px;color:#777;font-size:13px;">
 
                     ID Sesi:
                     #{{ $session->id_session }}
@@ -476,26 +705,27 @@
 
                 <div class="qris-warning">
 
-                    QR Code ini merupakan QR Code simulasi
-                    untuk kebutuhan sistem EVChargeHub.
+                    QR Code ini bukan QRIS pembayaran aktif.
 
                 </div>
 
             </div>
 
 
-            {{-- Saldo --}}
+            {{-- =====================================
+                 SALDO
+            ====================================== --}}
+
             <label class="method">
 
                 <input
                     type="radio"
                     name="metode"
                     value="saldo"
-                    onchange="toggleQRIS()"
                 >
 
                 <span class="method-name">
-                    Saldo
+                    💰 Saldo
                 </span>
 
                 <span class="method-description">
@@ -504,6 +734,36 @@
 
             </label>
 
+
+            {{-- =====================================
+                 ERROR E-WALLET
+            ====================================== --}}
+
+            @error('ewallet')
+
+                <div class="error">
+                    {{ $message }}
+                </div>
+
+            @enderror
+
+
+            {{-- =====================================
+                 ERROR KARTU
+            ====================================== --}}
+
+            @error('card_type')
+
+                <div class="error">
+                    {{ $message }}
+                </div>
+
+            @enderror
+
+
+            {{-- =====================================
+                 ERROR METODE
+            ====================================== --}}
 
             @error('metode')
 
@@ -514,11 +774,12 @@
             @enderror
 
 
-            {{-- ========================================= --}}
-            {{-- TOMBOL --}}
-            {{-- ========================================= --}}
+            {{-- =====================================
+                 BUTTON
+            ====================================== --}}
 
             <div class="buttons">
+
 
                 <a
                     href="{{ route(
@@ -533,53 +794,305 @@
 
                 <button
                     type="submit"
+                    id="payment-button"
                     class="btn btn-payment"
                 >
                     💳 Proses Pembayaran
                 </button>
 
+
             </div>
 
+
         </form>
+
 
     </div>
 
 </div>
 
 
-{{-- ========================================= --}}
-{{-- JAVASCRIPT QRIS --}}
-{{-- ========================================= --}}
-
 <script>
 
-function toggleQRIS() {
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
 
-    const selectedMethod =
-        document.querySelector(
-            'input[name="metode"]:checked'
+
+        /*
+        |--------------------------------------------------------------------------
+        | ELEMENT
+        |--------------------------------------------------------------------------
+        */
+
+        const radios =
+            document.querySelectorAll(
+                'input[name="metode"]'
+            );
+
+
+        const ewalletBox =
+            document.getElementById(
+                'ewallet-options'
+            );
+
+
+        const cardBox =
+            document.getElementById(
+                'card-options'
+            );
+
+
+        const qrisBox =
+            document.getElementById(
+                'qris-container'
+            );
+
+
+        const ewalletSelect =
+            document.getElementById(
+                'ewallet'
+            );
+
+
+        const cardSelect =
+            document.getElementById(
+                'card_type'
+            );
+
+
+        const paymentButton =
+            document.getElementById(
+                'payment-button'
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | UBAH METODE PEMBAYARAN
+        |--------------------------------------------------------------------------
+        */
+
+        function togglePayment() {
+
+
+            const selected =
+                document.querySelector(
+                    'input[name="metode"]:checked'
+                );
+
+
+            const method =
+                selected
+                    ? selected.value
+                    : '';
+
+
+            /*
+            | E-Wallet
+            */
+
+            ewalletBox.style.display =
+                method === 'ewallet'
+                    ? 'block'
+                    : 'none';
+
+
+            /*
+            | Kartu
+            */
+
+            cardBox.style.display =
+                method === 'card'
+                    ? 'block'
+                    : 'none';
+
+
+            /*
+            | QRIS
+            */
+
+            qrisBox.style.display =
+                method === 'qr'
+                    ? 'block'
+                    : 'none';
+
+
+            /*
+            | Aktifkan E-Wallet
+            */
+
+            ewalletSelect.disabled =
+                method !== 'ewallet';
+
+
+            ewalletSelect.required =
+                method === 'ewallet';
+
+
+            /*
+            | Aktifkan Kartu
+            */
+
+            cardSelect.disabled =
+                method !== 'card';
+
+
+            cardSelect.required =
+                method === 'card';
+
+
+            /*
+            | Reset pilihan yang tidak digunakan
+            */
+
+            if (method !== 'ewallet') {
+
+                ewalletSelect.value = '';
+
+            }
+
+
+            if (method !== 'card') {
+
+                cardSelect.value = '';
+
+            }
+
+
+            /*
+            | Tombol pembayaran selalu aktif
+            | setelah metode dipilih.
+            */
+
+            paymentButton.disabled =
+                method === '';
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | EVENT RADIO
+        |--------------------------------------------------------------------------
+        */
+
+        radios.forEach(
+            function (radio) {
+
+                radio.addEventListener(
+                    'change',
+                    togglePayment
+                );
+
+            }
         );
 
-    const qrisContainer =
-        document.getElementById('qris-container');
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK SEBELUM SUBMIT
+        |--------------------------------------------------------------------------
+        */
+
+        document
+            .getElementById('payment-form')
+            .addEventListener(
+                'submit',
+                function (event) {
 
 
-    if (
-        selectedMethod &&
-        selectedMethod.value === 'qr'
-    ) {
+                    const selected =
+                        document.querySelector(
+                            'input[name="metode"]:checked'
+                        );
 
-        qrisContainer.style.display = 'block';
 
-    } else {
+                    if (!selected) {
 
-        qrisContainer.style.display = 'none';
+                        event.preventDefault();
+
+                        alert(
+                            'Silakan pilih metode pembayaran terlebih dahulu.'
+                        );
+
+                        return;
+
+                    }
+
+
+                    /*
+                    | Validasi E-Wallet
+                    */
+
+                    if (
+                        selected.value === 'ewallet'
+                        &&
+                        !ewalletSelect.value
+                    ) {
+
+                        event.preventDefault();
+
+                        alert(
+                            'Silakan pilih E-Wallet terlebih dahulu.'
+                        );
+
+                        ewalletSelect.focus();
+
+                        return;
+
+                    }
+
+
+                    /*
+                    | Validasi kartu
+                    */
+
+                    if (
+                        selected.value === 'card'
+                        &&
+                        !cardSelect.value
+                    ) {
+
+                        event.preventDefault();
+
+                        alert(
+                            'Silakan pilih jenis kartu terlebih dahulu.'
+                        );
+
+                        cardSelect.focus();
+
+                        return;
+
+                    }
+
+
+                    /*
+                    | Ubah tulisan tombol
+                    */
+
+                    paymentButton.disabled = true;
+
+                    paymentButton.innerText =
+                        '⏳ Memproses Pembayaran...';
+
+                }
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | JALANKAN SAAT HALAMAN DIBUKA
+        |--------------------------------------------------------------------------
+        */
+
+        togglePayment();
 
     }
-
-}
+);
 
 </script>
+
 
 </body>
 
