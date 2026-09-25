@@ -17,14 +17,8 @@
 
         body {
             margin: 0;
-
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
+            font-family: Arial, Helvetica, sans-serif;
             background: #f4f8f7;
-
             color: #1f2937;
         }
 
@@ -34,12 +28,9 @@
         ========================= */
 
         .sidebar {
-
             position: fixed;
-
             left: 0;
             top: 0;
-
             width: 270px;
             height: 100vh;
 
@@ -52,9 +43,7 @@
                 );
 
             color: white;
-
             overflow-y: auto;
-
             z-index: 1000;
 
             box-shadow:
@@ -63,15 +52,11 @@
 
 
         .sidebar-header {
-
             height: 78px;
-
             padding: 18px 22px;
 
             display: flex;
-
             align-items: center;
-
             gap: 12px;
 
             border-bottom:
@@ -80,16 +65,13 @@
 
 
         .logo-icon {
-
             width: 42px;
             height: 42px;
 
             border-radius: 50%;
-
             background: #28d486;
 
             display: flex;
-
             align-items: center;
             justify-content: center;
 
@@ -98,31 +80,23 @@
 
 
         .logo-text {
-
             font-size: 21px;
-
             font-weight: bold;
         }
 
 
         .menu {
-
-            padding:
-                15px 12px 30px;
+            padding: 15px 12px 30px;
         }
 
 
         .menu-title {
-
-            padding:
-                15px 14px 8px;
+            padding: 15px 14px 8px;
 
             color: #9de5ca;
-
             font-size: 11px;
 
             text-transform: uppercase;
-
             letter-spacing: 1.2px;
 
             font-weight: bold;
@@ -130,24 +104,19 @@
 
 
         .menu-item {
-
             display: flex;
-
             align-items: center;
 
             gap: 12px;
 
             width: 100%;
 
-            padding:
-                12px 14px;
-
+            padding: 12px 14px;
             margin-bottom: 4px;
 
             border-radius: 10px;
 
             color: #e7f8f3;
-
             text-decoration: none;
 
             font-size: 14px;
@@ -155,7 +124,6 @@
             transition: 0.2s;
 
             border: none;
-
             background: transparent;
 
             cursor: pointer;
@@ -163,7 +131,6 @@
 
 
         .menu-item:hover {
-
             background:
                 rgba(255,255,255,0.10);
 
@@ -172,7 +139,6 @@
 
 
         .menu-item.active {
-
             background:
                 linear-gradient(
                     90deg,
@@ -181,27 +147,21 @@
                 );
 
             color: white;
-
             font-weight: bold;
         }
 
 
         .menu-icon {
-
             width: 27px;
-
             min-width: 27px;
 
             text-align: center;
-
             font-size: 18px;
         }
 
 
         .menu-divider {
-
-            margin:
-                18px 8px;
+            margin: 18px 8px;
 
             border-top:
                 1px solid rgba(255,255,255,0.12);
@@ -213,9 +173,7 @@
         ========================= */
 
         .main {
-
             margin-left: 270px;
-
             min-height: 100vh;
         }
 
@@ -225,7 +183,6 @@
         ========================= */
 
         .topbar {
-
             height: 70px;
 
             background: white;
@@ -234,13 +191,10 @@
                 1px solid #e5e7eb;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
-            padding:
-                0 35px;
+            padding: 0 35px;
 
             box-shadow:
                 0 2px 8px rgba(0,0,0,0.03);
@@ -248,38 +202,28 @@
 
 
         .page-title {
-
             font-size: 20px;
-
             font-weight: bold;
-
             color: #064e3b;
         }
 
 
         .user-area {
-
             display: flex;
-
             align-items: center;
-
             gap: 12px;
         }
 
 
         .user-avatar {
-
             width: 40px;
             height: 40px;
 
             border-radius: 50%;
-
             background: #d1fae5;
 
             display: flex;
-
             align-items: center;
-
             justify-content: center;
 
             font-size: 20px;
@@ -287,11 +231,8 @@
 
 
         .user-name {
-
             font-size: 13px;
-
             font-weight: bold;
-
             color: #374151;
         }
 
@@ -301,16 +242,18 @@
         ========================= */
 
         .content {
+            padding: 30px 35px 50px;
 
-            padding:
-                30px 35px 50px;
-
+            width: 100%;
             max-width: 1200px;
         }
 
 
-        .header-card {
+        /* =========================
+           HEADER CARD
+        ========================= */
 
+        .header-card {
             background:
                 linear-gradient(
                     120deg,
@@ -330,7 +273,6 @@
 
 
         .header-card h1 {
-
             margin: 0;
 
             color: #064e3b;
@@ -340,9 +282,7 @@
 
 
         .header-card p {
-
-            margin:
-                8px 0 0;
+            margin: 8px 0 0;
 
             color: #64748b;
 
@@ -351,10 +291,20 @@
 
 
         /* =========================
+           NOTIFICATION LIST
+        ========================= */
+
+        .notification-list {
+            width: 100%;
+        }
+
+
+        /* =========================
            NOTIFICATION CARD
         ========================= */
 
         .notification-card {
+            width: 100%;
 
             background: white;
 
@@ -368,7 +318,6 @@
             margin-bottom: 15px;
 
             display: flex;
-
             align-items: center;
 
             gap: 15px;
@@ -381,7 +330,6 @@
 
 
         .notification-card:hover {
-
             transform:
                 translateY(-2px);
 
@@ -391,7 +339,6 @@
 
 
         .notification-icon {
-
             width: 50px;
             height: 50px;
 
@@ -402,9 +349,7 @@
             background: #dcfce7;
 
             display: flex;
-
             align-items: center;
-
             justify-content: center;
 
             font-size: 23px;
@@ -412,15 +357,13 @@
 
 
         .notification-content {
-
             flex: 1;
+            min-width: 0;
         }
 
 
         .notification-content h3 {
-
-            margin:
-                0 0 6px;
+            margin: 0 0 6px;
 
             font-size: 15px;
 
@@ -429,7 +372,6 @@
 
 
         .notification-content p {
-
             margin: 0;
 
             font-size: 13px;
@@ -441,7 +383,6 @@
 
 
         .notification-time {
-
             font-size: 11px;
 
             color: #94a3b8;
@@ -451,17 +392,64 @@
 
 
         /* =========================
+           EMPTY NOTIFICATION
+        ========================= */
+
+        .notification-empty {
+            width: 100%;
+
+            background: white;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius: 15px;
+
+            padding: 40px 20px;
+
+            text-align: center;
+
+            color: #64748b;
+
+            box-shadow:
+                0 5px 15px rgba(0,0,0,0.05);
+        }
+
+
+        .notification-empty-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+
+        .notification-empty h3 {
+            margin: 0 0 6px;
+
+            color: #064e3b;
+
+            font-size: 16px;
+        }
+
+
+        .notification-empty p {
+            margin: 0;
+
+            font-size: 13px;
+
+            color: #64748b;
+        }
+
+
+        /* =========================
            BACK BUTTON
         ========================= */
 
         .back-button {
-
             display: inline-block;
 
             margin-top: 15px;
 
-            padding:
-                10px 16px;
+            padding: 10px 16px;
 
             background: #07895f;
 
@@ -478,7 +466,6 @@
 
 
         .back-button:hover {
-
             background: #056c4c;
         }
 
@@ -487,69 +474,68 @@
            RESPONSIVE
         ========================= */
 
+        @media(max-width: 800px) {
+
+            .content {
+                padding:
+                    25px 20px;
+            }
+
+            .notification-card {
+                align-items: flex-start;
+            }
+
+        }
+
+
         @media(max-width: 600px) {
 
             .sidebar {
-
                 width: 70px;
             }
 
             .main {
-
                 margin-left: 70px;
             }
 
             .logo-text,
             .menu-title,
             .menu-item span:not(.menu-icon) {
-
                 display: none;
             }
 
             .sidebar-header {
-
                 justify-content: center;
-
                 padding: 15px;
             }
 
             .menu-item {
-
                 justify-content: center;
-
-                padding:
-                    13px 8px;
+                padding: 13px 8px;
             }
 
             .menu-icon {
-
                 width: 100%;
             }
 
             .topbar {
-
-                padding:
-                    0 15px;
+                padding: 0 15px;
             }
 
             .user-name {
-
                 display: none;
             }
 
             .content {
-
                 padding:
                     20px 15px;
             }
 
             .notification-card {
-
                 align-items: flex-start;
             }
 
             .notification-time {
-
                 display: none;
             }
         }
@@ -568,7 +554,6 @@
 
 <aside class="sidebar">
 
-
     <div class="sidebar-header">
 
         <div class="logo-icon">
@@ -584,11 +569,12 @@
 
     <div class="menu">
 
-
         <div class="menu-title">
             Menu Utama
         </div>
 
+
+        <!-- DASHBOARD -->
 
         <a
             href="{{ route('user.dashboard') }}"
@@ -605,6 +591,8 @@
 
         </a>
 
+
+        <!-- AKUN -->
 
         <div class="menu-title">
             Akun
@@ -642,6 +630,8 @@
 
         </a>
 
+
+        <!-- FITUR UTAMA -->
 
         <div class="menu-title">
             Fitur Utama
@@ -681,7 +671,7 @@
 
 
         <a
-            href="#"
+            href="{{ route('charging.history') }}"
             class="menu-item"
         >
 
@@ -695,6 +685,8 @@
 
         </a>
 
+
+        <!-- NOTIFIKASI -->
 
         <a
             href="{{ route('notifications.index') }}"
@@ -714,6 +706,8 @@
 
         <div class="menu-divider"></div>
 
+
+        <!-- LOGOUT -->
 
         <form
             action="{{ route('logout') }}"
@@ -739,7 +733,6 @@
 
         </form>
 
-
     </div>
 
 </aside>
@@ -755,7 +748,6 @@
     <!-- TOPBAR -->
 
     <header class="topbar">
-
 
         <div class="page-title">
             Notifikasi
@@ -807,130 +799,93 @@
         </div>
 
 
-        <!-- NOTIFIKASI 1 -->
+        <!-- =========================
+             NOTIFICATION LIST
+        ========================= -->
 
-        <div class="notification-card">
+        <div class="notification-list">
 
+            @forelse($notifications as $notification)
 
-            <div class="notification-icon">
-                👋
-            </div>
+                <div class="notification-card">
 
+                    <!-- ICON -->
 
-            <div class="notification-content">
+                    <div class="notification-icon">
 
-                <h3>
-                    Selamat datang di EVChargeHub
-                </h3>
+                        @if($notification->type === 'payment')
 
-                <p>
-                    Akun Anda berhasil masuk ke sistem EVChargeHub.
-                    Selamat menggunakan layanan kami.
-                </p>
+                            💳
 
-            </div>
+                        @elseif($notification->type === 'charging')
 
+                            ⚡
 
-            <div class="notification-time">
-                Baru saja
-            </div>
+                        @elseif($notification->type === 'vehicle')
 
+                            🚗
 
-        </div>
+                        @else
 
+                            🔔
 
-        <!-- NOTIFIKASI 2 -->
+                        @endif
 
-        <div class="notification-card">
+                    </div>
 
 
-            <div class="notification-icon">
-                🚗
-            </div>
+                    <!-- CONTENT -->
+
+                    <div class="notification-content">
+
+                        <h3>
+                            {{ $notification->title }}
+                        </h3>
+
+                        <p>
+                            {{ $notification->message }}
+                        </p>
+
+                    </div>
 
 
-            <div class="notification-content">
+                    <!-- TIME -->
 
-                <h3>
-                    Tambahkan kendaraan
-                </h3>
+                    <div class="notification-time">
 
-                <p>
-                    Silakan tambahkan kendaraan listrik Anda
-                    sebelum melakukan charging.
-                </p>
+                        @if($notification->created_at)
 
-            </div>
+                            {{ $notification->created_at->format('d/m/Y H:i') }}
 
+                        @else
 
-            <div class="notification-time">
-                Hari ini
-            </div>
+                            -
 
+                        @endif
 
-        </div>
+                    </div>
 
+                </div>
 
-        <!-- NOTIFIKASI 3 -->
+            @empty
 
-        <div class="notification-card">
+                <div class="notification-empty">
 
+                    <div class="notification-empty-icon">
+                        🔔
+                    </div>
 
-            <div class="notification-icon">
-                📍
-            </div>
+                    <h3>
+                        Belum ada notifikasi
+                    </h3>
 
+                    <p>
+                        Saat ini belum ada pemberitahuan untuk Anda.
+                    </p>
 
-            <div class="notification-content">
+                </div>
 
-                <h3>
-                    Charging Station tersedia
-                </h3>
-
-                <p>
-                    Anda dapat melihat lokasi charging station
-                    dan charger yang tersedia.
-                </p>
-
-            </div>
-
-
-            <div class="notification-time">
-                Hari ini
-            </div>
-
-
-        </div>
-
-
-        <!-- NOTIFIKASI 4 -->
-
-        <div class="notification-card">
-
-
-            <div class="notification-icon">
-                ⚡
-            </div>
-
-
-            <div class="notification-content">
-
-                <h3>
-                    Siap melakukan charging
-                </h3>
-
-                <p>
-                    Pilih charging station dan charger yang tersedia
-                    untuk memulai sesi charging.
-                </p>
-
-            </div>
-
-
-            <div class="notification-time">
-                Hari ini
-            </div>
-
+            @endforelse
 
         </div>
 

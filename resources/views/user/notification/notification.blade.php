@@ -479,6 +479,16 @@
         }
 
 
+        .notification-card.unread {
+
+            border-left:
+                4px solid #10b981;
+
+            background:
+                #fafffc;
+        }
+
+
         .notification-icon {
 
             width: 55px;
@@ -566,6 +576,55 @@
         .notification-action:hover {
 
             background: #056c4c;
+        }
+
+
+        /* =========================================
+           EMPTY NOTIFICATION
+        ========================================= */
+
+        .notification-empty {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 45px 25px;
+
+            text-align: center;
+
+            border:
+                1px solid #e5ece9;
+
+            box-shadow:
+                0 5px 15px rgba(0,0,0,0.05);
+
+            color: #64748b;
+        }
+
+
+        .notification-empty-icon {
+
+            font-size: 45px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .notification-empty h3 {
+
+            margin:
+                0 0 8px;
+
+            color: #064e3b;
+        }
+
+
+        .notification-empty p {
+
+            margin: 0;
+
+            font-size: 13px;
         }
 
 
@@ -680,6 +739,8 @@
             .notification-card {
 
                 padding: 16px;
+
+                gap: 12px;
             }
 
         }
@@ -900,9 +961,21 @@
 
                 🔔
 
-                <span class="notification-badge">
-                    3
-                </span>
+                @php
+                    $unreadNotifications = $notifications
+                        ->where('is_read', false)
+                        ->count();
+                @endphp
+
+                @if($unreadNotifications > 0)
+
+                    <span class="notification-badge">
+
+                        {{ $unreadNotifications > 9 ? '9+' : $unreadNotifications }}
+
+                    </span>
+
+                @endif
 
             </a>
 
@@ -951,167 +1024,170 @@
 
 
 
-        <!-- NOTIFICATION 1 -->
+        <!-- =================================================
+             NOTIFIKASI DINAMIS DARI DATABASE
+        ================================================= -->
 
-        <div class="notification-card">
-
-
-            <div
-                class="notification-icon"
-                style="background:#dcfce7;"
-            >
-                ⚡
-            </div>
+        @if($notifications->count() > 0)
 
 
-            <div class="notification-content">
-
-                <h3>
-                    Selamat Datang di EVChargeHub
-                </h3>
-
-                <p>
-                    Akun Anda berhasil dibuat.
-                    Silakan lengkapi data kendaraan
-                    sebelum melakukan charging.
-                </p>
-
-                <div class="notification-time">
-                    Baru saja
-                </div>
+            @foreach($notifications as $notification)
 
 
-                <a
-                    href="{{ route('vehicles.index') }}"
-                    class="notification-action"
+                <div
+                    class="notification-card {{ !$notification->is_read ? 'unread' : '' }}"
                 >
-                    Tambahkan Kendaraan →
-                </a>
-
-            </div>
-
-        </div>
 
 
+                    <!-- ICON -->
 
-        <!-- NOTIFICATION 2 -->
+                    <div
+                        class="notification-icon"
+                        @if($notification->type === 'payment')
+                            style="background:#fef3c7;"
+                        @elseif($notification->type === 'charging')
+                            style="background:#dcfce7;"
+                        @elseif($notification->type === 'vehicle')
+                            style="background:#dbeafe;"
+                        @else
+                            style="background:#ede9fe;"
+                        @endif
+                    >
 
-        <div class="notification-card">
+                        @if($notification->type === 'payment')
+
+                            💳
+
+                        @elseif($notification->type === 'charging')
+
+                            ⚡
+
+                        @elseif($notification->type === 'vehicle')
+
+                            🚗
+
+                        @else
+
+                            🔔
+
+                        @endif
+
+                    </div>
 
 
-            <div
-                class="notification-icon"
-                style="background:#dbeafe;"
-            >
-                🚗
-            </div>
+                    <!-- CONTENT -->
+
+                    <div class="notification-content">
 
 
-            <div class="notification-content">
+                        <h3>
 
-                <h3>
-                    Kendaraan Anda
-                </h3>
+                            {{ $notification->title }}
 
-                <p>
-                    Anda dapat menambahkan kendaraan
-                    listrik yang akan digunakan untuk
-                    proses charging.
-                </p>
+                        </h3>
 
-                <div class="notification-time">
-                    Hari ini
+
+                        <p>
+
+                            {{ $notification->message }}
+
+                        </p>
+
+
+                        <!-- WAKTU -->
+
+                        <div class="notification-time">
+
+                            @if($notification->created_at)
+
+                                {{ $notification->created_at->format('d/m/Y H:i') }}
+
+                            @else
+
+                                -
+
+                            @endif
+
+                        </div>
+
+
+                        <!-- ACTION -->
+
+                        @if($notification->type === 'vehicle')
+
+                            <a
+                                href="{{ route('vehicles.index') }}"
+                                class="notification-action"
+                            >
+                                Kelola Kendaraan →
+                            </a>
+
+                        @elseif(
+                            $notification->type === 'charging'
+                            && str_contains(
+                                strtolower($notification->title),
+                                'siap'
+                            )
+                        )
+
+                            <a
+                                href="{{ route('stations.index') }}"
+                                class="notification-action"
+                            >
+                                Cari Charging Station →
+                            </a>
+
+                        @elseif(
+                            $notification->type === 'payment'
+                            && str_contains(
+                                strtolower($notification->title),
+                                'berhasil'
+                            )
+                        )
+
+                            <a
+                                href="{{ route('charging.history') }}"
+                                class="notification-action"
+                            >
+                                Lihat Riwayat →
+                            </a>
+
+                        @endif
+
+
+                    </div>
+
+
                 </div>
 
 
-                <a
-                    href="{{ route('vehicles.index') }}"
-                    class="notification-action"
-                >
-                    Kelola Kendaraan →
-                </a>
-
-            </div>
-
-        </div>
+            @endforeach
 
 
-
-        <!-- NOTIFICATION 3 -->
-
-        <div class="notification-card">
+        @else
 
 
-            <div
-                class="notification-icon"
-                style="background:#ede9fe;"
-            >
-                📍
-            </div>
+            <!-- TIDAK ADA NOTIFIKASI -->
 
+            <div class="notification-empty">
 
-            <div class="notification-content">
+                <div class="notification-empty-icon">
+                    🔔
+                </div>
 
                 <h3>
-                    Charging Station
+                    Belum ada notifikasi
                 </h3>
 
                 <p>
-                    Temukan charging station dan
-                    lihat charger yang tersedia
-                    untuk kendaraan Anda.
+                    Saat ini belum ada pemberitahuan
+                    untuk akun Anda.
                 </p>
 
-                <div class="notification-time">
-                    Hari ini
-                </div>
-
-
-                <a
-                    href="{{ route('stations.index') }}"
-                    class="notification-action"
-                >
-                    Cari Charging Station →
-                </a>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- NOTIFICATION 4 -->
-
-        <div class="notification-card">
-
-
-            <div
-                class="notification-icon"
-                style="background:#fef3c7;"
-            >
-                💳
             </div>
 
 
-            <div class="notification-content">
-
-                <h3>
-                    Pembayaran
-                </h3>
-
-                <p>
-                    Setelah sesi charging selesai,
-                    Anda dapat melanjutkan ke proses
-                    pembayaran.
-                </p>
-
-                <div class="notification-time">
-                    Informasi
-                </div>
-
-            </div>
-
-        </div>
+        @endif
 
 
 

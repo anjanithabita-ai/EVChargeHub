@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ChargingSession;
 use App\Models\Payment;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -120,7 +121,6 @@ class PaymentController extends Controller
 
             // Jika sudah berhasil
             if ($session->payment->status === 'berhasil') {
-
                 return redirect()->route(
                     'payment.invoice',
                     $session->payment->id_payment
@@ -129,7 +129,6 @@ class PaymentController extends Controller
 
             // Jika masih pending
             if ($session->payment->status === 'pending') {
-
                 return redirect()->route(
                     'payment.waiting',
                     $session->payment->id_payment
@@ -201,7 +200,6 @@ class PaymentController extends Controller
         // ==========================================
 
         if ($payment->status === 'berhasil') {
-
             return redirect()->route(
                 'payment.invoice',
                 $payment->id_payment
@@ -214,7 +212,6 @@ class PaymentController extends Controller
         // ==========================================
 
         if ($payment->status === 'gagal') {
-
             return redirect()
                 ->route(
                     'payment.create',
@@ -222,7 +219,7 @@ class PaymentController extends Controller
                 )
                 ->with(
                     'error',
-                    'Pembayaran sudah tidak dapat dilakukan. Silakan buat pembayaran kembali.'
+                    'Pembayaran sudah gagal. Silakan buat pembayaran kembali.'
                 );
         }
 
@@ -239,9 +236,20 @@ class PaymentController extends Controller
 
             if (now()->greaterThanOrEqualTo($batasWaktu)) {
 
+                // Ubah status pembayaran
                 $payment->update([
                     'status' => 'gagal',
                 ]);
+
+                // Buat notifikasi pembayaran kadaluarsa
+                $this->createNotification(
+                    $payment,
+                    'Pembayaran Kadaluarsa',
+                    'Pembayaran untuk sesi charging #' .
+                    $payment->id_session .
+                    ' telah melewati batas waktu 15 menit dan dinyatakan gagal.',
+                    'payment'
+                );
 
                 return redirect()
                     ->route(
@@ -250,7 +258,7 @@ class PaymentController extends Controller
                     )
                     ->with(
                         'error',
-                        'Waktu pembayaran 15 menit telah habis. Silakan buat pembayaran kembali.'
+                        'Waktu pembayaran 15 menit telah habis. Pembayaran dinyatakan gagal.'
                     );
             }
         }
@@ -293,7 +301,6 @@ class PaymentController extends Controller
         // ==========================================
 
         if ($payment->status === 'berhasil') {
-
             return redirect()->route(
                 'payment.invoice',
                 $payment->id_payment
@@ -302,7 +309,6 @@ class PaymentController extends Controller
 
 
         if ($payment->status !== 'pending') {
-
             return back()->with(
                 'error',
                 'Pembayaran tidak dapat diproses.'
@@ -326,6 +332,16 @@ class PaymentController extends Controller
                     'status' => 'gagal',
                 ]);
 
+                // Buat notifikasi
+                $this->createNotification(
+                    $payment,
+                    'Pembayaran Kadaluarsa',
+                    'Pembayaran untuk sesi charging #' .
+                    $payment->id_session .
+                    ' telah melewati batas waktu 15 menit.',
+                    'payment'
+                );
+
                 return redirect()
                     ->route(
                         'payment.create',
@@ -333,7 +349,7 @@ class PaymentController extends Controller
                     )
                     ->with(
                         'error',
-                        'Waktu pembayaran sudah habis.'
+                        'Waktu pembayaran sudah habis. Pembayaran dinyatakan gagal.'
                     );
             }
         }
@@ -350,6 +366,20 @@ class PaymentController extends Controller
 
 
         // ==========================================
+        // NOTIFIKASI PEMBAYARAN BERHASIL
+        // ==========================================
+
+        $this->createNotification(
+            $payment,
+            'Pembayaran Berhasil',
+            'Pembayaran untuk sesi charging #' .
+            $payment->id_session .
+            ' telah berhasil diproses.',
+            'payment'
+        );
+
+
+        // ==========================================
         // LANGSUNG KE INVOICE
         // ==========================================
 
@@ -361,6 +391,65 @@ class PaymentController extends Controller
             ->with(
                 'success',
                 'Pembayaran berhasil. Invoice telah dibuat.'
+            );
+    }
+
+
+    // ==========================================
+    // SIMULASI PEMBAYARAN GAGAL
+    // ==========================================
+
+    public function fail(Payment $payment)
+    {
+        // Cek kepemilikan pembayaran
+        $this->checkPaymentOwner($payment);
+
+
+        // ==========================================
+        // PEMBAYARAN HARUS PENDING
+        // ==========================================
+
+        if ($payment->status !== 'pending') {
+
+            return back()->with(
+                'error',
+                'Pembayaran ini sudah tidak dapat diproses.'
+            );
+        }
+
+
+        // ==========================================
+        // UBAH STATUS MENJADI GAGAL
+        // ==========================================
+
+        $payment->update([
+            'status' => 'gagal',
+        ]);
+
+
+        // ==========================================
+        // BUAT NOTIFIKASI GAGAL
+        // ==========================================
+
+        $this->createNotification(
+        $payment,
+        'Pembayaran Gagal',
+        'Pembayaran untuk sesi charging #' .
+        $payment->id_session .
+        ' gagal diproses. Silakan coba metode pembayaran kembali.',
+        'payment'
+    );
+
+
+        // ==========================================
+        // KEMBALI KE HALAMAN NOTIFIKASI
+        // ==========================================
+
+        return redirect()
+            ->route('notifications.index')
+            ->with(
+                'error',
+                'Pembayaran gagal. Silakan cek notifikasi Anda.'
             );
     }
 
@@ -470,6 +559,33 @@ class PaymentController extends Controller
                 'session'
             )
         );
+    }
+
+
+    // ==========================================
+    // MEMBUAT NOTIFIKASI
+    // ==========================================
+
+    private function createNotification(
+        Payment $payment,
+        string $title,
+        string $message,
+        string $type = 'payment'
+    ) {
+        // Ambil user dari charging session
+        $payment->loadMissing('session');
+
+        if (!$payment->session) {
+            return;
+        }
+
+        Notification::create([
+            'user_id' => $payment->session->id_user,
+            'title' => $title,
+            'message' => $message,
+            'type' => $type,
+            'is_read' => false,
+        ]);
     }
 
 

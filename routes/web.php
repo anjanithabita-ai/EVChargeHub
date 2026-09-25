@@ -10,10 +10,17 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StationController;
 use App\Http\Controllers\ChargingController;
 use App\Http\Controllers\PaymentController;
+use App\Models\Notification;
+
+
+// =========================
+// HALAMAN UTAMA
+// =========================
 
 Route::get('/', function () {
     return view('welcome');
 });
+
 
 // =========================
 // AUTHENTICATION
@@ -34,21 +41,31 @@ Route::get('/register', [RegisterController::class, 'showRegister'])
 Route::post('/register', [RegisterController::class, 'register'])
     ->name('register.process');
 
+
 // =========================
 // FORGOT & RESET PASSWORD
 // =========================
 
-Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPassword'])
-    ->name('password.request');
+Route::get(
+    '/forgot-password',
+    [ForgotPasswordController::class, 'showForgotPassword']
+)->name('password.request');
 
-Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])
-    ->name('password.email');
+Route::post(
+    '/forgot-password',
+    [ForgotPasswordController::class, 'sendResetLink']
+)->name('password.email');
 
-Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetPassword'])
-    ->name('password.reset');
+Route::get(
+    '/reset-password/{token}',
+    [ResetPasswordController::class, 'showResetPassword']
+)->name('password.reset');
 
-Route::post('/reset-password', [ResetPasswordController::class, 'resetPassword'])
-    ->name('password.update');
+Route::post(
+    '/reset-password',
+    [ResetPasswordController::class, 'resetPassword']
+)->name('password.update');
+
 
 // =========================
 // USER
@@ -56,117 +73,200 @@ Route::post('/reset-password', [ResetPasswordController::class, 'resetPassword']
 
 Route::middleware(['auth', 'role:user'])->group(function () {
 
-    // Dashboard
+    // =========================
+    // DASHBOARD
+    // =========================
+
     Route::get('/user/dashboard', function () {
-        return view('user.dashboard');
+
+        $userId = auth()->user()->id_user;
+
+        // Ambil maksimal 5 notifikasi terbaru
+        $notifications = Notification::where('user_id', $userId)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // Hitung jumlah notifikasi yang belum dilihat
+        $unreadNotifications = Notification::where('user_id', $userId)
+            ->where('is_read', false)
+            ->count();
+
+        return view(
+            'user.dashboard',
+            compact(
+                'notifications',
+                'unreadNotifications'
+            )
+        );
+
     })->name('user.dashboard');
+
 
     // =========================
     // KENDARAAN
     // =========================
 
-    Route::resource('/user/vehicles', VehicleController::class)
-        ->names('vehicles');
+    Route::resource(
+        '/user/vehicles',
+        VehicleController::class
+    )->names('vehicles');
+
 
     // =========================
     // PROFILE
     // =========================
 
-    Route::get('/user/profile', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
+    Route::get(
+        '/user/profile',
+        [ProfileController::class, 'edit']
+    )->name('profile.edit');
 
-    Route::put('/user/profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
+    Route::put(
+        '/user/profile',
+        [ProfileController::class, 'update']
+    )->name('profile.update');
+
 
     // =========================
     // CHARGING STATION
     // =========================
 
-    Route::get('/user/stations', [StationController::class, 'index'])
-        ->name('stations.index');
+    Route::get(
+        '/user/stations',
+        [StationController::class, 'index']
+    )->name('stations.index');
 
-    Route::get('/user/stations/{id}', [StationController::class, 'show'])
-        ->name('stations.show');
+    Route::get(
+        '/user/stations/{id}',
+        [StationController::class, 'show']
+    )->name('stations.show');
+
 
     // =========================
     // CHARGING
     // =========================
 
-    Route::get('/user/charging/{charger}/create', [ChargingController::class, 'create'])
-        ->name('charging.create');
+    Route::get(
+        '/user/charging/{charger}/create',
+        [ChargingController::class, 'create']
+    )->name('charging.create');
 
-    Route::post('/user/charging/{charger}/start', [ChargingController::class, 'start'])
-        ->name('charging.start');
+    Route::post(
+        '/user/charging/{charger}/start',
+        [ChargingController::class, 'start']
+    )->name('charging.start');
 
-    Route::get('/user/charging/{session}/monitor', [ChargingController::class, 'monitor'])
-        ->name('charging.monitor');
+    Route::get(
+        '/user/charging/{session}/monitor',
+        [ChargingController::class, 'monitor']
+    )->name('charging.monitor');
 
-    Route::post('/user/charging/{session}/stop', [ChargingController::class, 'stop'])
-        ->name('charging.stop');
+    Route::post(
+        '/user/charging/{session}/stop',
+        [ChargingController::class, 'stop']
+    )->name('charging.stop');
 
-    Route::post('/user/charging/{session}/cancel', [ChargingController::class, 'cancel'])
-        ->name('charging.cancel');
+    Route::post(
+        '/user/charging/{session}/cancel',
+        [ChargingController::class, 'cancel']
+    )->name('charging.cancel');
+
+    Route::get(
+        '/user/history',
+        [ChargingController::class, 'history']
+    )->name('charging.history');
+
 
     // =========================
     // PEMBAYARAN
     // =========================
 
-    // Pilih Metode Pembayaran
     Route::get(
         '/user/payment/{session}/create',
         [PaymentController::class, 'create']
     )->name('payment.create');
 
-    // Proses Pembayaran
     Route::post(
         '/user/payment/{session}/process',
         [PaymentController::class, 'process']
     )->name('payment.process');
 
-    // Verifikasi Pembayaran
     Route::get(
         '/user/payment/{payment}/verify',
         [PaymentController::class, 'verify']
     )->name('payment.verify');
 
-    // Konfirmasi Pembayaran
     Route::post(
         '/user/payment/{payment}/confirm',
         [PaymentController::class, 'confirm']
     )->name('payment.confirm');
 
-    // Status Pembayaran
     Route::get(
         '/user/payment/{payment}/status',
         [PaymentController::class, 'status']
     )->name('payment.status');
 
-    // Waiting Pembayaran
     Route::get(
         '/user/payment/{payment}/waiting',
         [PaymentController::class, 'waiting']
     )->name('payment.waiting');
 
-    // Complete Pembayaran
+    Route::post(
+        '/user/payment/{payment}/fail',
+        [PaymentController::class, 'fail']
+    )->name('payment.fail');
+
     Route::post(
         '/user/payment/{payment}/complete',
         [PaymentController::class, 'complete']
     )->name('payment.complete');
 
-    // Invoice / Struk
     Route::get(
         '/user/payment/{payment}/invoice',
         [PaymentController::class, 'invoice']
     )->name('payment.invoice');
 
+
     // =========================
     // NOTIFICATIONS
     // =========================
 
+    // Menampilkan semua notifikasi
     Route::get('/user/notifications', function () {
-        return view('notifications.index');
+
+        $userId = auth()->user()->id_user;
+
+        $notifications = Notification::where('user_id', $userId)
+            ->latest()
+            ->get();
+
+        return view(
+            'user.notification.index',
+            compact('notifications')
+        );
+
     })->name('notifications.index');
 
-    Route::get('/user/history', [ChargingController::class, 'history'])
-    ->name('charging.history');
+
+    // Menandai semua notifikasi sebagai sudah dilihat
+    Route::post('/user/notifications/read', function () {
+
+        Notification::where(
+            'user_id',
+            auth()->user()->id_user
+        )
+        ->where('is_read', false)
+        ->update([
+            'is_read' => true
+        ]);
+
+        return response()->json([
+            'success' => true
+        ]);
+
+    })->name('notifications.read');
+
+    
+
 });

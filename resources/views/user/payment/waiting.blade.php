@@ -32,7 +32,7 @@
             background: white;
             padding: 35px;
             border-radius: 15px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
             text-align: center;
         }
 
@@ -213,6 +213,7 @@
             cursor: pointer;
             text-decoration: none;
             font-family: Arial, sans-serif;
+            display: inline-block;
         }
 
         .btn-pay {
@@ -222,6 +223,15 @@
 
         .btn-pay:hover {
             background: #0b5ed7;
+        }
+
+        .btn-fail {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-fail:hover {
+            background: #bb2d3b;
         }
 
         .btn-back {
@@ -238,11 +248,37 @@
             cursor: not-allowed;
         }
 
+        .btn-fail:disabled {
+            background: #adb5bd;
+            cursor: not-allowed;
+        }
+
         .warning {
             margin-top: 20px;
             color: #777;
             font-size: 13px;
             line-height: 1.5;
+        }
+
+        .simulation {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff5f5;
+            border: 1px dashed #dc3545;
+            border-radius: 10px;
+        }
+
+        .simulation-title {
+            color: #842029;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .simulation-text {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 12px;
         }
 
     </style>
@@ -440,6 +476,8 @@
 
         <div class="buttons">
 
+            {{-- PEMBAYARAN BERHASIL --}}
+
             <form
                 action="{{ route(
                     'payment.complete',
@@ -464,6 +502,8 @@
             </form>
 
 
+            {{-- KEMBALI --}}
+
             <a
                 href="{{ route(
                     'charging.monitor',
@@ -475,6 +515,50 @@
                 ← Kembali
 
             </a>
+
+        </div>
+
+
+        {{-- =========================
+             SIMULASI PEMBAYARAN GAGAL
+        ========================= --}}
+
+        <div class="simulation">
+
+            <div class="simulation-title">
+                Simulasi Pembayaran Gagal
+            </div>
+
+            <div class="simulation-text">
+
+                Gunakan tombol di bawah untuk menguji
+                kondisi pembayaran gagal dan notifikasi
+                pembayaran gagal.
+
+            </div>
+
+            <form
+                action="{{ route(
+                    'payment.fail',
+                    $payment->id_payment
+                ) }}"
+                method="POST"
+                id="fail-payment-form"
+            >
+
+                @csrf
+
+                <button
+                    type="submit"
+                    class="btn btn-fail"
+                    id="fail-button"
+                >
+
+                    ✕ Simulasikan Pembayaran Gagal
+
+                </button>
+
+            </form>
 
         </div>
 
@@ -516,6 +600,9 @@
     const payButton =
         document.getElementById('pay-button');
 
+    const failButton =
+        document.getElementById('fail-button');
+
     let timer = null;
 
 
@@ -528,14 +615,20 @@
             timerElement.classList.add('expired');
 
             if (statusMessage) {
+
                 statusMessage.textContent =
-                    'Waktu pembayaran telah habis.';
+                    'Waktu pembayaran telah habis. Pembayaran akan dinyatakan gagal.';
 
                 statusMessage.classList.add('expired');
+
             }
 
             if (payButton) {
                 payButton.disabled = true;
+            }
+
+            if (failButton) {
+                failButton.disabled = true;
             }
 
             clearInterval(timer);
@@ -558,6 +651,7 @@
 
 
         remainingSeconds--;
+
     }
 
 
