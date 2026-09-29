@@ -7,20 +7,18 @@ use Illuminate\Http\Request;
 
 class StationController extends Controller
 {
-    // 7. Cari Charging Station
-    // 10. Filter Charging Station
     public function index(Request $request)
     {
-        $query = Location::with('chargers');
+        $query = Location::with('chargers')
+            ->orderBy('nama_lokasi', 'asc');
 
-        // Pencarian berdasarkan nama atau alamat
+        // Pencarian nama/alamat
         if ($request->filled('search')) {
-
             $search = $request->search;
 
             $query->where(function ($q) use ($search) {
-                $q->where('nama_lokasi', 'like', '%' . $search . '%')
-                  ->orWhere('alamat', 'like', '%' . $search . '%');
+                $q->where('nama_lokasi', 'like', "%{$search}%")
+                  ->orWhere('alamat', 'like', "%{$search}%");
             });
         }
 
@@ -29,67 +27,57 @@ class StationController extends Controller
             $query->where('status', $request->status);
         }
 
-        // Filter berdasarkan tipe konektor
+        // Filter tipe konektor charger
         if ($request->filled('tipe_konektor')) {
+            $tipeKonektor = $request->tipe_konektor;
 
-            $query->whereHas('chargers', function ($q) use ($request) {
-                $q->where(
-                    'tipe_konektor',
-                    $request->tipe_konektor
-                );
+            $query->whereHas('chargers', function ($q) use ($tipeKonektor) {
+                $q->where('tipe_konektor', $tipeKonektor);
             });
         }
 
-        $stations = $query
-            ->orderBy('nama_lokasi')
-            ->get();
+        $locations = $query->get();
 
-        return view(
-            'user.stations.index',
-            compact('stations')
-        );
+        return view('user.stations.index', compact('locations'));
     }
 
-
-    // 8. Lihat Detail Charging Station
-    // 9. Lihat Ketersediaan Charger
-    // 11. Lihat Lokasi
-    // 12. Navigasi
-    public function show($id)
+    public function show($id_location)
     {
-        $station = Location::with('chargers')
-            ->where('id_location', $id)
-            ->firstOrFail();
+        $location = Location::with([
+            'chargers',
+            'reviews.user'
+        ])->findOrFail($id_location);
 
-        // Menghitung jumlah charger
-        $totalCharger = $station->chargers->count();
+        // Hitung jumlah charger
+        $totalCharger = $location->chargers->count();
 
-        $chargerTersedia = $station->chargers
+        // Charger tersedia
+        $chargerTersedia = $location->chargers
             ->where('status', 'tersedia')
             ->count();
 
-        $chargerDigunakan = $station->chargers
+        // Charger sedang digunakan
+        $chargerDigunakan = $location->chargers
             ->where('status', 'digunakan')
             ->count();
 
-        $chargerOffline = $station->chargers
+        // Charger offline
+        $chargerOffline = $location->chargers
             ->where('status', 'offline')
             ->count();
 
-        $chargerRusak = $station->chargers
+        // Charger rusak
+        $chargerRusak = $location->chargers
             ->where('status', 'rusak')
             ->count();
 
-        return view(
-            'user.stations.show',
-            compact(
-                'station',
-                'totalCharger',
-                'chargerTersedia',
-                'chargerDigunakan',
-                'chargerOffline',
-                'chargerRusak'
-            )
-        );
+        return view('user.stations.show', compact(
+            'location',
+            'totalCharger',
+            'chargerTersedia',
+            'chargerDigunakan',
+            'chargerOffline',
+            'chargerRusak'
+        ));
     }
 }

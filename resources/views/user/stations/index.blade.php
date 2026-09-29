@@ -213,62 +213,62 @@
     </div>
 
     {{-- Daftar Station --}}
-    @forelse($stations as $station)
+    @forelse($locations as $location)
 
-        <div class="station-card">
+    <div class="station-card">
 
-            <h3>{{ $station->nama_lokasi }}</h3>
+        <h3>{{ $location->nama_lokasi }}</h3>
 
-            <div class="info">
-                📍 {{ $station->alamat }}
-            </div>
+        <div class="info">
+            📍 {{ $location->alamat }}
+        </div>
 
-            <div class="info">
-                🕐
-                {{ $station->jam_buka ?? '-' }}
-                -
-                {{ $station->jam_tutup ?? '-' }}
-            </div>
+        <div class="info">
+            🕐
+            {{ $location->jam_buka ?? '-' }}
+            -
+            {{ $location->jam_tutup ?? '-' }}
+        </div>
 
-            <div class="info">
-                Status:
-                <span class="status">
-                    {{ ucfirst($station->status) }}
-                </span>
-            </div>
+        <div class="info">
+            Status:
+            <span class="status">
+                {{ ucfirst($location->status) }}
+            </span>
+        </div>
 
-            <div class="charger-info">
+        <div class="charger-info">
 
-                <strong>Ketersediaan Charger:</strong>
+            <strong>Ketersediaan Charger:</strong>
 
-                @php
-                    $total = $station->chargers->count();
-                    $tersedia = $station->chargers
-                        ->where('status', 'tersedia')
-                        ->count();
-                @endphp
+            @php
+                $total = $location->chargers->count();
+                $tersedia = $location->chargers
+                    ->where('status', 'tersedia')
+                    ->count();
+            @endphp
 
-                {{ $tersedia }} tersedia dari {{ $total }} charger
-
-            </div>
-
-            <a
-                href="{{ route('stations.show', $station->id_location) }}"
-                class="btn-detail"
-            >
-                Lihat Detail
-            </a>
+            {{ $tersedia }} tersedia dari {{ $total }} charger
 
         </div>
 
-    @empty
+        <a
+            href="{{ route('stations.show', $location->id_location) }}"
+            class="btn-detail"
+        >
+            Lihat Detail
+        </a>
 
-        <div class="empty">
-            <h3>Charging Station tidak ditemukan</h3>
-            <p>Coba ubah kata pencarian atau filter.</p>
-        </div>
+    </div>
 
-    @endforelse
+@empty
+
+    <div class="empty">
+        <h3>Charging Station tidak ditemukan</h3>
+        <p>Coba ubah kata pencarian atau filter.</p>
+    </div>
+
+@endforelse
 
 </div>
 

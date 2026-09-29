@@ -11,6 +11,8 @@ use App\Http\Controllers\StationController;
 use App\Http\Controllers\ChargingController;
 use App\Http\Controllers\PaymentController;
 use App\Models\Notification;
+use App\Http\Controllers\StationReviewController;
+
 
 
 // =========================
@@ -40,6 +42,14 @@ Route::get('/register', [RegisterController::class, 'showRegister'])
 
 Route::post('/register', [RegisterController::class, 'register'])
     ->name('register.process');
+
+Route::post(
+    '/user/stations/{id_station}/reviews',
+    [StationReviewController::class, 'store']
+)
+->middleware(['auth', 'role:user'])
+->name('station.reviews.store');
+
 
 
 // =========================
