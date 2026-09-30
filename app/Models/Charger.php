@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models;
-use App\Models\Location;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,6 +22,9 @@ class Charger extends Model
         'status',
     ];
 
+    /**
+     * Charger dimiliki oleh satu location.
+     */
     public function location()
     {
         return $this->belongsTo(

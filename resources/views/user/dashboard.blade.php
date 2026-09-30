@@ -1235,8 +1235,24 @@
 
         </a>
 
+         <a
+            href="{{ route('stations.index') }}"
+            class="menu-item"
+        >
+
+            <span class="menu-icon">
+                ⭐
+            </span>
+
+            <span>
+                Rating & Ulasan
+            </span>
+
+        </a>
+
 
         <div class="menu-divider"></div>
+
 
 
         <!-- LOGOUT -->
@@ -1602,6 +1618,11 @@
 
             </a>
 
+         
+
+
+            
+
 
         </div>
 
@@ -1842,41 +1863,118 @@
 
 <script>
 
-
 function toggleNotifications() {
 
-    const box =
-        document.getElementById('notificationBox');
-
+    const box = document.getElementById('notificationBox');
 
     if (!box) {
-
         return;
-
     }
 
-
+    // Buka / tutup dropdown
     box.classList.toggle('show');
+
+
+    // Jika dropdown baru saja dibuka
+    if (box.classList.contains('show')) {
+
+        fetch("{{ route('notifications.read') }}", {
+
+            method: "POST",
+
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({})
+        })
+
+        .then(response => {
+
+            if (!response.ok) {
+                throw new Error('Gagal menghubungi server');
+            }
+
+            return response.json();
+
+        })
+
+        .then(data => {
+
+            if (data.success) {
+
+                // ==========================================
+                // HILANGKAN TITIK MERAH 🔴
+                // ==========================================
+
+                const dot =
+                    document.getElementById('notificationDot');
+
+                if (dot) {
+                    dot.remove();
+                }
+
+
+                // ==========================================
+                // HILANGKAN LABEL "BARU"
+                // ==========================================
+
+                document
+                    .querySelectorAll('.new-label')
+                    .forEach(function(label) {
+
+                        label.remove();
+
+                    });
+
+
+                // ==========================================
+                // HILANGKAN WARNA HIJAU UNREAD
+                // ==========================================
+
+                document
+                    .querySelectorAll('.notification-unread')
+                    .forEach(function(item) {
+
+                        item.classList.remove(
+                            'notification-unread'
+                        );
+
+                    });
+
+            }
+
+        })
+
+        .catch(error => {
+
+            console.error(
+                'Gagal menandai notifikasi sebagai sudah dibaca:',
+                error
+            );
+
+        });
+
+    }
 
 }
 
 
 /*
- * Tutup dropdown ketika klik di luar.
+ * Tutup dropdown ketika klik di luar
  */
 
 document.addEventListener(
     'click',
     function(event) {
 
-
         const box =
             document.getElementById('notificationBox');
 
-
         const wrapper =
             document.querySelector('.notification-wrapper');
-
 
         if (
             box &&
@@ -1891,10 +1989,7 @@ document.addEventListener(
     }
 );
 
-
 </script>
-
-
 </body>
 
 </html>
