@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -18,26 +19,31 @@ use App\Models\Notification;
 // =========================
 
 Route::get('/', function () {
-    return view('welcome');
-});
+        return view('welcome');
+    })->name('home');
 
 
 // =========================
 // AUTHENTICATION
 // =========================
 
+// Menampilkan halaman login
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
 
+// Memproses login
 Route::post('/login', [AuthController::class, 'login'])
     ->name('login.process');
 
+// Logout
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 
+// Menampilkan halaman register
 Route::get('/register', [RegisterController::class, 'showRegister'])
     ->name('register');
 
+// Memproses register
 Route::post('/register', [RegisterController::class, 'register'])
     ->name('register.process');
 
@@ -46,21 +52,25 @@ Route::post('/register', [RegisterController::class, 'register'])
 // FORGOT & RESET PASSWORD
 // =========================
 
+// Menampilkan halaman lupa password
 Route::get(
     '/forgot-password',
     [ForgotPasswordController::class, 'showForgotPassword']
 )->name('password.request');
 
+// Mengirim link reset password
 Route::post(
     '/forgot-password',
     [ForgotPasswordController::class, 'sendResetLink']
 )->name('password.email');
 
+// Menampilkan halaman reset password
 Route::get(
     '/reset-password/{token}',
     [ResetPasswordController::class, 'showResetPassword']
 )->name('password.reset');
 
+// Memproses reset password
 Route::post(
     '/reset-password',
     [ResetPasswordController::class, 'resetPassword']
@@ -266,7 +276,5 @@ Route::middleware(['auth', 'role:user'])->group(function () {
         ]);
 
     })->name('notifications.read');
-
-    
 
 });
