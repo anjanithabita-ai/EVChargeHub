@@ -4,6 +4,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\VehicleController;
@@ -13,6 +14,8 @@ use App\Http\Controllers\ChargingController;
 use App\Http\Controllers\PaymentController;
 use App\Models\Notification;
 use App\Http\Controllers\StationReviewController;
+
+
 
 
 
@@ -85,7 +88,16 @@ Route::post(
     '/reset-password',
     [ResetPasswordController::class, 'resetPassword']
 )->name('password.update');
+// =========================
+    // ADMIN
+    // =========================
 
+    Route::middleware(['auth', 'role:admin'])->group(function () {
+
+        Route::get('/admin/dashboard', [AdminController::class, 'index'])
+        ->name('admin.dashboard');
+
+    });
 
 // =========================
 // USER
@@ -288,3 +300,5 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     })->name('notifications.read');
 
 });
+
+    

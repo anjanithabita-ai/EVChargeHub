@@ -23,7 +23,7 @@ class Location extends Model
     {
         return $this->hasMany(
             StationReview::class,
-            'id_station',
+            'id_location',
             'id_location'
         );
     }
