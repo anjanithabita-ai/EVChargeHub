@@ -33,7 +33,7 @@
             background: white;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+            box-shadow: 0 3px 12px rgba(0, 0, 0, .08);
         }
 
         h1 {
@@ -157,6 +157,85 @@
 
 
         /* =========================
+           VIRTUAL ACCOUNT
+        ========================= */
+
+        .va-detail {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+        }
+
+        .va-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0f5132;
+            margin-bottom: 15px;
+        }
+
+        .va-bank {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .va-label {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 6px;
+        }
+
+        .va-number {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .copy-va {
+            margin-left: auto;
+            border: none;
+            background: #0d6efd;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .copy-va:hover {
+            background: #0b5ed7;
+        }
+
+        .va-amount {
+            margin-top: 15px;
+            font-size: 15px;
+        }
+
+        .va-amount strong {
+            color: #0f5132;
+            font-size: 18px;
+        }
+
+        .va-warning {
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff3cd;
+            color: #664d03;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+
+        /* =========================
            QRIS
         ========================= */
 
@@ -189,7 +268,7 @@
             background: white;
             padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,.1);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, .1);
         }
 
         .qris-box img {
@@ -306,6 +385,17 @@
                 text-align: center;
             }
 
+            .va-number {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .copy-va {
+                margin-left: 0;
+                width: 100%;
+            }
+
         }
 
     </style>
@@ -315,16 +405,13 @@
 
 <body>
 
-
 <div class="container">
 
     <div class="card">
 
-
         <h1>
             Pembayaran
         </h1>
-
 
         <div class="subtitle">
             Pilih metode pembayaran untuk menyelesaikan transaksi charging.
@@ -500,135 +587,89 @@
 
 
             {{-- =====================================
-                 E-WALLET
-            ====================================== --}}
+            VIRTUAL ACCOUNT
+        ====================================== --}}
 
-            <label class="method">
+        <label class="method">
 
-                <input
-                    type="radio"
-                    name="metode"
-                    value="ewallet"
-                    required
-                >
-
-                <span class="method-name">
-                    📱 E-Wallet
-                </span>
-
-                <span class="method-description">
-                    GoPay, OVO, DANA, atau ShopeePay
-                </span>
-
-            </label>
-
-
-            <div
-                class="sub-options"
-                id="ewallet-options"
+            <input
+                type="radio"
+                name="metode"
+                value="virtual_account"
+                required
             >
 
-                <strong>
-                    Pilih E-Wallet
-                </strong>
+            <span class="method-name">
+                🏦 Transfer Virtual Account
+            </span>
 
-                <select
-                    name="ewallet"
-                    id="ewallet"
-                    disabled
-                >
+            <span class="method-description">
+                Transfer melalui Virtual Account bank
+            </span>
 
-                    <option value="">
-                        -- Pilih E-Wallet --
-                    </option>
+        </label>
 
-                    <option value="gopay">
-                        GoPay
-                    </option>
+        <div
+            class="sub-options"
+            id="va-options"
+        >
 
-                    <option value="ovo">
-                        OVO
-                    </option>
+            <strong>
+                Pilih Bank
+            </strong>
 
-                    <option value="dana">
-                        DANA
-                    </option>
-
-                    <option value="shopeepay">
-                        ShopeePay
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            {{-- =====================================
-                 KARTU
-            ====================================== --}}
-
-            <label class="method">
-
-                <input
-                    type="radio"
-                    name="metode"
-                    value="card"
-                >
-
-                <span class="method-name">
-                    💳 Kartu Debit / Kredit
-                </span>
-
-                <span class="method-description">
-                    Pembayaran menggunakan kartu debit atau kredit
-                </span>
-
-            </label>
-
-
-            <div
-                class="sub-options"
-                id="card-options"
+            <select
+                name="bank_va"
+                id="bank_va"
             >
 
-                <strong>
-                    Jenis Kartu
-                </strong>
+                <option value="">
+                    -- Pilih Bank --
+                </option>
 
-                <select
-                    name="card_type"
-                    id="card_type"
-                    disabled
-                >
+                <option value="bca">
+                    BCA
+                </option>
 
-                    <option value="">
-                        -- Pilih Jenis Kartu --
-                    </option>
+                <option value="bni">
+                    BNI
+                </option>
 
-                    <option value="visa">
-                        Visa
-                    </option>
+                <option value="bri">
+                    BRI
+                </option>
 
-                    <option value="mastercard">
-                        Mastercard
-                    </option>
+                <option value="mandiri">
+                    Bank Mandiri
+                </option>
 
-                    <option value="debit">
-                        Kartu Debit
-                    </option>
+                <option value="cimb">
+                    CIMB Niaga
+                </option>
 
-                </select>
+                <option value="permata">
+                    PermataBank
+                </option>
+
+                <option value="bsi">
+                    Bank Syariah Indonesia
+                </option>
+
+                <option value="danamon">
+                    Bank Danamon
+                </option>
+
+            </select>
+
+            <p style="font-size:13px;color:#777;margin-bottom:0;margin-top:10px;">
+                Pilih bank yang akan digunakan untuk melakukan transfer
+                Virtual Account.
+            </p>
+
+        </div>
 
 
-                <p style="font-size:13px;color:#777;margin-bottom:0;">
-
-                    Ini merupakan simulasi pembayaran.
-                    Pembayaran kartu sungguhan memerlukan payment gateway.
-
-                </p>
-
-            </div>
-
+            {{-- 
 
             {{-- =====================================
                  QRIS
@@ -653,7 +694,7 @@
             </label>
 
 
-            <div
+            {{-- <div
                 id="qris-container"
                 class="qris-container"
             >
@@ -662,26 +703,23 @@
                     Scan QRIS
                 </div>
 
-
                 <div class="qris-description">
 
                     QR Code simulasi untuk kebutuhan
                     sistem EVChargeHub.
 
-                </div>
+                </div> --}}
 
-
-                <div class="qris-box">
+                {{-- <div class="qris-box">
 
                     <img
-                        src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=EVChargeHub-Payment-{{ $session->id_session }}-Rp{{ $session->total_biaya }}"
+                        src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ urlencode('EVChargeHub-Payment-' . $session->id_session . '-Rp' . $session->total_biaya) }}"
                         alt="QRIS EVChargeHub"
                     >
 
-                </div>
+                </div> --}}
 
-
-                <div class="qris-amount">
+                {{-- <div class="qris-amount">
 
                     Rp
 
@@ -692,16 +730,14 @@
                         '.'
                     ) }}
 
-                </div>
+                </div> --}}
 
-
-                <div style="margin-top:5px;color:#777;font-size:13px;">
+                {{-- <div style="margin-top:5px;color:#777;font-size:13px;">
 
                     ID Sesi:
                     #{{ $session->id_session }}
 
                 </div>
-
 
                 <div class="qris-warning">
 
@@ -709,37 +745,17 @@
 
                 </div>
 
-            </div>
+            </div> --}}
+
+
+         
 
 
             {{-- =====================================
-                 SALDO
+                 ERROR VIRTUAL ACCOUNT
             ====================================== --}}
 
-            <label class="method">
-
-                <input
-                    type="radio"
-                    name="metode"
-                    value="saldo"
-                >
-
-                <span class="method-name">
-                    💰 Saldo
-                </span>
-
-                <span class="method-description">
-                    Pembayaran menggunakan saldo akun.
-                </span>
-
-            </label>
-
-
-            {{-- =====================================
-                 ERROR E-WALLET
-            ====================================== --}}
-
-            @error('ewallet')
+            @error('bank_va')
 
                 <div class="error">
                     {{ $message }}
@@ -780,7 +796,6 @@
 
             <div class="buttons">
 
-
                 <a
                     href="{{ route(
                         'charging.monitor',
@@ -791,7 +806,6 @@
                     ← Kembali
                 </a>
 
-
                 <button
                     type="submit"
                     id="payment-button"
@@ -800,12 +814,9 @@
                     💳 Proses Pembayaran
                 </button>
 
-
             </div>
 
-
         </form>
-
 
     </div>
 
@@ -814,282 +825,443 @@
 
 <script>
 
-document.addEventListener(
-    'DOMContentLoaded',
-    function () {
+document.addEventListener('DOMContentLoaded', function () {
+
+    /* =========================
+       ELEMENT
+    ========================= */
+
+    const radios =
+        document.querySelectorAll(
+            'input[name="metode"]'
+        );
+
+    const vaBox =
+        document.getElementById(
+            'va-options'
+        );
+
+    const vaSelect =
+        document.getElementById(
+            'bank_va'
+        );
+
+    const vaDetail =
+        document.getElementById(
+            'va-detail'
+        );
+
+    const vaBankName =
+        document.getElementById(
+            'va-bank-name'
+        );
+
+    const vaNumber =
+        document.getElementById(
+            'va-number'
+        );
+
+    const cardBox =
+        document.getElementById(
+            'card-options'
+        );
+
+    const qrisBox =
+        document.getElementById(
+            'qris-container'
+        );
+
+    const cardSelect =
+        document.getElementById(
+            'card_type'
+        );
+
+    const paymentButton =
+        document.getElementById(
+            'payment-button'
+        );
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | ELEMENT
-        |--------------------------------------------------------------------------
-        */
+    /* =========================
+       DATA BANK
+    ========================= */
 
-        const radios =
-            document.querySelectorAll(
-                'input[name="metode"]'
+    const bankNames = {
+
+        bca: 'BCA',
+
+        bni: 'BNI',
+
+        bri: 'BRI',
+
+        mandiri: 'Bank Mandiri',
+
+        cimb: 'CIMB Niaga',
+
+        permata: 'PermataBank',
+
+        bsi: 'Bank Syariah Indonesia',
+
+        danamon: 'Bank Danamon'
+
+    };
+
+
+    const bankCodes = {
+
+        bca: '014',
+
+        bni: '009',
+
+        bri: '002',
+
+        mandiri: '008',
+
+        cimb: '022',
+
+        permata: '013',
+
+        bsi: '451',
+
+        danamon: '011'
+
+    };
+
+
+    /* =========================
+       UBAH METODE PEMBAYARAN
+    ========================= */
+
+    function togglePayment() {
+
+        const selected =
+            document.querySelector(
+                'input[name="metode"]:checked'
             );
 
-
-        const ewalletBox =
-            document.getElementById(
-                'ewallet-options'
-            );
-
-
-        const cardBox =
-            document.getElementById(
-                'card-options'
-            );
+        const method =
+            selected
+                ? selected.value
+                : '';
 
 
-        const qrisBox =
-            document.getElementById(
-                'qris-container'
-            );
+        /* =========================
+           VIRTUAL ACCOUNT
+        ========================= */
+
+        vaBox.style.display =
+            method === 'virtual_account'
+                ? 'block'
+                : 'none';
+
+        vaSelect.disabled =
+            method !== 'virtual_account';
+
+        vaSelect.required =
+            method === 'virtual_account';
 
 
-        const ewalletSelect =
-            document.getElementById(
-                'ewallet'
-            );
+        /* =========================
+           KARTU
+        ========================= */
+
+        cardBox.style.display =
+            method === 'card'
+                ? 'block'
+                : 'none';
+
+        cardSelect.disabled =
+            method !== 'card';
+
+        cardSelect.required =
+            method === 'card';
 
 
-        const cardSelect =
-            document.getElementById(
-                'card_type'
-            );
+        /* =========================
+           QRIS
+        ========================= */
+
+        qrisBox.style.display =
+            method === 'qr'
+                ? 'block'
+                : 'none';
 
 
-        const paymentButton =
-            document.getElementById(
-                'payment-button'
-            );
+        /* =========================
+           RESET PILIHAN
+        ========================= */
 
+        if (method !== 'virtual_account') {
 
-        /*
-        |--------------------------------------------------------------------------
-        | UBAH METODE PEMBAYARAN
-        |--------------------------------------------------------------------------
-        */
+            vaSelect.value = '';
 
-        function togglePayment() {
+            vaDetail.style.display = 'none';
 
+            vaBankName.innerText = '-';
 
-            const selected =
-                document.querySelector(
-                    'input[name="metode"]:checked'
-                );
-
-
-            const method =
-                selected
-                    ? selected.value
-                    : '';
-
-
-            /*
-            | E-Wallet
-            */
-
-            ewalletBox.style.display =
-                method === 'ewallet'
-                    ? 'block'
-                    : 'none';
-
-
-            /*
-            | Kartu
-            */
-
-            cardBox.style.display =
-                method === 'card'
-                    ? 'block'
-                    : 'none';
-
-
-            /*
-            | QRIS
-            */
-
-            qrisBox.style.display =
-                method === 'qr'
-                    ? 'block'
-                    : 'none';
-
-
-            /*
-            | Aktifkan E-Wallet
-            */
-
-            ewalletSelect.disabled =
-                method !== 'ewallet';
-
-
-            ewalletSelect.required =
-                method === 'ewallet';
-
-
-            /*
-            | Aktifkan Kartu
-            */
-
-            cardSelect.disabled =
-                method !== 'card';
-
-
-            cardSelect.required =
-                method === 'card';
-
-
-            /*
-            | Reset pilihan yang tidak digunakan
-            */
-
-            if (method !== 'ewallet') {
-
-                ewalletSelect.value = '';
-
-            }
-
-
-            if (method !== 'card') {
-
-                cardSelect.value = '';
-
-            }
-
-
-            /*
-            | Tombol pembayaran selalu aktif
-            | setelah metode dipilih.
-            */
-
-            paymentButton.disabled =
-                method === '';
+            vaNumber.innerText = '-';
 
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | EVENT RADIO
-        |--------------------------------------------------------------------------
-        */
+        if (method !== 'card') {
 
-        radios.forEach(
-            function (radio) {
+            cardSelect.value = '';
 
-                radio.addEventListener(
-                    'change',
-                    togglePayment
-                );
+        }
+
+
+        /* =========================
+           TOMBOL
+        ========================= */
+
+        paymentButton.disabled =
+            method === '';
+
+    }
+
+
+    /* =========================
+       EVENT RADIO
+    ========================= */
+
+    radios.forEach(function (radio) {
+
+        radio.addEventListener(
+            'change',
+            togglePayment
+        );
+
+    });
+
+
+    /* =========================
+       PILIH BANK VA
+    ========================= */
+
+    vaSelect.addEventListener(
+        'change',
+        function () {
+
+            const bank =
+                this.value;
+
+
+            if (!bank) {
+
+                vaDetail.style.display =
+                    'none';
+
+                vaBankName.innerText =
+                    '-';
+
+                vaNumber.innerText =
+                    '-';
+
+                return;
+
+            }
+
+
+            const bankCode =
+                bankCodes[bank];
+
+
+            const sessionId =
+                String(
+                    {{ $session->id_session }}
+                ).padStart(6, '0');
+
+
+            /*
+             * Nomor VA simulasi.
+             *
+             * Format:
+             * 8808 + kode bank + ID sesi
+             */
+
+            const va =
+                '8808' +
+                bankCode +
+                sessionId;
+
+
+            vaBankName.innerText =
+                bankNames[bank];
+
+
+            vaNumber.innerText =
+                va;
+
+
+            vaDetail.style.display =
+                'block';
+
+        }
+    );
+
+
+    /* =========================
+       SUBMIT FORM
+    ========================= */
+
+    document
+        .getElementById('payment-form')
+        .addEventListener(
+            'submit',
+            function (event) {
+
+                const selected =
+                    document.querySelector(
+                        'input[name="metode"]:checked'
+                    );
+
+
+                /* =========================
+                   CEK METODE
+                ========================= */
+
+                if (!selected) {
+
+                    event.preventDefault();
+
+                    alert(
+                        'Silakan pilih metode pembayaran terlebih dahulu.'
+                    );
+
+                    return;
+
+                }
+
+
+                /* =========================
+                   VALIDASI VIRTUAL ACCOUNT
+                ========================= */
+
+                if (
+                    selected.value === 'virtual_account'
+                    &&
+                    !vaSelect.value
+                ) {
+
+                    event.preventDefault();
+
+                    alert(
+                        'Silakan pilih bank terlebih dahulu.'
+                    );
+
+                    vaSelect.focus();
+
+                    return;
+
+                }
+
+
+                /* =========================
+                   VALIDASI KARTU
+                ========================= */
+
+                if (
+                    selected.value === 'card'
+                    &&
+                    !cardSelect.value
+                ) {
+
+                    event.preventDefault();
+
+                    alert(
+                        'Silakan pilih jenis kartu terlebih dahulu.'
+                    );
+
+                    cardSelect.focus();
+
+                    return;
+
+                }
+
+
+                /* =========================
+                   PROSES
+                ========================= */
+
+                paymentButton.disabled =
+                    true;
+
+                paymentButton.innerText =
+                    '⏳ Memproses Pembayaran...';
 
             }
         );
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | CEK SEBELUM SUBMIT
-        |--------------------------------------------------------------------------
-        */
+    /* =========================
+       JALANKAN SAAT HALAMAN DIBUKA
+    ========================= */
 
-        document
-            .getElementById('payment-form')
-            .addEventListener(
-                'submit',
-                function (event) {
+    togglePayment();
+
+});
 
 
-                    const selected =
-                        document.querySelector(
-                            'input[name="metode"]:checked'
-                        );
+/* =========================
+   COPY NOMOR VA
+========================= */
+
+function copyVA() {
+
+    const number =
+        document.getElementById(
+            'va-number'
+        ).innerText;
 
 
-                    if (!selected) {
+    if (
+        !number ||
+        number === '-'
+    ) {
 
-                        event.preventDefault();
+        alert(
+            'Nomor Virtual Account belum tersedia.'
+        );
 
-                        alert(
-                            'Silakan pilih metode pembayaran terlebih dahulu.'
-                        );
-
-                        return;
-
-                    }
-
-
-                    /*
-                    | Validasi E-Wallet
-                    */
-
-                    if (
-                        selected.value === 'ewallet'
-                        &&
-                        !ewalletSelect.value
-                    ) {
-
-                        event.preventDefault();
-
-                        alert(
-                            'Silakan pilih E-Wallet terlebih dahulu.'
-                        );
-
-                        ewalletSelect.focus();
-
-                        return;
-
-                    }
-
-
-                    /*
-                    | Validasi kartu
-                    */
-
-                    if (
-                        selected.value === 'card'
-                        &&
-                        !cardSelect.value
-                    ) {
-
-                        event.preventDefault();
-
-                        alert(
-                            'Silakan pilih jenis kartu terlebih dahulu.'
-                        );
-
-                        cardSelect.focus();
-
-                        return;
-
-                    }
-
-
-                    /*
-                    | Ubah tulisan tombol
-                    */
-
-                    paymentButton.disabled = true;
-
-                    paymentButton.innerText =
-                        '⏳ Memproses Pembayaran...';
-
-                }
-            );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | JALANKAN SAAT HALAMAN DIBUKA
-        |--------------------------------------------------------------------------
-        */
-
-        togglePayment();
+        return;
 
     }
-);
+
+
+    if (
+        navigator.clipboard &&
+        window.isSecureContext
+    ) {
+
+        navigator.clipboard
+            .writeText(number)
+            .then(function () {
+
+                alert(
+                    'Nomor Virtual Account berhasil disalin.'
+                );
+
+            })
+            .catch(function () {
+
+                alert(
+                    'Nomor Virtual Account: ' +
+                    number
+                );
+
+            });
+
+    } else {
+
+        alert(
+            'Nomor Virtual Account: ' +
+            number
+        );
+
+    }
+
+}
 
 </script>
 

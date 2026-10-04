@@ -299,6 +299,11 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     })->name('notifications.read');
 
+
+    Route::post('/user/profile/photo', [ProfileController::class, 'updatePhoto'])
+    ->name('profile.photo.update')
+    ->middleware(['auth', 'role:user']);
+
 });
 
     

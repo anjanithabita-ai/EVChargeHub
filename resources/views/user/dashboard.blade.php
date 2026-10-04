@@ -2,302 +2,234 @@
 <html lang="id">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Dashboard User - EVChargeHub</title>
 
-
     <style>
-
         * {
             box-sizing: border-box;
         }
 
-
         body {
             margin: 0;
-
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
+            font-family: Arial, Helvetica, sans-serif;
             background: #f4f8f7;
-
             color: #1f2937;
         }
-
 
         a {
             text-decoration: none;
         }
 
-
         button {
             font-family: inherit;
         }
-
 
         /* =====================================================
            SIDEBAR
         ===================================================== */
 
         .sidebar {
-
             position: fixed;
-
             left: 0;
             top: 0;
-
             width: 270px;
             height: 100vh;
 
-            background:
-                linear-gradient(
-                    180deg,
-                    #006b57 0%,
-                    #004d40 55%,
-                    #003b34 100%
-                );
+            background: linear-gradient(
+                180deg,
+                #006b57 0%,
+                #004d40 55%,
+                #003b34 100%
+            );
 
             color: white;
-
             overflow-y: auto;
-
             z-index: 1000;
 
-            box-shadow:
-                5px 0 20px rgba(0,0,0,0.12);
+            box-shadow: 5px 0 20px rgba(0,0,0,0.12);
         }
 
-
         .sidebar-header {
-
             height: 78px;
-
             padding: 18px 22px;
 
             display: flex;
-
             align-items: center;
-
             gap: 12px;
 
-            border-bottom:
-                1px solid rgba(255,255,255,0.10);
+            border-bottom: 1px solid rgba(255,255,255,0.10);
         }
 
-
         .logo-icon {
-
             width: 42px;
             height: 42px;
-
             min-width: 42px;
 
             border-radius: 50%;
-
             background: #28d486;
 
             display: flex;
-
             align-items: center;
             justify-content: center;
 
             font-size: 22px;
         }
 
-
         .logo-text {
-
             font-size: 21px;
-
             font-weight: bold;
-
             color: white;
         }
 
-
         .menu {
-
-            padding:
-                15px 12px 30px;
+            padding: 15px 12px 30px;
         }
 
-
         .menu-title {
-
-            padding:
-                15px 14px 8px;
+            padding: 15px 14px 8px;
 
             color: #9de5ca;
-
             font-size: 11px;
-
             text-transform: uppercase;
-
             letter-spacing: 1.2px;
-
             font-weight: bold;
         }
 
-
         .menu-item {
-
             display: flex;
-
             align-items: center;
-
             gap: 12px;
 
             width: 100%;
-
-            padding:
-                12px 14px;
-
+            padding: 12px 14px;
             margin-bottom: 4px;
 
             border-radius: 10px;
 
             color: #e7f8f3;
-
             font-size: 14px;
 
             cursor: pointer;
 
             border: none;
-
             background: transparent;
 
             text-align: left;
-
             transition: 0.2s;
-        }
 
+            font-family: inherit;
+        }
 
         .menu-item:hover {
-
-            background:
-                rgba(255,255,255,0.10);
-
+            background: rgba(255,255,255,0.10);
             color: white;
         }
 
-
         .menu-item.active {
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #11a875,
-                    #079567
-                );
+            background: linear-gradient(
+                90deg,
+                #11a875,
+                #079567
+            );
 
             color: white;
-
             font-weight: bold;
         }
 
-
         .menu-icon {
-
             width: 27px;
-
             min-width: 27px;
-
             text-align: center;
-
             font-size: 18px;
         }
 
-
         .menu-divider {
-
-            margin:
-                18px 8px;
-
-            border-top:
-                1px solid rgba(255,255,255,0.12);
+            margin: 18px 8px;
+            border-top: 1px solid rgba(255,255,255,0.12);
         }
-
 
         /* =====================================================
            MAIN
         ===================================================== */
 
         .main {
-
             margin-left: 270px;
-
             min-height: 100vh;
         }
-
 
         /* =====================================================
            TOPBAR
         ===================================================== */
 
         .topbar {
-
-            height: 70px;
+            height: 78px;
 
             background: white;
 
-            border-bottom:
-                1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
-            padding:
-                0 35px;
+            padding: 0 35px;
 
             position: sticky;
-
             top: 0;
 
             z-index: 500;
         }
 
+        /* =====================================================
+           DASHBOARD ATAS - SEKARANG BISA DIKLIK
+        ===================================================== */
 
         .page-title {
+            display: inline-flex;
+            align-items: center;
 
-            font-size: 20px;
-
+            font-size: 22px;
             font-weight: bold;
 
             color: #064e3b;
+
+            cursor: pointer;
+
+            padding: 8px 10px;
+            margin-left: -10px;
+
+            border-radius: 8px;
+
+            transition: 0.2s;
         }
 
+        .page-title:hover {
+            color: #07895f;
+            background: #f0fdf4;
+        }
+
+        /* =====================================================
+           USER AREA
+        ===================================================== */
 
         .user-area {
-
             display: flex;
-
             align-items: center;
-
             gap: 12px;
         }
-
 
         /* =====================================================
            NOTIFICATION
         ===================================================== */
 
         .notification-wrapper {
-
             position: relative;
         }
 
-
         .notification {
-
             width: 40px;
             height: 40px;
 
@@ -306,7 +238,6 @@
             background: #ecfdf5;
 
             display: flex;
-
             align-items: center;
             justify-content: center;
 
@@ -321,18 +252,12 @@
             transition: 0.2s;
         }
 
-
         .notification:hover {
-
             background: #d1fae5;
-
-            transform:
-                scale(1.05);
+            transform: scale(1.05);
         }
 
-
         .notification-dot {
-
             position: absolute;
 
             top: 3px;
@@ -343,53 +268,41 @@
 
             background: #ef4444;
 
-            border:
-                2px solid white;
+            border: 2px solid white;
 
             border-radius: 50%;
         }
 
-
         .notification-box {
-
             display: none;
 
             position: absolute;
 
             right: 0;
-
             top: 50px;
 
             width: 350px;
-
             max-height: 450px;
 
             background: white;
 
             border-radius: 14px;
 
-            box-shadow:
-                0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 
-            border:
-                1px solid #e5e7eb;
+            border: 1px solid #e5e7eb;
 
             overflow-y: auto;
 
             z-index: 2000;
         }
 
-
         .notification-box.show {
-
             display: block;
         }
 
-
         .notification-header {
-
-            padding:
-                15px 18px;
+            padding: 15px 18px;
 
             background: #f0fdf4;
 
@@ -397,46 +310,33 @@
 
             font-weight: bold;
 
-            border-bottom:
-                1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
 
             position: sticky;
-
             top: 0;
 
             z-index: 1;
         }
 
-
         .notification-item {
+            padding: 14px 18px;
 
-            padding:
-                14px 18px;
-
-            border-bottom:
-                1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
 
             background: white;
         }
 
-
         .notification-item:hover {
-
             background: #f8fafc;
         }
 
-
         .notification-item.notification-unread {
-
             background: #ecfdf5;
 
-            border-left:
-                4px solid #10b981;
+            border-left: 4px solid #10b981;
         }
 
-
         .notification-item strong {
-
             display: block;
 
             color: #064e3b;
@@ -446,9 +346,7 @@
             margin-bottom: 5px;
         }
 
-
-        .notification-item .notification-message {
-
+        .notification-message {
             display: block;
 
             color: #64748b;
@@ -458,9 +356,7 @@
             line-height: 1.5;
         }
 
-
         .notification-item small {
-
             display: block;
 
             margin-top: 7px;
@@ -470,11 +366,8 @@
             font-size: 10px;
         }
 
-
         .notification-empty {
-
-            padding:
-                30px 20px;
+            padding: 30px 20px;
 
             text-align: center;
 
@@ -483,15 +376,12 @@
             font-size: 13px;
         }
 
-
         .new-label {
-
             display: inline-block;
 
             margin-left: 6px;
 
-            padding:
-                3px 6px;
+            padding: 3px 6px;
 
             background: #ef4444;
 
@@ -506,58 +396,328 @@
             vertical-align: middle;
         }
 
-
         /* =====================================================
-           USER
+           PROFILE TOP RIGHT
         ===================================================== */
 
-        .user-avatar {
+        .profile-wrapper {
+            position: relative;
+        }
 
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 5px 8px;
+
+            border-radius: 12px;
+
+            cursor: pointer;
+
+            border: none;
+
+            background: transparent;
+
+            color: inherit;
+
+            font-family: inherit;
+
+            transition: 0.2s;
+        }
+
+        .user-profile:hover {
+            background: #f0fdf4;
+        }
+
+        .user-avatar {
             width: 40px;
             height: 40px;
+            min-width: 40px;
 
             border-radius: 50%;
 
             background: #d1fae5;
 
             display: flex;
-
             align-items: center;
             justify-content: center;
 
             font-size: 20px;
+
+            overflow: hidden;
+
+            border: 2px solid #d1fae5;
+
+            transition: 0.2s;
         }
 
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            display: block;
+        }
+
+        .user-profile:hover .user-avatar {
+            transform: scale(1.05);
+        }
 
         .user-name {
-
             font-size: 13px;
-
             font-weight: bold;
 
             color: #374151;
+
+            white-space: nowrap;
         }
 
+        .user-profile:hover .user-name {
+            color: #047857;
+        }
+
+        /* =====================================================
+           PROFILE DROPDOWN
+        ===================================================== */
+
+        .profile-box {
+            display: none;
+
+            position: absolute;
+
+            right: 0;
+            top: 55px;
+
+            width: 280px;
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 22px;
+
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+
+            border: 1px solid #e5e7eb;
+
+            z-index: 3000;
+
+            text-align: center;
+        }
+
+        .profile-box.show {
+            display: block;
+
+            animation: profileFade 0.2s ease;
+        }
+
+        @keyframes profileFade {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-photo-large {
+            width: 85px;
+            height: 85px;
+
+            margin: 0 auto 12px;
+
+            border-radius: 50%;
+
+            background: #d1fae5;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 40px;
+
+            overflow: hidden;
+
+            border: 3px solid #a7f3d0;
+        }
+
+        .profile-photo-large img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            display: block;
+        }
+
+        .profile-name {
+            font-size: 17px;
+
+            font-weight: bold;
+
+            color: #064e3b;
+
+            margin-bottom: 5px;
+        }
+
+        .profile-label {
+            font-size: 12px;
+
+            color: #64748b;
+
+            margin-bottom: 18px;
+        }
+
+        .change-photo-button {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 6px;
+
+            padding: 9px 14px;
+
+            background: #07895f;
+
+            color: white;
+
+            border-radius: 8px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .change-photo-button:hover {
+            background: #056c4c;
+            transform: translateY(-1px);
+        }
+
+        .profile-hint {
+            margin-top: 12px;
+
+            font-size: 10px;
+
+            color: #94a3b8;
+
+            line-height: 1.5;
+        }
+
+        /* =====================================================
+           SIDEBAR PROFILE
+        ===================================================== */
+
+        .sidebar-profile-box {
+            display: none;
+
+            margin: 5px 5px 10px;
+
+            padding: 18px 15px;
+
+            background: rgba(255,255,255,0.10);
+
+            border-radius: 14px;
+
+            text-align: center;
+
+            border: 1px solid rgba(255,255,255,0.10);
+        }
+
+        .sidebar-profile-box.show {
+            display: block;
+        }
+
+        .sidebar-profile-photo {
+            width: 60px;
+            height: 60px;
+
+            margin: 0 auto 10px;
+
+            border-radius: 50%;
+
+            background: #d1fae5;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 28px;
+
+            overflow: hidden;
+        }
+
+        .sidebar-profile-photo img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+        }
+
+        .sidebar-profile-name {
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            margin-bottom: 4px;
+        }
+
+        .sidebar-profile-label {
+            color: #b7e9d5;
+
+            font-size: 10px;
+
+            margin-bottom: 12px;
+        }
+
+        .sidebar-change-photo {
+            display: inline-block;
+
+            padding: 7px 10px;
+
+            background: #10a875;
+
+            color: white;
+
+            border-radius: 7px;
+
+            font-size: 10px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .sidebar-change-photo:hover {
+            background: #0b8f64;
+        }
 
         /* =====================================================
            CONTENT
         ===================================================== */
 
         .content {
-
-            padding:
-                30px 35px 50px;
+            padding: 30px 35px 50px;
 
             max-width: 1500px;
         }
 
-
         /* =====================================================
-           WELCOME / HERO
+           WELCOME
         ===================================================== */
 
         .welcome {
-
             min-height: 300px;
 
             border-radius: 22px;
@@ -568,11 +728,9 @@
 
             margin-bottom: 28px;
 
-            border:
-                1px solid #d3eee1;
+            border: 1px solid #d3eee1;
 
-            box-shadow:
-                0 8px 25px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
 
             background-color: #eafff1;
 
@@ -586,55 +744,43 @@
             background-repeat: no-repeat;
 
             display: flex;
-
             align-items: center;
         }
 
-
-        /* Lapisan supaya tulisan tetap mudah dibaca */
-
         .welcome-overlay {
-
             position: absolute;
 
             inset: 0;
 
-            background:
-                linear-gradient(
-                    90deg,
-                    rgba(234,255,241,0.96) 0%,
-                    rgba(234,255,241,0.88) 42%,
-                    rgba(234,255,241,0.25) 72%,
-                    rgba(234,255,241,0.05) 100%
-                );
+            background: linear-gradient(
+                90deg,
+                rgba(234,255,241,0.96) 0%,
+                rgba(234,255,241,0.88) 42%,
+                rgba(234,255,241,0.25) 72%,
+                rgba(234,255,241,0.05) 100%
+            );
 
             z-index: 1;
         }
 
-
         .welcome-content {
-
             position: relative;
 
             z-index: 2;
 
-            padding:
-                35px;
+            padding: 35px;
 
             max-width: 700px;
         }
 
-
         .welcome-label {
-
             display: inline-block;
 
             background: #a7f3d0;
 
             color: #065f46;
 
-            padding:
-                8px 16px;
+            padding: 8px 16px;
 
             border-radius: 20px;
 
@@ -645,9 +791,7 @@
             margin-bottom: 10px;
         }
 
-
         .welcome h1 {
-
             margin: 0;
 
             font-size: 30px;
@@ -655,9 +799,7 @@
             color: #064e3b;
         }
 
-
         .welcome p {
-
             margin-top: 10px;
 
             color: #41666a;
@@ -669,13 +811,11 @@
             max-width: 650px;
         }
 
-
         /* =====================================================
            SECTION
         ===================================================== */
 
         .section-title {
-
             margin-top: 30px;
 
             margin-bottom: 15px;
@@ -685,35 +825,28 @@
             color: #064e3b;
         }
 
-
         /* =====================================================
            QUICK ACCESS
         ===================================================== */
 
         .stat-grid {
-
             display: grid;
 
-            grid-template-columns:
-                repeat(2, 1fr);
+            grid-template-columns: repeat(2, 1fr);
 
             gap: 18px;
         }
 
-
         .stat-card {
-
             background: white;
 
             padding: 20px;
 
             border-radius: 16px;
 
-            border:
-                1px solid #e7ecea;
+            border: 1px solid #e7ecea;
 
-            box-shadow:
-                0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 
             display: flex;
 
@@ -726,26 +859,19 @@
             transition: 0.2s;
         }
 
-
         .stat-card:hover {
+            transform: translateY(-3px);
 
-            transform:
-                translateY(-3px);
-
-            box-shadow:
-                0 10px 22px rgba(0,0,0,0.08);
+            box-shadow: 0 10px 22px rgba(0,0,0,0.08);
         }
 
-
         .stat-icon {
-
             width: 55px;
             height: 55px;
 
             border-radius: 14px;
 
             display: flex;
-
             align-items: center;
             justify-content: center;
 
@@ -754,9 +880,7 @@
             flex-shrink: 0;
         }
 
-
         .stat-info h3 {
-
             margin: 0;
 
             font-size: 15px;
@@ -764,64 +888,49 @@
             color: #087f5b;
         }
 
-
         .stat-info p {
-
-            margin:
-                5px 0 0;
+            margin: 5px 0 0;
 
             font-size: 12px;
 
             color: #64748b;
         }
 
-
         /* =====================================================
            INFORMATION
         ===================================================== */
 
         .info-grid {
-
             display: grid;
 
-            grid-template-columns:
-                repeat(2, 1fr);
+            grid-template-columns: repeat(2, 1fr);
 
             gap: 20px;
 
             margin-top: 18px;
         }
 
-
         .info-card {
-
             background: white;
 
             border-radius: 16px;
 
             padding: 23px;
 
-            border:
-                1px solid #e6ece9;
+            border: 1px solid #e6ece9;
 
-            box-shadow:
-                0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
-
         .info-card h3 {
-
-            margin:
-                0 0 8px;
+            margin: 0 0 8px;
 
             color: #087f5b;
 
             font-size: 17px;
         }
 
-
         .info-card p {
-
             margin: 0;
 
             color: #64748b;
@@ -831,15 +940,12 @@
             line-height: 1.6;
         }
 
-
         .info-button {
-
             display: inline-block;
 
             margin-top: 16px;
 
-            padding:
-                9px 15px;
+            padding: 9px 15px;
 
             background: #07895f;
 
@@ -854,21 +960,19 @@
             border: none;
 
             cursor: pointer;
-        }
 
+            transition: 0.2s;
+        }
 
         .info-button:hover {
-
             background: #056c4c;
         }
-
 
         /* =====================================================
            FOOTER
         ===================================================== */
 
         .footer {
-
             text-align: center;
 
             margin-top: 45px;
@@ -878,7 +982,6 @@
             font-size: 12px;
         }
 
-
         /* =====================================================
            RESPONSIVE
         ===================================================== */
@@ -886,201 +989,146 @@
         @media(max-width: 1100px) {
 
             .sidebar {
-
                 width: 240px;
             }
 
-
             .main {
-
                 margin-left: 240px;
             }
 
-
             .content {
-
-                padding:
-                    25px;
+                padding: 25px;
             }
         }
-
 
         @media(max-width: 800px) {
 
             .sidebar {
-
                 width: 220px;
             }
 
-
             .main {
-
                 margin-left: 220px;
             }
 
-
             .stat-grid {
-
                 grid-template-columns: 1fr;
             }
-
 
             .info-grid {
-
                 grid-template-columns: 1fr;
             }
 
-
             .welcome {
-
                 min-height: 280px;
-
-                background-position:
-                    center right;
+                background-position: center right;
             }
-
 
             .welcome-overlay {
-
-                background:
-                    linear-gradient(
-                        90deg,
-                        rgba(234,255,241,0.97),
-                        rgba(234,255,241,0.70)
-                    );
+                background: linear-gradient(
+                    90deg,
+                    rgba(234,255,241,0.97),
+                    rgba(234,255,241,0.70)
+                );
             }
-
 
             .notification-box {
-
                 right: -80px;
             }
-        }
 
+            .profile-box {
+                right: -20px;
+            }
+        }
 
         @media(max-width: 600px) {
 
             .sidebar {
-
                 width: 70px;
             }
 
-
             .main {
-
                 margin-left: 70px;
             }
 
-
             .sidebar-header {
-
                 justify-content: center;
-
                 padding: 15px;
             }
-
 
             .logo-text,
             .menu-title,
             .menu-item span:not(.menu-icon) {
-
                 display: none;
             }
 
-
             .menu-item {
-
                 justify-content: center;
             }
 
-
             .menu-icon {
-
                 width: 100%;
             }
 
-
             .topbar {
-
-                padding:
-                    0 15px;
+                padding: 0 15px;
             }
 
-
             .user-name {
-
                 display: none;
             }
 
+            .user-profile {
+                padding: 3px;
+            }
+
+            .page-title {
+                font-size: 18px;
+            }
 
             .content {
-
-                padding:
-                    20px 15px;
+                padding: 20px 15px;
             }
-
 
             .welcome {
-
                 min-height: 350px;
-
-                background-position:
-                    65% center;
+                background-position: 65% center;
             }
-
 
             .welcome-overlay {
-
-                background:
-                    linear-gradient(
-                        90deg,
-                        rgba(234,255,241,0.98),
-                        rgba(234,255,241,0.72)
-                    );
+                background: linear-gradient(
+                    90deg,
+                    rgba(234,255,241,0.98),
+                    rgba(234,255,241,0.72)
+                );
             }
 
-
             .welcome-content {
-
                 padding: 25px;
             }
 
-
             .welcome h1 {
-
                 font-size: 23px;
             }
 
-
             .notification-box {
-
                 width: 280px;
-
                 right: -100px;
             }
+
+            .profile-box {
+                width: 260px;
+                right: -20px;
+            }
         }
-
     </style>
-
 </head>
-
 
 <body>
 
-
 @php
 
-    /*
-     * Data notifikasi berasal dari controller/route.
-     */
-
-    $notifications =
-        $notifications ?? collect();
-
-
-    /*
-     * Jumlah notifikasi yang belum dibaca.
-     */
+    $notifications = $notifications ?? collect();
 
     $unreadNotifications =
         $unreadNotifications
@@ -1096,9 +1144,6 @@
 
 <aside class="sidebar">
 
-
-    <!-- LOGO -->
-
     <div class="sidebar-header">
 
         <div class="logo-icon">
@@ -1112,10 +1157,7 @@
     </div>
 
 
-    <!-- MENU -->
-
     <div class="menu">
-
 
         <div class="menu-title">
             Menu Utama
@@ -1147,9 +1189,13 @@
         </div>
 
 
-        <a
-            href="{{ route('profile.edit') }}"
+        <!-- PROFIL -->
+
+        <button
+            type="button"
             class="menu-item"
+            onclick="toggleSidebarProfile()"
+            title="Profil Saya"
         >
 
             <span class="menu-icon">
@@ -1160,8 +1206,81 @@
                 Profil Saya
             </span>
 
-        </a>
+        </button>
 
+
+        <!-- PROFIL SIDEBAR -->
+
+        <div
+            id="sidebarProfileBox"
+            class="sidebar-profile-box"
+        >
+
+            <div class="sidebar-profile-photo">
+
+                @if(auth()->user()->foto)
+
+                    <img
+                        src="{{ asset('storage/' . auth()->user()->foto) }}"
+                        alt="Foto Profil"
+                    >
+
+                @else
+
+                    👤
+
+                @endif
+
+            </div>
+
+
+            <div class="sidebar-profile-name">
+
+                {{ auth()->user()->nama }}
+
+            </div>
+
+
+            <div class="sidebar-profile-label">
+
+                Pengguna EVChargeHub
+
+            </div>
+
+
+            <form
+                action="{{ route('profile.photo.update') }}"
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+                @csrf
+
+                <label
+                    for="sidebar-profile-photo-input"
+                    class="sidebar-change-photo"
+                >
+
+                    📷
+                    {{ auth()->user()->foto ? 'Ganti Foto' : 'Tambah Foto' }}
+
+                </label>
+
+                <input
+                    type="file"
+                    name="foto"
+                    id="sidebar-profile-photo-input"
+                    accept=".jpg,.jpeg,.png,.webp"
+                    hidden
+                    onchange="this.form.submit()"
+                >
+
+            </form>
+
+        </div>
+
+
+        <!-- KENDARAAN -->
 
         <a
             href="{{ route('vehicles.index') }}"
@@ -1218,8 +1337,6 @@
         </a>
 
 
-        <!-- NOTIFIKASI -->
-
         <a
             href="{{ route('notifications.index') }}"
             class="menu-item"
@@ -1235,7 +1352,8 @@
 
         </a>
 
-         <a
+
+        {{-- <a
             href="{{ route('stations.index') }}"
             class="menu-item"
         >
@@ -1248,11 +1366,10 @@
                 Rating & Ulasan
             </span>
 
-        </a>
+        </a> --}}
 
 
         <div class="menu-divider"></div>
-
 
 
         <!-- LOGOUT -->
@@ -1281,7 +1398,6 @@
 
         </form>
 
-
     </div>
 
 </aside>
@@ -1300,10 +1416,15 @@
 
     <header class="topbar">
 
+        <!-- DASHBOARD ATAS - BISA DIKLIK -->
 
-        <div class="page-title">
+        <a
+            href="{{ route('user.dashboard') }}"
+            class="page-title"
+            title="Kembali ke Dashboard"
+        >
             Dashboard
-        </div>
+        </a>
 
 
         <div class="user-area">
@@ -1313,7 +1434,6 @@
 
             <div class="notification-wrapper">
 
-
                 <button
                     type="button"
                     class="notification"
@@ -1322,7 +1442,6 @@
                 >
 
                     🔔
-
 
                     @if($unreadNotifications > 0)
 
@@ -1336,13 +1455,10 @@
                 </button>
 
 
-                <!-- DROPDOWN NOTIFICATION -->
-
                 <div
                     id="notificationBox"
                     class="notification-box"
                 >
-
 
                     <div class="notification-header">
 
@@ -1353,9 +1469,7 @@
 
                     @if($notifications->count() > 0)
 
-
                         @foreach($notifications as $notification)
-
 
                             <div
                                 class="notification-item
@@ -1364,35 +1478,21 @@
                                     : '' }}"
                             >
 
-
                                 <strong>
 
-
                                     @if($notification->type === 'payment')
-
                                         💳
-
                                     @elseif($notification->type === 'charging')
-
                                         ⚡
-
                                     @elseif($notification->type === 'vehicle')
-
                                         🚗
-
                                     @elseif($notification->type === 'system')
-
                                         🔔
-
                                     @else
-
                                         🔔
-
                                     @endif
 
-
                                     {{ $notification->title }}
-
 
                                     @if(!$notification->is_read)
 
@@ -1401,7 +1501,6 @@
                                         </span>
 
                                     @endif
-
 
                                 </strong>
 
@@ -1423,15 +1522,11 @@
 
                                 @endif
 
-
                             </div>
-
 
                         @endforeach
 
-
                     @else
-
 
                         <div class="notification-empty">
 
@@ -1439,30 +1534,134 @@
 
                         </div>
 
-
                     @endif
-
 
                 </div>
 
             </div>
 
 
-            <!-- USER -->
+            <!-- PROFILE KANAN ATAS -->
 
-            <div class="user-avatar">
+            <div class="profile-wrapper">
 
-                👤
+                <button
+                    type="button"
+                    class="user-profile"
+                    onclick="toggleProfileMenu()"
+                    title="Profil Saya"
+                >
+
+                    <div class="user-avatar">
+
+                        @if(auth()->user()->foto)
+
+                            <img
+                                src="{{ asset('storage/' . auth()->user()->foto) }}"
+                                alt="Foto Profil"
+                            >
+
+                        @else
+
+                            👤
+
+                        @endif
+
+                    </div>
+
+
+                    <div class="user-name">
+
+                        {{ auth()->user()->nama }}
+
+                    </div>
+
+                </button>
+
+
+                <!-- DROPDOWN PROFILE -->
+
+                <div
+                    id="profileBox"
+                    class="profile-box"
+                >
+
+                    <div class="profile-photo-large">
+
+                        @if(auth()->user()->foto)
+
+                            <img
+                                src="{{ asset('storage/' . auth()->user()->foto) }}"
+                                alt="Foto Profil"
+                            >
+
+                        @else
+
+                            👤
+
+                        @endif
+
+                    </div>
+
+
+                    <div class="profile-name">
+
+                        {{ auth()->user()->nama }}
+
+                    </div>
+
+
+                    <div class="profile-label">
+
+                        Pengguna EVChargeHub
+
+                    </div>
+
+
+                    <form
+                        action="{{ route('profile.photo.update') }}"
+                        method="POST"
+                        enctype="multipart/form-data"
+                    >
+
+                        @csrf
+
+                        <label
+                            for="profile-photo-input"
+                            class="change-photo-button"
+                        >
+
+                            📷
+
+                            {{ auth()->user()->foto
+                                ? 'Ganti Foto'
+                                : 'Tambah Foto' }}
+
+                        </label>
+
+
+                        <input
+                            type="file"
+                            name="foto"
+                            id="profile-photo-input"
+                            accept=".jpg,.jpeg,.png,.webp"
+                            hidden
+                            onchange="this.form.submit()"
+                        >
+
+                    </form>
+
+
+                    <div class="profile-hint">
+
+                        Klik tombol di atas untuk menambahkan
+                        atau mengganti foto profil.
+
+                    </div>
+
+                </div>
 
             </div>
-
-
-            <div class="user-name">
-
-                {{ auth()->user()->nama }}
-
-            </div>
-
 
         </div>
 
@@ -1476,165 +1675,102 @@
     <main class="content">
 
 
-        <!-- =================================================
-             WELCOME
-        ================================================== -->
+        <!-- WELCOME -->
 
         <section class="welcome">
 
-
-            <!-- Overlay -->
-
             <div class="welcome-overlay"></div>
-
-
-            <!-- Text -->
 
             <div class="welcome-content">
 
-
                 <div class="welcome-label">
-
                     Selamat Datang 👋
-
                 </div>
 
-
                 <h1>
-
-                    Halo,
-                    {{ auth()->user()->nama }}!
-
+                    Halo, {{ auth()->user()->nama }}!
                 </h1>
 
-
                 <p>
-
                     Kelola kendaraan dan lakukan pengisian
                     kendaraan listrik melalui EVChargeHub
                     dengan lebih mudah dan aman.
-
                 </p>
 
-
             </div>
-
 
         </section>
 
 
-        <!-- =================================================
-             AKSES CEPAT
-        ================================================== -->
+        <!-- AKSES CEPAT -->
 
         <h2 class="section-title">
-
             ⚡ Akses Cepat
-
         </h2>
 
 
         <div class="stat-grid">
-
-
-            <!-- STATION -->
 
             <a
                 href="{{ route('stations.index') }}"
                 class="stat-card"
             >
 
-
                 <div
                     class="stat-icon"
                     style="background:#dcfce7;"
                 >
-
                     📍
-
                 </div>
-
 
                 <div class="stat-info">
 
-
                     <h3>
-
                         Charging Station
-
                     </h3>
 
-
                     <p>
-
                         Cari station dan lihat charger tersedia.
-
                     </p>
-
 
                 </div>
 
-
             </a>
 
-
-            <!-- VEHICLE -->
 
             <a
                 href="{{ route('vehicles.index') }}"
                 class="stat-card"
             >
 
-
                 <div
                     class="stat-icon"
                     style="background:#dbeafe;"
                 >
-
                     🚗
-
                 </div>
-
 
                 <div class="stat-info">
 
-
                     <h3>
-
                         Kendaraan Saya
-
                     </h3>
 
-
                     <p>
-
                         Kelola kendaraan listrik Anda.
-
                     </p>
-
 
                 </div>
 
-
             </a>
-
-         
-
-
-            
-
 
         </div>
 
 
-        <!-- =================================================
-             INFORMASI
-        ================================================== -->
+        <!-- INFORMASI -->
 
         <h2 class="section-title">
-
             📌 Informasi
-
         </h2>
 
 
@@ -1645,31 +1781,21 @@
 
             <div class="info-card">
 
-
                 <h3>
-
                     📍 Charging Station
-
                 </h3>
 
-
                 <p>
-
                     Cari charging station, lihat lokasi,
                     charger, dan tarif.
-
                 </p>
-
 
                 <a
                     href="{{ route('stations.index') }}"
                     class="info-button"
                 >
-
                     Cari Station →
-
                 </a>
-
 
             </div>
 
@@ -1678,97 +1804,44 @@
 
             <div class="info-card">
 
-
                 <h3>
-
                     🚗 Kendaraan Saya
-
                 </h3>
 
-
                 <p>
-
                     Tambahkan dan kelola kendaraan listrik
                     yang akan digunakan.
-
                 </p>
-
 
                 <a
                     href="{{ route('vehicles.index') }}"
                     class="info-button"
                 >
-
                     Kelola Kendaraan →
-
                 </a>
-
 
             </div>
-
-
-            <!-- CHARGING -->
-
-            {{-- <div class="info-card">
-
-
-                <h3>
-
-                    ⚡ Charging
-
-                </h3>
-
-
-                <p>
-
-                    Pilih charging station kemudian pilih
-                    charger yang tersedia.
-
-                </p>
-
-
-                <a
-                    href="{{ route('stations.index') }}"
-                    class="info-button"
-                >
-
-                    Pilih Station →
-
-                </a>
-
-
-            </div> --}}
 
 
             <!-- RIWAYAT -->
 
             <div class="info-card">
 
-
                 <h3>
-
                     🕐 Riwayat Charging
-
                 </h3>
 
-
                 <p>
-
                     Lihat riwayat pengisian kendaraan dan
                     transaksi pembayaran.
-
                 </p>
-
 
                 <a
                     href="{{ route('charging.history') }}"
                     class="info-button"
                 >
-
                     Lihat Riwayat →
-
                 </a>
-
 
             </div>
 
@@ -1777,31 +1850,21 @@
 
             <div class="info-card">
 
-
                 <h3>
-
                     🔔 Notifikasi
-
                 </h3>
 
-
                 <p>
-
                     Lihat pemberitahuan mengenai charging,
                     pembayaran, dan informasi akun.
-
                 </p>
-
 
                 <a
                     href="{{ route('notifications.index') }}"
                     class="info-button"
                 >
-
                     Lihat Notifikasi →
-
                 </a>
-
 
             </div>
 
@@ -1810,34 +1873,24 @@
 
             <div class="info-card">
 
-
                 <h3>
-
                     👤 Profil Saya
-
                 </h3>
 
-
                 <p>
-
-                    Kelola nama, username, email, nomor
-                    telepon, dan password akun.
-
+                    Lihat nama dan foto profil akun
+                    EVChargeHub Anda.
                 </p>
 
-
-                <a
-                    href="{{ route('profile.edit') }}"
+                <button
+                    type="button"
                     class="info-button"
+                    onclick="toggleProfileMenu()"
                 >
-
-                    Kelola Profil →
-
-                </a>
-
+                    Lihat Profil →
+                </button>
 
             </div>
-
 
         </div>
 
@@ -1851,7 +1904,6 @@
 
         </div>
 
-
     </main>
 
 </div>
@@ -1863,38 +1915,77 @@
 
 <script>
 
+/* =========================================================
+   NOTIFICATION
+========================================================= */
+
 function toggleNotifications() {
 
-    const box = document.getElementById('notificationBox');
+    const box =
+        document.getElementById('notificationBox');
 
     if (!box) {
         return;
     }
 
-    // Buka / tutup dropdown
+
+    /* Tutup profile */
+
+    const profileBox =
+        document.getElementById('profileBox');
+
+    if (profileBox) {
+        profileBox.classList.remove('show');
+    }
+
+
+    /* Tutup profile sidebar */
+
+    const sidebarProfileBox =
+        document.getElementById('sidebarProfileBox');
+
+    if (sidebarProfileBox) {
+        sidebarProfileBox.classList.remove('show');
+    }
+
+
+    /* Buka/tutup notification */
+
     box.classList.toggle('show');
 
 
-    // Jika dropdown baru saja dibuka
+    /* Tandai sudah dibaca */
+
     if (box.classList.contains('show')) {
 
-        fetch("{{ route('notifications.read') }}", {
+        fetch(
+            "{{ route('notifications.read') }}",
+            {
+                method: "POST",
 
-            method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN":
+                        "{{ csrf_token() }}",
 
-            headers: {
-                "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
+                    "Accept":
+                        "application/json",
 
-            body: JSON.stringify({})
-        })
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({})
+            }
+        )
 
         .then(response => {
 
             if (!response.ok) {
-                throw new Error('Gagal menghubungi server');
+
+                throw new Error(
+                    'Gagal menghubungi server'
+                );
+
             }
 
             return response.json();
@@ -1905,21 +1996,15 @@ function toggleNotifications() {
 
             if (data.success) {
 
-                // ==========================================
-                // HILANGKAN TITIK MERAH 🔴
-                // ==========================================
-
                 const dot =
-                    document.getElementById('notificationDot');
+                    document.getElementById(
+                        'notificationDot'
+                    );
 
                 if (dot) {
                     dot.remove();
                 }
 
-
-                // ==========================================
-                // HILANGKAN LABEL "BARU"
-                // ==========================================
 
                 document
                     .querySelectorAll('.new-label')
@@ -1930,12 +2015,10 @@ function toggleNotifications() {
                     });
 
 
-                // ==========================================
-                // HILANGKAN WARNA HIJAU UNREAD
-                // ==========================================
-
                 document
-                    .querySelectorAll('.notification-unread')
+                    .querySelectorAll(
+                        '.notification-unread'
+                    )
                     .forEach(function(item) {
 
                         item.classList.remove(
@@ -1951,7 +2034,7 @@ function toggleNotifications() {
         .catch(error => {
 
             console.error(
-                'Gagal menandai notifikasi sebagai sudah dibaca:',
+                'Gagal menandai notifikasi:',
                 error
             );
 
@@ -1962,27 +2045,200 @@ function toggleNotifications() {
 }
 
 
-/*
- * Tutup dropdown ketika klik di luar
- */
+/* =========================================================
+   PROFILE KANAN ATAS
+========================================================= */
+
+function toggleProfileMenu() {
+
+    const profileBox =
+        document.getElementById('profileBox');
+
+    if (!profileBox) {
+        return;
+    }
+
+
+    /* Tutup notification */
+
+    const notificationBox =
+        document.getElementById('notificationBox');
+
+    if (notificationBox) {
+
+        notificationBox.classList.remove(
+            'show'
+        );
+
+    }
+
+
+    /* Tutup profile sidebar */
+
+    const sidebarProfileBox =
+        document.getElementById(
+            'sidebarProfileBox'
+        );
+
+    if (sidebarProfileBox) {
+
+        sidebarProfileBox.classList.remove(
+            'show'
+        );
+
+    }
+
+
+    /* Buka/tutup profile */
+
+    profileBox.classList.toggle('show');
+
+}
+
+
+/* =========================================================
+   PROFILE SIDEBAR
+========================================================= */
+
+function toggleSidebarProfile() {
+
+    const sidebarProfileBox =
+        document.getElementById(
+            'sidebarProfileBox'
+        );
+
+    if (!sidebarProfileBox) {
+        return;
+    }
+
+
+    /* Tutup notification */
+
+    const notificationBox =
+        document.getElementById(
+            'notificationBox'
+        );
+
+    if (notificationBox) {
+
+        notificationBox.classList.remove(
+            'show'
+        );
+
+    }
+
+
+    /* Tutup profile kanan */
+
+    const profileBox =
+        document.getElementById(
+            'profileBox'
+        );
+
+    if (profileBox) {
+
+        profileBox.classList.remove(
+            'show'
+        );
+
+    }
+
+
+    /* Buka/tutup sidebar profile */
+
+    sidebarProfileBox.classList.toggle(
+        'show'
+    );
+
+}
+
+
+/* =========================================================
+   KLIK DI LUAR DROPDOWN
+========================================================= */
 
 document.addEventListener(
     'click',
     function(event) {
 
-        const box =
-            document.getElementById('notificationBox');
 
-        const wrapper =
-            document.querySelector('.notification-wrapper');
+        /* NOTIFICATION */
+
+        const notificationBox =
+            document.getElementById(
+                'notificationBox'
+            );
+
+        const notificationWrapper =
+            document.querySelector(
+                '.notification-wrapper'
+            );
 
         if (
-            box &&
-            wrapper &&
-            !wrapper.contains(event.target)
+            notificationBox &&
+            notificationWrapper &&
+            !notificationWrapper.contains(
+                event.target
+            )
         ) {
 
-            box.classList.remove('show');
+            notificationBox.classList.remove(
+                'show'
+            );
+
+        }
+
+
+        /* PROFILE KANAN */
+
+        const profileBox =
+            document.getElementById(
+                'profileBox'
+            );
+
+        const profileWrapper =
+            document.querySelector(
+                '.profile-wrapper'
+            );
+
+        if (
+            profileBox &&
+            profileWrapper &&
+            !profileWrapper.contains(
+                event.target
+            )
+        ) {
+
+            profileBox.classList.remove(
+                'show'
+            );
+
+        }
+
+
+        /* PROFILE SIDEBAR */
+
+        const sidebarProfileBox =
+            document.getElementById(
+                'sidebarProfileBox'
+            );
+
+        const sidebar =
+            document.querySelector(
+                '.sidebar'
+            );
+
+        if (
+            sidebarProfileBox &&
+            sidebar &&
+            !sidebar.contains(
+                event.target
+            )
+        ) {
+
+            sidebarProfileBox.classList.remove(
+                'show'
+            );
 
         }
 
@@ -1990,6 +2246,7 @@ document.addEventListener(
 );
 
 </script>
+
 </body>
 
 </html>

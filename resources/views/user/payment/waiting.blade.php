@@ -20,6 +20,7 @@
             margin: 0;
             font-family: Arial, sans-serif;
             background: #f5f7fa;
+            color: #212529;
         }
 
         .container {
@@ -60,9 +61,7 @@
             line-height: 1.5;
         }
 
-        /* =========================
-           TIMER
-        ========================= */
+        /* TIMER */
 
         .timer-box {
             margin: 30px 0;
@@ -91,9 +90,7 @@
             letter-spacing: 0;
         }
 
-        /* =========================
-           PAYMENT INFO
-        ========================= */
+        /* PAYMENT INFO */
 
         .payment-info {
             text-align: left;
@@ -118,33 +115,86 @@
             text-align: right;
         }
 
-        /* =========================
-           TOTAL
-        ========================= */
+        /* VA */
 
-        .total {
-            margin-top: 20px;
-            padding: 18px;
-            background: #e8f8ef;
-            border-radius: 10px;
+        .va-box {
+            margin-top: 25px;
+            padding: 25px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            text-align: left;
+        }
+
+        .va-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0f5132;
+            margin-bottom: 15px;
             text-align: center;
         }
 
-        .total-label {
-            color: #0f5132;
-            font-weight: bold;
+        .va-bank {
+            text-align: center;
+            color: #555;
+            margin-bottom: 20px;
         }
 
-        .total-price {
-            margin-top: 8px;
-            font-size: 27px;
-            font-weight: bold;
-            color: #0f5132;
+        .va-label {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 7px;
         }
 
-        /* =========================
-           QRIS
-        ========================= */
+        .va-number {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .copy-va {
+            margin-left: auto;
+            border: none;
+            background: #0d6efd;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .copy-va:hover {
+            background: #0b5ed7;
+        }
+
+        .va-amount {
+            margin-top: 15px;
+            font-size: 15px;
+        }
+
+        .va-amount strong {
+            color: #0f5132;
+            font-size: 18px;
+        }
+
+        .va-warning {
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff3cd;
+            color: #664d03;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* QRIS */
 
         .qris {
             margin-top: 25px;
@@ -175,9 +225,29 @@
             line-height: 1.5;
         }
 
-        /* =========================
-           STATUS
-        ========================= */
+        /* TOTAL */
+
+        .total {
+            margin-top: 20px;
+            padding: 18px;
+            background: #e8f8ef;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .total-label {
+            color: #0f5132;
+            font-weight: bold;
+        }
+
+        .total-price {
+            margin-top: 8px;
+            font-size: 27px;
+            font-weight: bold;
+            color: #0f5132;
+        }
+
+        /* STATUS */
 
         .status {
             margin-top: 20px;
@@ -193,9 +263,7 @@
             color: #842029;
         }
 
-        /* =========================
-           BUTTON
-        ========================= */
+        /* BUTTON */
 
         .buttons {
             margin-top: 30px;
@@ -243,11 +311,7 @@
             background: #5c636a;
         }
 
-        .btn-pay:disabled {
-            background: #adb5bd;
-            cursor: not-allowed;
-        }
-
+        .btn-pay:disabled,
         .btn-fail:disabled {
             background: #adb5bd;
             cursor: not-allowed;
@@ -281,6 +345,46 @@
             margin-bottom: 12px;
         }
 
+        @media (max-width: 600px) {
+
+            .container {
+                margin: 20px auto;
+                padding: 15px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .info {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .value {
+                text-align: left;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .va-number {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .copy-va {
+                margin-left: 0;
+                width: 100%;
+            }
+
+        }
+
     </style>
 
 </head>
@@ -312,10 +416,7 @@
         </div>
 
 
-        {{-- =========================
-             TIMER
-        ========================= --}}
-
+        {{-- TIMER --}}
         <div class="timer-box">
 
             <div class="timer-title">
@@ -329,10 +430,7 @@
         </div>
 
 
-        {{-- =========================
-             INFORMASI PEMBAYARAN
-        ========================= --}}
-
+        {{-- INFORMASI PEMBAYARAN --}}
         <div class="payment-info">
 
             <div class="info">
@@ -369,13 +467,13 @@
 
                 <span class="value">
 
-                    @if($payment->metode === 'ewallet')
+                    @if($payment->metode === 'virtual_account')
 
-                        E-Wallet
+                        Virtual Account
 
                     @elseif($payment->metode === 'card')
 
-                        Kartu
+                        Kartu Debit / Kredit
 
                     @elseif($payment->metode === 'qr')
 
@@ -398,9 +496,98 @@
         </div>
 
 
-        {{-- =========================
+        {{-- =========================================
+             VIRTUAL ACCOUNT
+        ========================================== --}}
+
+        @if($payment->metode === 'virtual_account')
+
+            @php
+
+                $vaData = explode('|', $payment->referensi_gateway ?? '');
+
+                $vaBank = $vaData[2] ?? '-';
+
+                $vaNumber = $vaData[3] ?? '-';
+
+            @endphp
+
+            <div class="va-box">
+
+                <div class="va-title">
+                    Transfer Virtual Account
+                </div>
+
+
+                <div class="va-bank">
+
+                    Bank:
+
+                    <strong>
+                        {{ $vaBank }}
+                    </strong>
+
+                </div>
+
+
+                <div class="va-label">
+                    Nomor Virtual Account
+                </div>
+
+
+                <div class="va-number">
+
+                    <span id="va-number">
+                        {{ $vaNumber }}
+                    </span>
+
+                    <button
+                        type="button"
+                        onclick="copyVA()"
+                        class="copy-va"
+                    >
+                        📋 Salin
+                    </button>
+
+                </div>
+
+
+                <div class="va-amount">
+
+                    Total Pembayaran:
+
+                    <strong>
+                        Rp {{ number_format(
+                            $payment->jumlah,
+                            0,
+                            ',',
+                            '.'
+                        ) }}
+                    </strong>
+
+                </div>
+
+
+                <div class="va-warning">
+
+                    ⚠️ Ini merupakan Virtual Account simulasi
+                    untuk sistem EVChargeHub.
+
+                    <br><br>
+
+                    Silakan lakukan pembayaran menggunakan
+                    nomor Virtual Account di atas.
+
+                </div>
+
+            </div>
+
+        @endif
+
+
+        {{-- =========================================
              QRIS
-        ========================= --}}
+        ========================================== --}}
 
         @if($payment->metode === 'qr')
 
@@ -411,7 +598,7 @@
                 </div>
 
                 <img
-                    src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=EVChargeHub-Payment-{{ $payment->id_payment }}-Rp{{ $payment->jumlah }}"
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ urlencode('EVChargeHub-Payment-' . $payment->id_payment . '-Rp' . $payment->jumlah) }}"
                     alt="QRIS EVChargeHub"
                 >
 
@@ -420,10 +607,11 @@
                     Scan QR Code menggunakan aplikasi
                     pembayaran yang mendukung QRIS.
 
-                    <br>
+                    <br><br>
 
-                    QR Code ini merupakan QR Code
-                    <strong>simulasi</strong> untuk sistem EVChargeHub.
+                    QR Code ini merupakan
+                    <strong>QR Code simulasi</strong>
+                    untuk sistem EVChargeHub.
 
                 </div>
 
@@ -432,10 +620,7 @@
         @endif
 
 
-        {{-- =========================
-             TOTAL
-        ========================= --}}
-
+        {{-- TOTAL --}}
         <div class="total">
 
             <div class="total-label">
@@ -456,10 +641,7 @@
         </div>
 
 
-        {{-- =========================
-             STATUS
-        ========================= --}}
-
+        {{-- STATUS --}}
         <div
             id="status-message"
             class="status"
@@ -470,13 +652,10 @@
         </div>
 
 
-        {{-- =========================
-             BUTTON
-        ========================= --}}
-
+        {{-- BUTTON --}}
         <div class="buttons">
 
-            {{-- PEMBAYARAN BERHASIL --}}
+            {{-- BERHASIL --}}
 
             <form
                 action="{{ route(
@@ -519,9 +698,7 @@
         </div>
 
 
-        {{-- =========================
-             SIMULASI PEMBAYARAN GAGAL
-        ========================= --}}
+        {{-- SIMULASI GAGAL --}}
 
         <div class="simulation">
 
@@ -575,11 +752,13 @@
 </div>
 
 
-{{-- =========================
-     JAVASCRIPT TIMER
-========================= --}}
-
 <script>
+
+    /*
+    |--------------------------------------------------------------------------
+    | TIMER PEMBAYARAN
+    |--------------------------------------------------------------------------
+    */
 
     const remainingFromServer = {{ max(
         0,
@@ -589,7 +768,9 @@
         )
     ) }};
 
-    let remainingSeconds = Math.floor(remainingFromServer);
+    let remainingSeconds =
+        Math.floor(remainingFromServer);
+
 
     const timerElement =
         document.getElementById('timer');
@@ -603,6 +784,7 @@
     const failButton =
         document.getElementById('fail-button');
 
+
     let timer = null;
 
 
@@ -610,38 +792,53 @@
 
         if (remainingSeconds <= 0) {
 
-            timerElement.textContent = '00:00';
+            timerElement.textContent =
+                '00:00';
 
-            timerElement.classList.add('expired');
+            timerElement.classList.add(
+                'expired'
+            );
+
 
             if (statusMessage) {
 
                 statusMessage.textContent =
-                    'Waktu pembayaran telah habis. Pembayaran akan dinyatakan gagal.';
+                    'Waktu pembayaran telah habis. Pembayaran dinyatakan gagal.';
 
-                statusMessage.classList.add('expired');
+                statusMessage.classList.add(
+                    'expired'
+                );
 
             }
+
 
             if (payButton) {
                 payButton.disabled = true;
             }
 
+
             if (failButton) {
                 failButton.disabled = true;
             }
 
+
             clearInterval(timer);
 
             return;
+
         }
 
 
         const minutes =
-            Math.floor(remainingSeconds / 60);
+            Math.floor(
+                remainingSeconds / 60
+            );
+
 
         const seconds =
-            Math.floor(remainingSeconds % 60);
+            Math.floor(
+                remainingSeconds % 60
+            );
 
 
         timerElement.textContent =
@@ -657,7 +854,133 @@
 
     updateTimer();
 
-    timer = setInterval(updateTimer, 1000);
+    timer = setInterval(
+        updateTimer,
+        1000
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SALIN NOMOR VA
+    |--------------------------------------------------------------------------
+    */
+
+    function copyVA() {
+
+        const number =
+            document.getElementById(
+                'va-number'
+            ).innerText;
+
+
+        if (
+            !number ||
+            number === '-'
+        ) {
+
+            alert(
+                'Nomor Virtual Account belum tersedia.'
+            );
+
+            return;
+
+        }
+
+
+        if (
+            navigator.clipboard &&
+            window.isSecureContext
+        ) {
+
+            navigator.clipboard
+                .writeText(number)
+                .then(function () {
+
+                    alert(
+                        'Nomor Virtual Account berhasil disalin.'
+                    );
+
+                })
+                .catch(function () {
+
+                    alert(
+                        'Nomor Virtual Account: ' +
+                        number
+                    );
+
+                });
+
+        } else {
+
+            alert(
+                'Nomor Virtual Account: ' +
+                number
+            );
+
+        }
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CEGAH DOUBLE SUBMIT
+    |--------------------------------------------------------------------------
+    */
+
+    const completeForm =
+        document.getElementById(
+            'complete-payment-form'
+        );
+
+
+    if (completeForm) {
+
+        completeForm.addEventListener(
+            'submit',
+            function () {
+
+                if (payButton) {
+
+                    payButton.disabled = true;
+
+                    payButton.innerText =
+                        '⏳ Memproses Pembayaran...';
+
+                }
+
+            }
+        );
+
+    }
+
+
+    const failForm =
+        document.getElementById(
+            'fail-payment-form'
+        );
+
+
+    if (failForm) {
+
+        failForm.addEventListener(
+            'submit',
+            function () {
+
+                if (failButton) {
+
+                    failButton.disabled = true;
+
+                    failButton.innerText =
+                        '⏳ Memproses...';
+
+                }
+
+            }
+        );
+
+    }
 
 </script>
 

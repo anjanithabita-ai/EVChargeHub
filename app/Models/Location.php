@@ -10,6 +10,15 @@ class Location extends Model
 
     protected $primaryKey = 'id_location';
 
+    public $timestamps = false;
+
+    protected $fillable = [
+        'nama_station',
+        'alamat',
+        'latitude',
+        'longitude',
+    ];
+
     public function chargers()
     {
         return $this->hasMany(
@@ -23,7 +32,7 @@ class Location extends Model
     {
         return $this->hasMany(
             StationReview::class,
-            'id_location',
+            'id_station',
             'id_location'
         );
     }
