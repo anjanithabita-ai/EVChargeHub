@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ChargerController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\VehicleController;
@@ -97,6 +98,10 @@ Route::post(
         Route::get('/admin/dashboard', [AdminController::class, 'index'])
         ->name('admin.dashboard');
 
+    
+    // Kelola Charger
+    Route::get('/admin/chargers', [ChargerController::class, 'index'])
+        ->name('admin.chargers.index');
     });
 
 // =========================
