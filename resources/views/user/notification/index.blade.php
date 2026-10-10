@@ -11,122 +11,233 @@
 
     <style>
 
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
         * {
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
             background: #f4f8f7;
+
             color: #1f2937;
         }
 
+        a {
+            text-decoration: none;
+        }
 
-        /* =========================
+        button {
+            font-family: inherit;
+        }
+
+
+        /* =====================================================
            SIDEBAR
-        ========================= */
+        ===================================================== */
 
         .sidebar {
             position: fixed;
+
             left: 0;
             top: 0;
-            width: 270px;
+
+            width: 285px;
             height: 100vh;
 
             background:
                 linear-gradient(
                     180deg,
-                    #006b57 0%,
-                    #004d40 55%,
-                    #003b34 100%
+                    #006b59 0%,
+                    #005747 52%,
+                    #00453b 100%
                 );
 
             color: white;
-            overflow-y: auto;
+
             z-index: 1000;
 
+            overflow: hidden;
+
             box-shadow:
-                5px 0 20px rgba(0,0,0,0.12);
+                5px 0 25px rgba(0, 0, 0, 0.08);
         }
 
 
+        /* =====================================================
+           SIDEBAR HEADER
+        ===================================================== */
+
         .sidebar-header {
-            height: 78px;
-            padding: 18px 22px;
+            height: 110px;
+
+            padding: 20px 28px;
 
             display: flex;
+
             align-items: center;
-            gap: 12px;
+
+            gap: 14px;
 
             border-bottom:
-                1px solid rgba(255,255,255,0.10);
+                1px solid rgba(255,255,255,0.12);
+
+            background:
+                rgba(0, 91, 75, 0.72);
         }
 
 
         .logo-icon {
-            width: 42px;
-            height: 42px;
+            width: 54px;
+            height: 54px;
+
+            min-width: 54px;
 
             border-radius: 50%;
-            background: #28d486;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #27e091,
+                    #16c982
+                );
 
             display: flex;
+
             align-items: center;
+
             justify-content: center;
 
-            font-size: 22px;
+            font-size: 28px;
+
+            box-shadow:
+                0 7px 18px
+                rgba(37,217,138,0.28);
+        }
+
+
+        .logo-area {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 3px;
         }
 
 
         .logo-text {
-            font-size: 21px;
-            font-weight: bold;
+            font-size: 22px;
+
+            font-weight: 700;
+
+            color: white;
+
+            letter-spacing: -0.5px;
         }
 
 
+        .logo-subtitle {
+            color:
+                rgba(255,255,255,0.72);
+
+            font-size: 9px;
+
+            letter-spacing: 0.2px;
+        }
+
+
+        /* =====================================================
+           MENU
+        ===================================================== */
+
         .menu {
-            padding: 15px 12px 30px;
+            padding:
+                16px 14px 30px;
+
+            height:
+                calc(100vh - 110px);
+
+            overflow-y: auto;
+
+            scrollbar-width: none;
+        }
+
+
+        .menu::-webkit-scrollbar {
+            display: none;
         }
 
 
         .menu-title {
-            padding: 15px 14px 8px;
+            padding:
+                16px 14px 10px;
 
-            color: #9de5ca;
+            color: #9fe3cc;
+
             font-size: 11px;
 
             text-transform: uppercase;
-            letter-spacing: 1.2px;
 
-            font-weight: bold;
+            letter-spacing: 1.5px;
+
+            font-weight: 700;
+
+            text-shadow:
+                0 1px 3px rgba(0,0,0,0.35);
         }
 
 
         .menu-item {
             display: flex;
+
             align-items: center;
 
-            gap: 12px;
+            gap: 15px;
 
             width: 100%;
 
-            padding: 12px 14px;
-            margin-bottom: 4px;
+            padding:
+                14px 15px;
 
-            border-radius: 10px;
+            margin-bottom: 5px;
 
-            color: #e7f8f3;
-            text-decoration: none;
+            border-radius: 12px;
+
+            color: #e5f7f2;
 
             font-size: 14px;
 
-            transition: 0.2s;
+            font-weight: 500;
 
             border: none;
+
             background: transparent;
 
+            text-align: left;
+
             cursor: pointer;
+
+            transition: all 0.2s ease;
+
+            position: relative;
+
+            z-index: 6;
+
+            text-shadow:
+                0 1px 3px rgba(0,0,0,0.55);
         }
 
 
@@ -135,6 +246,9 @@
                 rgba(255,255,255,0.10);
 
             color: white;
+
+            transform:
+                translateX(2px);
         }
 
 
@@ -142,48 +256,141 @@
             background:
                 linear-gradient(
                     90deg,
-                    #11a875,
-                    #079567
+                    #15bd7d,
+                    #0ba46e
                 );
 
             color: white;
-            font-weight: bold;
+
+            font-weight: 700;
+
+            box-shadow:
+                0 7px 18px
+                rgba(0,0,0,0.10);
+
+            text-shadow: none;
         }
 
+
+        /* =====================================================
+           IKON SIDEBAR
+        ===================================================== */
 
         .menu-icon {
-            width: 27px;
-            min-width: 27px;
+            width: 30px;
 
-            text-align: center;
-            font-size: 18px;
+            min-width: 30px;
+
+            height: 30px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: #ffffff !important;
+
+            line-height: 1;
         }
 
+
+        .menu-icon svg {
+            width: 21px;
+
+            height: 21px;
+
+            display: block;
+
+            color: #ffffff !important;
+
+            stroke: #ffffff !important;
+        }
+
+
+        .menu-icon svg path,
+        .menu-icon svg circle,
+        .menu-icon svg rect,
+        .menu-icon svg line,
+        .menu-icon svg polyline,
+        .menu-icon svg polygon {
+            stroke: #ffffff !important;
+        }
+
+
+        .menu-icon svg circle[fill],
+        .menu-icon svg path[fill] {
+            fill: #ffffff;
+        }
+
+
+        .menu-arrow {
+            margin-left: auto;
+
+            font-size: 18px;
+
+            opacity: 0.9;
+        }
+
+
+        /* =====================================================
+           DIVIDER
+        ===================================================== */
 
         .menu-divider {
-            margin: 18px 8px;
+            margin:
+                22px 9px;
 
             border-top:
-                1px solid rgba(255,255,255,0.12);
+                1px solid
+                rgba(255,255,255,0.20);
         }
 
 
-        /* =========================
+        /* =====================================================
+           LOGOUT
+        ===================================================== */
+
+        .menu form {
+            position: relative;
+
+            z-index: 6;
+
+            width: 100%;
+        }
+
+
+        .menu form .menu-item {
+            margin-top: 0;
+
+            background:
+                rgba(255,255,255,0.07);
+        }
+
+
+        .menu form .menu-item:hover {
+            background:
+                rgba(255,255,255,0.14);
+        }
+
+
+        /* =====================================================
            MAIN
-        ========================= */
+        ===================================================== */
 
         .main {
-            margin-left: 270px;
+            margin-left: 285px;
+
             min-height: 100vh;
         }
 
 
-        /* =========================
+        /* =====================================================
            TOPBAR
-        ========================= */
+        ===================================================== */
 
         .topbar {
-            height: 70px;
+            height: 84px;
 
             background: white;
 
@@ -191,67 +398,136 @@
                 1px solid #e5e7eb;
 
             display: flex;
+
             align-items: center;
+
             justify-content: space-between;
 
-            padding: 0 35px;
+            padding:
+                0 38px;
 
-            box-shadow:
-                0 2px 8px rgba(0,0,0,0.03);
+            position: sticky;
+
+            top: 0;
+
+            z-index: 500;
+        }
+
+
+        .topbar-left {
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
         }
 
 
         .page-title {
-            font-size: 20px;
-            font-weight: bold;
+            font-size: 25px;
+
+            font-weight: 700;
+
             color: #064e3b;
+
+            letter-spacing: -0.5px;
         }
 
 
+        /* =====================================================
+           PROFIL KANAN ATAS
+        ===================================================== */
+
         .user-area {
             display: flex;
+
             align-items: center;
-            gap: 12px;
+
+            gap: 14px;
+
+            margin-left: auto;
+        }
+
+
+        .user-profile {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            cursor: pointer;
         }
 
 
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
 
             border-radius: 50%;
+
             background: #d1fae5;
 
+            border:
+                2px solid #8ee8c3;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
 
+            overflow: hidden;
+
             font-size: 20px;
+        }
+
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
         }
 
 
         .user-name {
             font-size: 13px;
-            font-weight: bold;
+
+            font-weight: 700;
+
             color: #374151;
         }
 
 
-        /* =========================
-           CONTENT
-        ========================= */
+        .user-arrow {
+            color: #64748b;
 
-        .content {
-            padding: 30px 35px 50px;
+            font-size: 16px;
 
-            width: 100%;
-            max-width: 1200px;
+            margin-left: 2px;
         }
 
 
-        /* =========================
+        /* =====================================================
+           CONTENT
+        ===================================================== */
+
+        .content {
+            padding:
+                38px;
+
+            width: 100%;
+
+            max-width: 1200px;
+
+            margin: 0 auto;
+        }
+
+
+        /* =====================================================
            HEADER CARD
-        ========================= */
+        ===================================================== */
 
         .header-card {
             background:
@@ -264,11 +540,58 @@
             border:
                 1px solid #d3eee1;
 
-            border-radius: 18px;
+            border-radius: 22px;
 
-            padding: 25px;
+            padding:
+                28px 30px;
 
             margin-bottom: 25px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+        }
+
+
+        .header-card-left {
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+        }
+
+
+        .header-icon {
+            width: 60px;
+            height: 60px;
+
+            min-width: 60px;
+
+            border-radius: 50%;
+
+            background: #d1fae5;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+
+        .header-icon svg {
+            width: 30px;
+
+            height: 30px;
+
+            stroke: #07895f;
+
+            fill: none;
         }
 
 
@@ -282,26 +605,109 @@
 
 
         .header-card p {
-            margin: 8px 0 0;
+            margin:
+                7px 0 0;
 
             color: #64748b;
 
-            font-size: 14px;
+            font-size: 13px;
+
+            line-height: 1.5;
         }
 
 
-        /* =========================
+        .back-button {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding:
+                10px 15px;
+
+            background: #d1fae5;
+
+            color: #07895f;
+
+            border-radius: 9px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+
+            transition: 0.2s;
+        }
+
+
+        .back-button:hover {
+            background: #baf3d7;
+
+            transform:
+                translateY(-1px);
+        }
+
+
+        /* =====================================================
+           TOOLBAR
+        ===================================================== */
+
+        .notification-toolbar {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 15px;
+        }
+
+
+        .notification-toolbar h2 {
+            margin: 0;
+
+            color: #064e3b;
+
+            font-size: 18px;
+        }
+
+
+        .unread-badge {
+            background: #ef4444;
+
+            color: white;
+
+            padding:
+                7px 12px;
+
+            border-radius: 20px;
+
+            font-size: 10px;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
            NOTIFICATION LIST
-        ========================= */
+        ===================================================== */
 
         .notification-list {
             width: 100%;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
         }
 
 
-        /* =========================
+        /* =====================================================
            NOTIFICATION CARD
-        ========================= */
+        ===================================================== */
 
         .notification-card {
             width: 100%;
@@ -311,21 +717,23 @@
             border:
                 1px solid #e5e7eb;
 
-            border-radius: 15px;
+            border-radius: 16px;
 
-            padding: 20px;
-
-            margin-bottom: 15px;
+            padding:
+                18px 20px;
 
             display: flex;
+
             align-items: center;
 
             gap: 15px;
 
             box-shadow:
-                0 5px 15px rgba(0,0,0,0.05);
+                0 5px 15px
+                rgba(0,0,0,0.04);
 
-            transition: 0.2s;
+            transition:
+                all 0.2s ease;
         }
 
 
@@ -334,9 +742,24 @@
                 translateY(-2px);
 
             box-shadow:
-                0 8px 20px rgba(0,0,0,0.08);
+                0 8px 20px
+                rgba(0,0,0,0.07);
         }
 
+
+        /* BELUM DIBACA */
+
+        .notification-card.unread {
+            background: #f0fdf7;
+
+            border-left:
+                4px solid #10b981;
+        }
+
+
+        /* =====================================================
+           NOTIFICATION ICON
+        ===================================================== */
 
         .notification-icon {
             width: 50px;
@@ -346,54 +769,170 @@
 
             border-radius: 50%;
 
-            background: #dcfce7;
-
             display: flex;
-            align-items: center;
-            justify-content: center;
 
-            font-size: 23px;
+            align-items: center;
+
+            justify-content: center;
         }
 
 
+        .notification-icon svg {
+            width: 24px;
+
+            height: 24px;
+
+            fill: none;
+        }
+
+
+        .notification-icon.payment {
+            background: #fef3c7;
+        }
+
+
+        .notification-icon.payment svg {
+            stroke: #b77900;
+        }
+
+
+        .notification-icon.charging {
+            background: #dcfce7;
+        }
+
+
+        .notification-icon.charging svg {
+            stroke: #07895f;
+        }
+
+
+        .notification-icon.vehicle {
+            background: #dbeafe;
+        }
+
+
+        .notification-icon.vehicle svg {
+            stroke: #1769aa;
+        }
+
+
+        .notification-icon.system {
+            background: #ede9fe;
+        }
+
+
+        .notification-icon.system svg {
+            stroke: #6d28d9;
+        }
+
+
+        /* =====================================================
+           NOTIFICATION CONTENT
+        ===================================================== */
+
         .notification-content {
             flex: 1;
+
             min-width: 0;
         }
 
 
-        .notification-content h3 {
-            margin: 0 0 6px;
+        .notification-title {
+            display: flex;
 
-            font-size: 15px;
+            align-items: center;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .notification-content h3 {
+            margin: 0;
+
+            font-size: 14px;
 
             color: #064e3b;
         }
 
 
         .notification-content p {
-            margin: 0;
+            margin:
+                6px 0 0;
 
-            font-size: 13px;
+            font-size: 12px;
 
             color: #64748b;
 
-            line-height: 1.5;
+            line-height: 1.6;
+        }
+
+
+        .new-badge {
+            background: #ef4444;
+
+            color: white;
+
+            padding:
+                3px 7px;
+
+            border-radius: 6px;
+
+            font-size: 8px;
+
+            font-weight: 700;
         }
 
 
         .notification-time {
-            font-size: 11px;
+            margin-top: 7px;
+
+            font-size: 10px;
 
             color: #94a3b8;
-
-            white-space: nowrap;
         }
 
 
-        /* =========================
-           EMPTY NOTIFICATION
-        ========================= */
+        /* =====================================================
+           NOTIFICATION ACTION
+        ===================================================== */
+
+        .notification-action {
+            display: flex;
+
+            align-items: center;
+        }
+
+
+        .read-button {
+            border: none;
+
+            background: #ecfdf5;
+
+            color: #07895f;
+
+            padding:
+                7px 10px;
+
+            border-radius: 7px;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        .read-button:hover {
+            background: #d1fae5;
+        }
+
+
+        /* =====================================================
+           EMPTY
+        ===================================================== */
 
         .notification-empty {
             width: 100%;
@@ -403,141 +942,202 @@
             border:
                 1px solid #e5e7eb;
 
-            border-radius: 15px;
+            border-radius: 17px;
 
-            padding: 40px 20px;
+            padding:
+                55px 20px;
 
             text-align: center;
 
-            color: #64748b;
-
             box-shadow:
-                0 5px 15px rgba(0,0,0,0.05);
+                0 5px 15px
+                rgba(0,0,0,0.04);
         }
 
 
         .notification-empty-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
+            width: 70px;
+            height: 70px;
+
+            margin:
+                0 auto 15px;
+
+            border-radius: 50%;
+
+            background: #ecfdf5;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+
+        .notification-empty-icon svg {
+            width: 32px;
+
+            height: 32px;
+
+            stroke: #07895f;
         }
 
 
         .notification-empty h3 {
-            margin: 0 0 6px;
+            margin:
+                0 0 7px;
 
             color: #064e3b;
 
-            font-size: 16px;
+            font-size: 17px;
         }
 
 
         .notification-empty p {
             margin: 0;
 
-            font-size: 13px;
-
             color: #64748b;
+
+            font-size: 12px;
         }
 
 
-        /* =========================
-           BACK BUTTON
-        ========================= */
+        /* =====================================================
+           FOOTER
+        ===================================================== */
 
-        .back-button {
-            display: inline-block;
+        .footer {
+            text-align: center;
 
-            margin-top: 15px;
+            margin-top: 40px;
 
-            padding: 10px 16px;
+            padding-top: 22px;
 
-            background: #07895f;
+            border-top:
+                1px solid #e2e8e5;
 
-            color: white;
+            color: #94a3b8;
 
-            text-decoration: none;
-
-            border-radius: 8px;
-
-            font-size: 13px;
-
-            font-weight: bold;
+            font-size: 11px;
         }
 
 
-        .back-button:hover {
-            background: #056c4c;
-        }
-
-
-        /* =========================
+        /* =====================================================
            RESPONSIVE
-        ========================= */
+        ===================================================== */
 
-        @media(max-width: 800px) {
-
-            .content {
-                padding:
-                    25px 20px;
-            }
-
-            .notification-card {
-                align-items: flex-start;
-            }
-
-        }
-
-
-        @media(max-width: 600px) {
+        @media(max-width: 900px) {
 
             .sidebar {
-                width: 70px;
+                width: 235px;
             }
 
             .main {
-                margin-left: 70px;
+                margin-left: 235px;
             }
 
-            .logo-text,
-            .menu-title,
-            .menu-item span:not(.menu-icon) {
-                display: none;
+            .content {
+                padding:
+                    28px 25px;
+            }
+
+        }
+
+
+        @media(max-width: 650px) {
+
+            .sidebar {
+                width: 72px;
+            }
+
+            .main {
+                margin-left: 72px;
             }
 
             .sidebar-header {
+                height: 80px;
+
                 justify-content: center;
+
                 padding: 15px;
+            }
+
+            .logo-icon {
+                width: 45px;
+                height: 45px;
+
+                min-width: 45px;
+
+                font-size: 23px;
+            }
+
+            .logo-area,
+            .logo-text,
+            .logo-subtitle,
+            .menu-title,
+            .menu-item span:not(.menu-icon),
+            .menu-arrow {
+                display: none;
+            }
+
+            .menu {
+                height:
+                    calc(100vh - 80px);
+
+                padding:
+                    12px 8px;
             }
 
             .menu-item {
                 justify-content: center;
-                padding: 13px 8px;
-            }
 
-            .menu-icon {
-                width: 100%;
+                padding:
+                    13px 5px;
             }
 
             .topbar {
-                padding: 0 15px;
+                height: 70px;
+
+                padding:
+                    0 15px;
             }
 
-            .user-name {
+            .page-title {
+                font-size: 19px;
+            }
+
+            .user-name,
+            .user-arrow {
                 display: none;
             }
 
             .content {
                 padding:
-                    20px 15px;
+                    20px 15px 40px;
+            }
+
+            .header-card {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                padding: 22px;
             }
 
             .notification-card {
                 align-items: flex-start;
+
+                padding: 15px;
             }
 
             .notification-time {
                 display: none;
             }
+
+            .notification-action {
+                display: none;
+            }
+
         }
 
     </style>
@@ -548,11 +1148,25 @@
 <body>
 
 
-<!-- =========================
+@php
+
+    $user = auth()->user();
+
+    $unreadCount = $notifications
+        ->where('is_read', false)
+        ->count();
+
+@endphp
+
+
+<!-- =====================================================
      SIDEBAR
-========================= -->
+===================================================== -->
 
 <aside class="sidebar">
+
+
+    <!-- LOGO -->
 
     <div class="sidebar-header">
 
@@ -560,14 +1174,30 @@
             ⚡
         </div>
 
-        <div class="logo-text">
-            EVChargeHub
+
+        <div class="logo-area">
+
+            <div class="logo-text">
+                EVChargeHub
+            </div>
+
+            <div class="logo-subtitle">
+                Charge Today, Greener Tomorrow
+            </div>
+
         </div>
 
     </div>
 
 
+    <!-- MENU -->
+
     <div class="menu">
+
+
+        <!-- =====================
+             MENU UTAMA
+        ====================== -->
 
         <div class="menu-title">
             Menu Utama
@@ -582,22 +1212,52 @@
         >
 
             <span class="menu-icon">
-                🏠
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                >
+
+                    <path
+                        d="M3 10.5L12 3l9 7.5V21H3V10.5Z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linejoin="round"
+                    />
+
+                    <path
+                        d="M9 21v-6h6v6"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    />
+
+                </svg>
+
             </span>
+
 
             <span>
                 Dashboard
             </span>
 
+
+            <span class="menu-arrow">
+                ›
+            </span>
+
         </a>
 
 
-        <!-- AKUN -->
+        <!-- =====================
+             AKUN
+        ====================== -->
 
         <div class="menu-title">
             Akun
         </div>
 
+
+        <!-- PROFIL -->
 
         <a
             href="{{ route('profile.edit') }}"
@@ -605,15 +1265,45 @@
         >
 
             <span class="menu-icon">
-                👤
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                >
+
+                    <circle
+                        cx="12"
+                        cy="8"
+                        r="4"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    />
+
+                    <path
+                        d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                    />
+
+                </svg>
+
             </span>
+
 
             <span>
                 Profil Saya
             </span>
 
+
+            <span class="menu-arrow">
+                ›
+            </span>
+
         </a>
 
+
+        <!-- KENDARAAN -->
 
         <a
             href="{{ route('vehicles.index') }}"
@@ -621,54 +1311,114 @@
         >
 
             <span class="menu-icon">
-                🚗
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                >
+
+                    <path
+                        d="M5 16l1.5-5h11L19 16"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linejoin="round"
+                    />
+
+                    <path
+                        d="M4 16h16v4H4z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linejoin="round"
+                    />
+
+                    <circle
+                        cx="7"
+                        cy="20"
+                        r="1"
+                        fill="currentColor"
+                    />
+
+                    <circle
+                        cx="17"
+                        cy="20"
+                        r="1"
+                        fill="currentColor"
+                    />
+
+                </svg>
+
             </span>
+
 
             <span>
                 Kendaraan Saya
             </span>
 
+
+            <span class="menu-arrow">
+                ›
+            </span>
+
         </a>
 
 
-        <!-- FITUR UTAMA -->
+        <!-- =====================
+             FITUR UTAMA
+        ====================== -->
 
         <div class="menu-title">
             Fitur Utama
         </div>
 
 
+        <!-- CHARGING STATION -->
+
         <a
             href="{{ route('stations.index') }}"
             class="menu-item"
         >
 
             <span class="menu-icon">
-                📍
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                >
+
+                    <path
+                        d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    />
+
+                    <circle
+                        cx="12"
+                        cy="9"
+                        r="2.5"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    />
+
+                </svg>
+
             </span>
+
 
             <span>
                 Charging Station
             </span>
 
-        </a>
 
-
-        <a
-            href="{{ route('stations.index') }}"
-            class="menu-item"
-        >
-
-            <span class="menu-icon">
-                ⚡
-            </span>
-
-            <span>
-                Charging
+            <span class="menu-arrow">
+                ›
             </span>
 
         </a>
 
+
+    
+
+        <!-- RIWAYAT -->
 
         <a
             href="{{ route('charging.history') }}"
@@ -676,17 +1426,45 @@
         >
 
             <span class="menu-icon">
-                🕐
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                >
+
+                    <circle
+                        cx="12"
+                        cy="12"
+                        r="9"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    />
+
+                    <path
+                        d="M12 7v5l3 2"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                    />
+
+                </svg>
+
             </span>
 
+
             <span>
-                Riwayat
+                Riwayat Charging
+            </span>
+
+
+            <span class="menu-arrow">
+                ›
             </span>
 
         </a>
 
 
-        <!-- NOTIFIKASI -->
+        <!-- NOTIFIKASI AKTIF -->
 
         <a
             href="{{ route('notifications.index') }}"
@@ -694,15 +1472,68 @@
         >
 
             <span class="menu-icon">
-                🔔
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                >
+
+                    <path
+                        d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linejoin="round"
+                    />
+
+                    <path
+                        d="M10 21h4"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                    />
+
+                </svg>
+
             </span>
+
 
             <span>
                 Notifikasi
             </span>
 
+
+            @if($unreadCount > 0)
+
+                <span
+                    style="
+                        margin-left:auto;
+                        background:#ef4444;
+                        color:white;
+                        width:22px;
+                        height:22px;
+                        border-radius:50%;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        font-size:10px;
+                        font-weight:700;
+                    "
+                >
+                    {{ $unreadCount > 9 ? '9+' : $unreadCount }}
+                </span>
+
+            @else
+
+                <span class="menu-arrow">
+                    ›
+                </span>
+
+            @endif
+
         </a>
 
+
+        <!-- DIVIDER -->
 
         <div class="menu-divider"></div>
 
@@ -716,14 +1547,46 @@
 
             @csrf
 
+
             <button
                 type="submit"
                 class="menu-item"
             >
 
                 <span class="menu-icon">
-                    🚪
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                    >
+
+                        <path
+                            d="M10 17l5-5-5-5"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+
+                        <path
+                            d="M15 12H3"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
+
+                        <path
+                            d="M14 4h5v16h-5"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+
+                    </svg>
+
                 </span>
+
 
                 <span>
                     Logout
@@ -733,103 +1596,317 @@
 
         </form>
 
+
     </div>
 
 </aside>
 
 
-<!-- =========================
+<!-- =====================================================
      MAIN
-========================= -->
+===================================================== -->
 
 <div class="main">
 
 
-    <!-- TOPBAR -->
+    <!-- =================================================
+         TOPBAR
+    ================================================= -->
 
     <header class="topbar">
 
-        <div class="page-title">
-            Notifikasi
+
+        <div class="topbar-left">
+
+            <div class="page-title">
+                Notifikasi
+            </div>
+
         </div>
 
+
+        <!-- PROFIL KANAN -->
 
         <div class="user-area">
 
-            <div class="user-avatar">
-                👤
-            </div>
+            <div class="user-profile">
 
 
-            <div class="user-name">
+                <div class="user-avatar">
 
-                {{ auth()->user()->nama }}
+                    @if($user && !empty($user->foto))
+
+                        <img
+                            src="{{ asset('storage/' . $user->foto) }}"
+                            alt="Foto Profil"
+                        >
+
+                    @else
+
+                        👤
+
+                    @endif
+
+                </div>
+
+
+                <div class="user-name">
+
+                    {{ $user->nama ?? 'Pengguna' }}
+
+                </div>
+
+
 
             </div>
 
         </div>
+
 
     </header>
 
 
-    <!-- CONTENT -->
+    <!-- =================================================
+         CONTENT
+    ================================================= -->
 
     <main class="content">
 
 
-        <!-- HEADER -->
+        <!-- HEADER CARD -->
 
-        <div class="header-card">
+        <section class="header-card">
 
-            <h1>
-                🔔 Notifikasi
-            </h1>
 
-            <p>
-                Informasi dan pemberitahuan terbaru dari EVChargeHub.
-            </p>
+            <div class="header-card-left">
+
+
+                <div class="header-icon">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                    >
+
+                        <path
+                            d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"
+                            stroke-width="2"
+                            stroke-linejoin="round"
+                        />
+
+                        <path
+                            d="M10 21h4"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
+
+                    </svg>
+
+                </div>
+
+
+                <div>
+
+                    <h1>
+                        Notifikasi
+                    </h1>
+
+
+                    <p>
+                        Informasi dan pemberitahuan terbaru dari EVChargeHub.
+                    </p>
+
+                </div>
+
+
+            </div>
+
 
             <a
                 href="{{ route('user.dashboard') }}"
                 class="back-button"
             >
+
                 ← Kembali ke Dashboard
+
             </a>
+
+
+        </section>
+
+
+        <!-- =================================================
+             TOOLBAR
+        ================================================= -->
+
+        <div class="notification-toolbar">
+
+
+            <h2>
+                Semua Notifikasi
+            </h2>
+
+
+            @if($unreadCount > 0)
+
+                <div class="unread-badge">
+
+                    {{ $unreadCount }}
+
+                    belum dibaca
+
+                </div>
+
+            @endif
+
 
         </div>
 
 
-        <!-- =========================
+        <!-- =================================================
              NOTIFICATION LIST
-        ========================= -->
+        ================================================= -->
 
         <div class="notification-list">
 
+
             @forelse($notifications as $notification)
 
-                <div class="notification-card">
+
+                @php
+
+                    $type = $notification->type ?? 'system';
+
+                @endphp
+
+
+                <div
+                    class="
+                        notification-card
+                        {{ !$notification->is_read ? 'unread' : '' }}
+                    "
+                >
+
 
                     <!-- ICON -->
 
-                    <div class="notification-icon">
+                    <div
+                        class="
+                            notification-icon
+                            {{ $type }}
+                        "
+                    >
 
-                        @if($notification->type === 'payment')
 
-                            💳
+                        @if($type === 'payment')
 
-                        @elseif($notification->type === 'charging')
+                            <!-- PAYMENT -->
 
-                            ⚡
+                            <svg
+                                viewBox="0 0 24 24"
+                            >
 
-                        @elseif($notification->type === 'vehicle')
+                                <rect
+                                    x="3"
+                                    y="5"
+                                    width="18"
+                                    height="14"
+                                    rx="2"
+                                    stroke-width="2"
+                                />
 
-                            🚗
+                                <path
+                                    d="M3 10h18"
+                                    stroke-width="2"
+                                />
+
+                                <path
+                                    d="M7 15h4"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                />
+
+                            </svg>
+
+
+                        @elseif($type === 'charging')
+
+                            <!-- CHARGING -->
+
+                            <svg
+                                viewBox="0 0 24 24"
+                            >
+
+                                <path
+                                    d="M13 2L5 13h6l-1 9 8-11h-6l1-9Z"
+                                    stroke-width="2"
+                                    stroke-linejoin="round"
+                                />
+
+                            </svg>
+
+
+                        @elseif($type === 'vehicle')
+
+                            <!-- VEHICLE -->
+
+                            <svg
+                                viewBox="0 0 24 24"
+                            >
+
+                                <path
+                                    d="M5 16l1.5-5h11L19 16"
+                                    stroke-width="2"
+                                    stroke-linejoin="round"
+                                />
+
+                                <path
+                                    d="M4 16h16v4H4z"
+                                    stroke-width="2"
+                                />
+
+                                <circle
+                                    cx="7"
+                                    cy="20"
+                                    r="1"
+                                    fill="currentColor"
+                                    stroke="none"
+                                />
+
+                                <circle
+                                    cx="17"
+                                    cy="20"
+                                    r="1"
+                                    fill="currentColor"
+                                    stroke="none"
+                                />
+
+                            </svg>
+
 
                         @else
 
-                            🔔
+                            <!-- SYSTEM -->
+
+                            <svg
+                                viewBox="0 0 24 24"
+                            >
+
+                                <path
+                                    d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"
+                                    stroke-width="2"
+                                    stroke-linejoin="round"
+                                />
+
+                                <path
+                                    d="M10 21h4"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                />
+
+                            </svg>
 
                         @endif
+
 
                     </div>
 
@@ -838,59 +1915,155 @@
 
                     <div class="notification-content">
 
-                        <h3>
-                            {{ $notification->title }}
-                        </h3>
+
+                        <div class="notification-title">
+
+                            <h3>
+                                {{ $notification->title }}
+                            </h3>
+
+
+                            @if(!$notification->is_read)
+
+                                <span class="new-badge">
+                                    BARU
+                                </span>
+
+                            @endif
+
+                        </div>
+
 
                         <p>
                             {{ $notification->message }}
                         </p>
 
+
+                        <div class="notification-time">
+
+                            🕐
+
+                            @if($notification->created_at)
+
+                                {{ $notification->created_at->format('d/m/Y H:i') }}
+
+                            @else
+
+                                -
+
+                            @endif
+
+                        </div>
+
+
                     </div>
 
 
-                    <!-- TIME -->
+                    <!-- MARK AS READ -->
 
-                    <div class="notification-time">
+                    @if(!$notification->is_read)
 
-                        @if($notification->created_at)
+                        <div class="notification-action">
 
-                            {{ $notification->created_at->format('d/m/Y H:i') }}
+                            <form
+                                action="{{ route(
+                                    'notifications.read.one',
+                                    $notification->id
+                                ) }}"
+                                method="POST"
+                            >
 
-                        @else
+                                @csrf
 
-                            -
+                                <button
+                                    type="submit"
+                                    class="read-button"
+                                >
 
-                        @endif
+                                    ✓ Dibaca
 
-                    </div>
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    @endif
+
 
                 </div>
+
 
             @empty
 
+
+                <!-- EMPTY -->
+
                 <div class="notification-empty">
 
+
                     <div class="notification-empty-icon">
-                        🔔
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+
+                            <path
+                                d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"
+                                stroke-width="2"
+                                stroke-linejoin="round"
+                            />
+
+                            <path
+                                d="M10 21h4"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                            />
+
+                        </svg>
+
                     </div>
 
+
                     <h3>
-                        Belum ada notifikasi
+                        Belum Ada Notifikasi
                     </h3>
 
+
                     <p>
-                        Saat ini belum ada pemberitahuan untuk Anda.
+                        Saat ini belum ada pemberitahuan untuk akun Anda.
                     </p>
+
 
                 </div>
 
+
             @endforelse
+
+
+        </div>
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================= -->
+
+        <div class="footer">
+
+            © {{ date('Y') }}
+
+            EVChargeHub
+
+            —
+
+            Sistem Manajemen Charging Kendaraan Listrik
 
         </div>
 
 
     </main>
+
 
 </div>
 

@@ -8,6 +8,8 @@ class Notification extends Model
 {
     protected $table = 'notifications';
 
+    protected $primaryKey = 'id';
+
     protected $fillable = [
         'user_id',
         'title',
@@ -18,13 +20,16 @@ class Notification extends Model
 
     protected $casts = [
         'is_read' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
-    /**
-     * Relasi ke user
-     */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id_user');
+        return $this->belongsTo(
+            User::class,
+            'user_id',
+            'id_user'
+        );
     }
 }

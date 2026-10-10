@@ -609,9 +609,9 @@
 
                     <br><br>
 
-                    QR Code ini merupakan
+                    {{-- QR Code ini merupakan
                     <strong>QR Code simulasi</strong>
-                    untuk sistem EVChargeHub.
+                    untuk sistem EVChargeHub. --}}
 
                 </div>
 

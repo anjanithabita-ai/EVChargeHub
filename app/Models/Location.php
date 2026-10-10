@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Charger;
+use App\Models\StationReview;
 
 class Location extends Model
 {
@@ -10,15 +12,19 @@ class Location extends Model
 
     protected $primaryKey = 'id_location';
 
-    public $timestamps = false;
-
     protected $fillable = [
-        'nama_station',
+        'nama_lokasi',
         'alamat',
         'latitude',
         'longitude',
+        'jam_buka',
+        'jam_tutup',
+        'fasilitas',
+        'foto',
+        'status',
     ];
 
+    // Relasi: satu lokasi memiliki banyak charger
     public function chargers()
     {
         return $this->hasMany(
@@ -28,6 +34,7 @@ class Location extends Model
         );
     }
 
+    // Relasi: satu lokasi memiliki banyak ulasan
     public function reviews()
     {
         return $this->hasMany(

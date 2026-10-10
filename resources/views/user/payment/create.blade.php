@@ -622,7 +622,6 @@
                 name="bank_va"
                 id="bank_va"
             >
-
                 <option value="">
                     -- Pilih Bank --
                 </option>
@@ -659,6 +658,49 @@
                     Bank Danamon
                 </option>
 
+                <option value="btn">
+                    Bank BTN
+                </option>
+
+                <option value="ocbc">
+                    OCBC
+                </option>
+
+                <option value="mega">
+                    Bank Mega
+                </option>
+
+                <option value="panin">
+                    PaninBank
+                </option>
+
+                <option value="maybank">
+                    Maybank Indonesia
+                </option>
+
+                <option value="uob">
+                    UOB Indonesia
+                </option>
+
+                <option value="dbs">
+                    DBS Indonesia
+                </option>
+
+                <option value="jago">
+                    Bank Jago
+                </option>
+
+                <option value="seabank">
+                    SeaBank
+                </option>
+
+                <option value="neo">
+                    Bank Neo Commerce
+                </option>
+
+                <option value="btpn">
+                    SMBC Indonesia
+                </option>
             </select>
 
             <p style="font-size:13px;color:#777;margin-bottom:0;margin-top:10px;">
