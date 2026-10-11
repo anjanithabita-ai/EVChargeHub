@@ -45,7 +45,6 @@ class Location extends Model
         );
     }
 
-    // Relasi: satu lokasi memiliki banyak tarif charging
     public function tariffs()
     {
         return $this->hasMany(
@@ -55,4 +54,3 @@ class Location extends Model
         );
     }
 }
-

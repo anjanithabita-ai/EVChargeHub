@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -7,6 +8,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ChargerController;
+use App\Http\Controllers\Admin\ChargingStationController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\VehicleController;
@@ -19,24 +21,25 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OperatorDashboardController;
 use App\Http\Controllers\OperatorController;
 
-use App\Http\Controllers\Admin\ChargingStationController;
-use App\Http\Controllers\Admin\TariffController;
-
 use App\Models\Notification;
 
 
-// =====================================================
-// HALAMAN UTAMA
-// =====================================================
+/*
+|--------------------------------------------------------------------------
+| HALAMAN UTAMA
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
 
-// =====================================================
-// LOGIN, REGISTER, LOGOUT
-// =====================================================
+/*
+|--------------------------------------------------------------------------
+| AUTHENTICATION
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
@@ -54,9 +57,11 @@ Route::post('/register', [RegisterController::class, 'register'])
     ->name('register.process');
 
 
-// =====================================================
-// FORGOT PASSWORD & RESET PASSWORD
-// =====================================================
+/*
+|--------------------------------------------------------------------------
+| FORGOT & RESET PASSWORD
+|--------------------------------------------------------------------------
+*/
 
 Route::get(
     '/forgot-password',
@@ -79,112 +84,57 @@ Route::post(
 )->name('password.update');
 
 
-// =====================================================
-// ADMIN
-// =====================================================
+/*
+|--------------------------------------------------------------------------
+| ADMIN
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
-    // DASHBOARD ADMIN
+    // Dashboard Admin
     Route::get(
         '/admin/dashboard',
         [AdminController::class, 'index']
     )->name('admin.dashboard');
 
+    // Kelola Charger
+    
+    Route::get('/admin/chargers', [ChargerController::class, 'index'])
+    ->name('admin.chargers.index');
 
-    // -------------------------------------------------
-    // KELOLA CHARGING STATION
-    // -------------------------------------------------
-
-    Route::get(
+    // Kelola Charging Station
+    Route::resource(
         '/admin/charging-stations',
-        [ChargingStationController::class, 'index']
-    )->name('admin.stations.index');
-
-    Route::get(
-        '/admin/charging-stations/create',
-        [ChargingStationController::class, 'create']
-    )->name('admin.stations.create');
-
-    Route::post(
-        '/admin/charging-stations',
-        [ChargingStationController::class, 'store']
-    )->name('admin.stations.store');
-
-    Route::get(
-        '/admin/charging-stations/{id}/detail',
-        [ChargingStationController::class, 'show']
-    )->name('admin.stations.show');
-
-    Route::get(
-        '/admin/charging-stations/{id}/edit',
-        [ChargingStationController::class, 'edit']
-    )->name('admin.stations.edit');
-
-    Route::put(
-        '/admin/charging-stations/{id}',
-        [ChargingStationController::class, 'update']
-    )->name('admin.stations.update');
-
-
-    // -------------------------------------------------
-    // KELOLA CHARGER
-    // -------------------------------------------------
-
-    Route::get(
-        '/admin/chargers',
-        [ChargerController::class, 'index']
-    )->name('admin.chargers.index');
-
-
-    // -------------------------------------------------
-    // KELOLA TARIF CHARGING
-    // -------------------------------------------------
-
-    Route::get(
-        '/admin/tariffs',
-        [TariffController::class, 'index']
-    )->name('admin.tariffs.index');
-
-    Route::get(
-        '/admin/tariffs/create',
-        [TariffController::class, 'create']
-    )->name('admin.tariffs.create');
-
-    Route::post(
-        '/admin/tariffs',
-        [TariffController::class, 'store']
-    )->name('admin.tariffs.store');
-
-    Route::get(
-        '/admin/tariffs/{id}/edit',
-        [TariffController::class, 'edit']
-    )->name('admin.tariffs.edit');
-
-    Route::put(
-        '/admin/tariffs/{id}',
-        [TariffController::class, 'update']
-    )->name('admin.tariffs.update');
+        ChargingStationController::class
+    )
+        ->parameters(['charging-stations' => 'station'])
+        ->names('admin.charging-stations')
+        ->except(['destroy']);
 
 });
 
 
-// =====================================================
-// USER / PENGEMUDI
-// =====================================================
+/*
+|--------------------------------------------------------------------------
+| USER / PENGEMUDI
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware(['auth', 'role:user'])->group(function () {
 
-    // DASHBOARD USER
+    // Dashboard User
     Route::get('/user/dashboard', function () {
 
         $userId = auth()->user()->id_user;
 
+        // Ambil maksimal 5 notifikasi terbaru
         $notifications = Notification::where('user_id', $userId)
             ->latest()
             ->take(5)
             ->get();
 
+        // Hitung notifikasi yang belum dibaca
         $unreadNotifications = Notification::where('user_id', $userId)
             ->where('is_read', false)
             ->count();
@@ -197,14 +147,14 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     })->name('user.dashboard');
 
 
-    // KENDARAAN
+    // Kendaraan
     Route::resource(
         '/user/vehicles',
         VehicleController::class
     )->names('vehicles');
 
 
-    // PROFILE USER
+    // Profil User
     Route::get(
         '/user/profile',
         [ProfileController::class, 'edit']
@@ -221,13 +171,15 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     )->name('profile.photo.update');
 
     Route::get('/profile', function () {
+
         $user = Auth::user();
 
         return view('user.profile', compact('user'));
+
     })->name('profile');
 
 
-    // STATION UNTUK USER
+    // Charging Station
     Route::get(
         '/user/stations',
         [StationController::class, 'index']
@@ -239,14 +191,14 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     )->name('stations.show');
 
 
-    // RATING & REVIEW
+    // Rating & Review Station
     Route::post(
         '/user/stations/{id_station}/reviews',
         [StationReviewController::class, 'store']
     )->name('station.reviews.store');
 
 
-    // CHARGING
+    // Charging
     Route::get(
         '/user/charging/{charger}/create',
         [ChargingController::class, 'create']
@@ -278,7 +230,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     )->name('charging.history');
 
 
-    // PEMBAYARAN
+    // Pembayaran
     Route::get(
         '/user/payment/{session}/create',
         [PaymentController::class, 'create']
@@ -325,7 +277,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     )->name('payment.invoice');
 
 
-    // NOTIFIKASI
+    // Notifikasi
     Route::get('/user/notifications', function () {
 
         $userId = auth()->user()->id_user;
@@ -342,21 +294,24 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     })->name('notifications.index');
 
 
-    // TANDAI SEMUA NOTIFIKASI DIBACA
+    // Tandai semua notifikasi sebagai dibaca
     Route::post('/user/notifications/read', function () {
 
-        Notification::where('user_id', auth()->user()->id_user)
+        Notification::where(
+            'user_id',
+            auth()->user()->id_user
+        )
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
         return response()->json([
-            'success' => true
+            'success' => true,
         ]);
 
     })->name('notifications.read');
 
 
-    // TANDAI SATU NOTIFIKASI DIBACA
+    // Tandai satu notifikasi sebagai dibaca
     Route::post(
         '/user/notifications/{notification}/read',
         [NotificationController::class, 'read']
@@ -365,13 +320,15 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 });
 
 
-// =====================================================
-// OPERATOR
-// =====================================================
+/*
+|--------------------------------------------------------------------------
+| OPERATOR
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware(['auth', 'role:operator'])->group(function () {
 
-    // PROFILE OPERATOR
+    // Profil Operator
     Route::get(
         '/operator/profile',
         [OperatorController::class, 'profile']
@@ -383,64 +340,59 @@ Route::middleware(['auth', 'role:operator'])->group(function () {
     )->name('operator.profile.update');
 
 
-    // DASHBOARD OPERATOR
+    // Dashboard Operator
     Route::get(
         '/operator/dashboard',
         [OperatorDashboardController::class, 'index']
     )->name('operator.dashboard');
 
 
-    // LIHAT STATION
+    // Lihat Charging Station
     Route::get(
         '/operator/stations',
         [OperatorController::class, 'stations']
     )->name('operator.stations');
 
 
-    // LIHAT CHARGER
+    // Lihat Data Charger
     Route::get(
         '/operator/chargers',
         [OperatorController::class, 'chargers']
     )->name('operator.chargers');
 
 
-    // MONITOR STATUS CHARGER
+    // Monitor Status Charger
     Route::get(
         '/operator/charger-status',
         [OperatorController::class, 'chargerStatus']
     )->name('operator.charger-status');
 
 
-    // UPDATE STATUS CHARGER
+    // Update Status Charger
     Route::patch(
         '/operator/chargers/{charger}/status',
         [OperatorController::class, 'updateChargerStatus']
     )->name('operator.chargers.status');
 
 
-    // MONITOR SESI CHARGING
+    // Monitor Sesi Charging
     Route::get(
         '/operator/sessions',
         [OperatorController::class, 'sessions']
     )->name('operator.sessions');
 
 
-    // RIWAYAT SESI CHARGING
+    // Riwayat Sesi Charging
     Route::get(
         '/operator/history',
         [OperatorController::class, 'history']
     )->name('operator.history');
 
 
-    // LAPORAN PENGGUNAAN CHARGER
+    // Laporan Penggunaan Charger
     Route::get(
         '/operator/report',
         [OperatorController::class, 'report']
     )->name('operator.report');
 
 });
-
-
-// =====================================================
-// SELESAI
-// =====================================================

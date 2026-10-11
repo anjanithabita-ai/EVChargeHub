@@ -1,0 +1,2788 @@
+
+
+========== FILE: app/Http/Controllers/AdminController.php ==========
+
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use App\Models\Location;
+use App\Models\Charger;
+use App\Models\ChargingSession;
+use App\Models\Payment;
+
+class AdminController extends Controller
+{
+    public function index()
+    {
+        $totalUsers = User::where('role', 'user')->count();
+
+        $totalLocations = Location::count();
+
+        $totalChargers = Charger::count();
+
+        $totalSessions = ChargingSession::count();
+
+        $totalPayments = Payment::count();
+
+        return view('admin.dashboard', compact(
+            'totalUsers',
+            'totalLocations',
+            'totalChargers',
+            'totalSessions',
+            'totalPayments'
+        ));
+    }
+}
+
+
+========== FILE: app/Http/Controllers/ChargerController.php ==========
+
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Charger;
+use App\Models\Location;
+use Illuminate\Http\Request;
+
+class ChargerController extends Controller
+{
+    /**
+     * Menampilkan daftar charger untuk admin
+     */
+    public function index(Request $request)
+    {
+        $query = Charger::with('location');
+
+        // Pencarian berdasarkan kode charger
+        if ($request->filled('search')) {
+            $query->where(
+                'kode_perangkat',
+                'like',
+                '%' . $request->search . '%'
+            );
+        }
+
+        // Filter berdasarkan charging station
+        if ($request->filled('location')) {
+            $query->where(
+                'id_location',
+                $request->location
+            );
+        }
+
+        // Filter berdasarkan status
+        if ($request->filled('status')) {
+            $query->where(
+                'status',
+                $request->status
+            );
+        }
+
+        $chargers = $query
+            ->orderBy('id_charger', 'desc')
+            ->get();
+
+        $locations = Location::orderBy('nama_lokasi')->get();
+
+        return view(
+            'admin.chargers.index',
+            compact(
+                'chargers',
+                'locations'
+            )
+        );
+    }
+}
+
+
+========== FILE: app/Models/Charger.php ==========
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use App\Models\Location;
+use App\Models\ChargingSession;
+
+class Charger extends Model
+{
+    protected $table = 'chargers';
+
+    protected $primaryKey = 'id_charger';
+
+    public $incrementing = true;
+
+    protected $keyType = 'int';
+
+    protected $fillable = [
+        'id_location',
+        'kode_perangkat',
+        'tipe_konektor',
+        'daya_kw',
+        'status',
+    ];
+
+    // Relasi: satu charger berada di satu lokasi
+    public function location()
+    {
+        return $this->belongsTo(
+            Location::class,
+            'id_location',
+            'id_location'
+        );
+    }
+
+    // Relasi: satu charger dapat memiliki banyak sesi charging
+    public function chargingSessions()
+    {
+        return $this->hasMany(
+            ChargingSession::class,
+            'id_charger',
+            'id_charger'
+        );
+    }
+}
+
+
+
+========== FILE: app/Models/Location.php ==========
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use App\Models\Charger;
+use App\Models\StationReview;
+
+class Location extends Model
+{
+    protected $table = 'locations';
+
+    protected $primaryKey = 'id_location';
+
+    protected $fillable = [
+        'nama_lokasi',
+        'alamat',
+        'latitude',
+        'longitude',
+        'jam_buka',
+        'jam_tutup',
+        'fasilitas',
+        'foto',
+        'status',
+    ];
+
+    // Relasi: satu lokasi memiliki banyak charger
+    public function chargers()
+    {
+        return $this->hasMany(
+            Charger::class,
+            'id_location',
+            'id_location'
+        );
+    }
+
+    // Relasi: satu lokasi memiliki banyak ulasan
+    public function reviews()
+    {
+        return $this->hasMany(
+            StationReview::class,
+            'id_station',
+            'id_location'
+        );
+    }
+}
+
+
+========== FILE: app/Models/Tariff.php ==========
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Tariff extends Model
+{
+    protected $table = 'tariffs';
+
+    protected $primaryKey = 'id_tariff';
+
+    public $timestamps = false;
+
+    protected $fillable = [
+        'id_location',
+        'harga_per_kwh',
+        'biaya_minimum',
+        'biaya_parkir',
+        'berlaku_mulai',
+        'berlaku_selesai',
+        'status',
+    ];
+}
+
+
+========== FILE: database\migrations\2026_09_11_032532_create_locations_table.php ==========
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('locations', function (Blueprint $table) {
+            $table->bigIncrements('id_location');
+
+            $table->string('nama_lokasi', 100);
+            $table->text('alamat');
+            $table->decimal('latitude', 10, 7);
+            $table->decimal('longitude', 10, 7);
+
+            $table->time('jam_buka')->nullable();
+            $table->time('jam_tutup')->nullable();
+
+            $table->text('fasilitas')->nullable();
+            $table->string('foto', 255)->nullable();
+
+            $table->enum('status', [
+                'aktif',
+                'tutup',
+                'maintenance'
+            ])->default('aktif');
+
+            $table->dateTime('created_at')->useCurrent();
+            $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('locations');
+    }
+};
+
+
+========== FILE: database\migrations\2026_09_11_032542_create_chargers_table.php ==========
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('chargers', function (Blueprint $table) {
+            $table->bigIncrements('id_charger');
+
+            $table->unsignedBigInteger('id_location');
+
+            $table->string('kode_perangkat', 50)->unique();
+            $table->string('tipe_konektor', 30);
+            $table->decimal('daya_kw', 6, 2);
+
+            $table->enum('status', [
+                'tersedia',
+                'digunakan',
+                'offline',
+                'rusak'
+            ])->default('tersedia');
+
+            $table->dateTime('created_at')->useCurrent();
+            $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate();
+
+            $table->foreign('id_location')
+                ->references('id_location')
+                ->on('locations')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('chargers');
+    }
+};
+
+
+========== FILE: database\migrations\2026_09_11_032543_create_tariffs_table.php ==========
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('tariffs', function (Blueprint $table) {
+            $table->bigIncrements('id_tariff');
+
+            $table->unsignedBigInteger('id_location');
+
+            $table->decimal('harga_per_kwh', 12, 2);
+            $table->decimal('biaya_minimum', 12, 2)->default(0);
+            $table->decimal('biaya_parkir', 12, 2)->default(0);
+
+            $table->dateTime('berlaku_mulai');
+            $table->dateTime('berlaku_selesai')->nullable();
+
+            $table->enum('status', [
+                'aktif',
+                'nonaktif'
+            ])->default('aktif');
+
+            $table->foreign('id_location')
+                ->references('id_location')
+                ->on('locations')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('tariffs');
+    }
+};
+
+
+========== FILE: database\migrations\2026_09_29_095259_create_station_reviews_table.php ==========
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('station_reviews', function (Blueprint $table) {
+
+            $table->id('id_review');
+
+            $table->unsignedBigInteger('id_location');
+
+            $table->unsignedBigInteger('id_user');
+
+            $table->unsignedTinyInteger('rating');
+
+            $table->text('ulasan')->nullable();
+
+            $table->timestamps();
+
+            $table->foreign('id_location')
+                ->references('id_location')
+                ->on('locations')
+                ->onDelete('cascade');
+
+            $table->foreign('id_user')
+                ->references('id_user')
+                ->on('users')
+                ->onDelete('cascade');
+
+            $table->unique([
+                'id_location',
+                'id_user'
+    ]);
+});
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('station_reviews');
+    }
+};
+
+
+========== FILE: resources/views/admin/chargers/index.blade.php ==========
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Kelola Charger - EVChargeHub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7f6;
+            color: #333;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #00695c;
+            color: white;
+            padding: 25px 18px;
+            overflow-y: auto;
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 35px;
+            padding: 0 12px;
+        }
+
+        .menu-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #b2dfdb;
+            margin: 22px 12px 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin-bottom: 5px;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .menu-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        /* =========================
+           MAIN CONTENT
+        ========================= */
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            height: 70px;
+            background: white;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 35px;
+        }
+
+        .topbar h2 {
+            font-size: 20px;
+            color: #333;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .profile-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #e0f2f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00695c;
+            font-weight: bold;
+        }
+
+        /* CONTENT */
+        .content {
+            padding: 35px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 27px;
+            color: #222;
+            margin-bottom: 7px;
+        }
+
+        .page-header p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        /* BUTTON */
+        .btn-add {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #00695c;
+            color: white;
+            text-decoration: none;
+            padding: 11px 17px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-add:hover {
+            background: #00564d;
+        }
+
+        /* FILTER CARD */
+        .filter-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 22px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-form {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-control {
+            height: 42px;
+            padding: 0 12px;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            font-size: 13px;
+            outline: none;
+            background: white;
+        }
+
+        .form-control:focus {
+            border-color: #00695c;
+        }
+
+        .btn-filter {
+            height: 42px;
+            padding: 0 18px;
+            border: none;
+            border-radius: 7px;
+            background: #00695c;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-reset {
+            height: 42px;
+            padding: 0 18px;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            background: white;
+            color: #555;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+        }
+
+        /* TABLE */
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .table-header {
+            padding: 20px 22px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table-header h3 {
+            font-size: 17px;
+            color: #333;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8faf9;
+        }
+
+        th {
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 16px 18px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #444;
+            white-space: nowrap;
+        }
+
+        tbody tr:hover {
+            background: #fafdfc;
+        }
+
+        .charger-code {
+            font-weight: bold;
+            color: #00695c;
+        }
+
+        .station-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* STATUS */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+
+        .status-tersedia {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-tersedia .status-dot {
+            background: #43a047;
+        }
+
+        .status-digunakan {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .status-digunakan .status-dot {
+            background: #1e88e5;
+        }
+
+        .status-offline {
+            background: #f5f5f5;
+            color: #616161;
+        }
+
+        .status-offline .status-dot {
+            background: #757575;
+        }
+
+        .status-rusak {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-rusak .status-dot {
+            background: #e53935;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 55px 20px;
+            color: #888;
+        }
+
+        .empty-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state h3 {
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .empty-state p {
+            font-size: 13px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                margin-left: 210px;
+            }
+
+            .filter-form {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            ⚡ EVChargeHub
+        </div>
+
+        <div class="menu-title">
+            Menu Utama
+        </div>
+
+        <ul class="menu">
+            <li>
+                <a href="{{ route('admin.dashboard') }}">
+                    <span class="menu-icon">▦</span>
+                    Dashboard
+                </a>
+            </li>
+        </ul>
+
+        <div class="menu-title">
+            Manajemen
+        </div>
+
+        <ul class="menu">
+            <li>
+                <a href="#">
+                    <span class="menu-icon">👥</span>
+                    Kelola Pengguna
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <span class="menu-icon">🧑‍💼</span>
+                    Kelola Operator
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <span class="menu-icon">📍</span>
+                    Charging Station
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.chargers.index') }}" class="active">
+                    <span class="menu-icon">⚡</span>
+                    Kelola Charger
+                </a>
+            </li>
+        </ul>
+
+        <div class="menu-title">
+            Operasional
+        </div>
+
+        <ul class="menu">
+            <li>
+                <a href="#">
+                    <span class="menu-icon">📊</span>
+                    Monitoring Charging
+                </a>
+            </li>
+        </ul>
+
+        <div class="menu-title">
+            Laporan & Transaksi
+        </div>
+
+        <ul class="menu">
+            <li>
+                <a href="#">
+                    <span class="menu-icon">📄</span>
+                    Laporan
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <span class="menu-icon">💰</span>
+                    Tarif Charging
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <span class="menu-icon">↩️</span>
+                    Refund Pembayaran
+                </a>
+            </li>
+        </ul>
+
+        <div class="menu-title">
+            Komunikasi
+        </div>
+
+        <ul class="menu">
+            <li>
+                <a href="#">
+                    <span class="menu-icon">💬</span>
+                    Ulasan & Feedback
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <span class="menu-icon">📢</span>
+                    Promosi
+                </a>
+            </li>
+        </ul>
+
+        <div class="menu-title">
+            Sistem
+        </div>
+
+        <ul class="menu">
+            <li>
+                <a href="#">
+                    <span class="menu-icon">🔐</span>
+                    Hak Akses
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <span class="menu-icon">📝</span>
+                    Audit Log
+                </a>
+            </li>
+
+            <li>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+
+                    <button type="submit"
+                            style="
+                                width: 100%;
+                                border: none;
+                                background: transparent;
+                                color: white;
+                                display: flex;
+                                align-items: center;
+                                gap: 12px;
+                                padding: 11px 12px;
+                                border-radius: 8px;
+                                font-size: 14px;
+                                cursor: pointer;
+                                text-align: left;
+                            ">
+                        <span class="menu-icon">🚪</span>
+                        Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <h2>Kelola Charger</h2>
+
+            <div class="admin-profile">
+                <div class="profile-icon">
+                    A
+                </div>
+
+                <span>
+                    {{ auth()->user()->nama ?? 'Administrator' }}
+                </span>
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+        <section class="content">
+
+            <!-- PAGE HEADER -->
+            <div class="page-header">
+
+                <div>
+                    <h1>Kelola Charger</h1>
+
+                    <p>
+                        Kelola dan pantau seluruh perangkat charger pada charging station.
+                    </p>
+                </div>
+
+                <a href="#" class="btn-add">
+                    ＋ Tambah Charger
+                </a>
+
+            </div>
+
+
+            <!-- FILTER -->
+            <div class="filter-card">
+
+                <form action="{{ route('admin.chargers.index') }}"
+                      method="GET"
+                      class="filter-form">
+
+                    <!-- SEARCH -->
+                    <div class="form-group">
+
+                        <label for="search">
+                            Cari Charger
+                        </label>
+
+                        <input
+                            type="text"
+                            id="search"
+                            name="search"
+                            class="form-control"
+                            placeholder="Cari berdasarkan kode charger..."
+                            value="{{ request('search') }}"
+                        >
+
+                    </div>
+
+
+                    <!-- LOCATION -->
+                    <div class="form-group">
+
+                        <label for="location">
+                            Charging Station
+                        </label>
+
+                        <select
+                            id="location"
+                            name="location"
+                            class="form-control"
+                        >
+
+                            <option value="">
+                                Semua Station
+                            </option>
+
+                            @foreach ($locations as $location)
+
+                                <option
+                                    value="{{ $location->id_location }}"
+                                    {{ request('location') == $location->id_location ? 'selected' : '' }}
+                                >
+                                    {{ $location->nama_lokasi }}
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- STATUS -->
+                    <div class="form-group">
+
+                        <label for="status">
+                            Status
+                        </label>
+
+                        <select
+                            id="status"
+                            name="status"
+                            class="form-control"
+                        >
+
+                            <option value="">
+                                Semua Status
+                            </option>
+
+                            <option value="tersedia"
+                                {{ request('status') == 'tersedia' ? 'selected' : '' }}>
+                                Tersedia
+                            </option>
+
+                            <option value="digunakan"
+                                {{ request('status') == 'digunakan' ? 'selected' : '' }}>
+                                Digunakan
+                            </option>
+
+                            <option value="offline"
+                                {{ request('status') == 'offline' ? 'selected' : '' }}>
+                                Offline
+                            </option>
+
+                            <option value="rusak"
+                                {{ request('status') == 'rusak' ? 'selected' : '' }}>
+                                Rusak
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- BUTTON -->
+                    <div style="display: flex; gap: 8px;">
+
+                        <button type="submit" class="btn-filter">
+                            Filter
+                        </button>
+
+                        <a
+                            href="{{ route('admin.chargers.index') }}"
+                            class="btn-reset"
+                        >
+                            Reset
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <!-- TABLE -->
+            <div class="table-card">
+
+                <div class="table-header">
+
+                    <h3>
+                        Daftar Charger
+                        <span style="
+                            color: #888;
+                            font-size: 13px;
+                            font-weight: normal;
+                        ">
+                            ({{ $chargers->count() }} charger)
+                        </span>
+                    </h3>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    @if ($chargers->count() > 0)
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+                                    <th>No</th>
+                                    <th>Kode Charger</th>
+                                    <th>Charging Station</th>
+                                    <th>Tipe Konektor</th>
+                                    <th>Daya</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                @foreach ($chargers as $index => $charger)
+
+                                    <tr>
+
+                                        <td>
+                                            {{ $index + 1 }}
+                                        </td>
+
+                                        <td>
+                                            <span class="charger-code">
+                                                {{ $charger->kode_perangkat }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="station-name">
+                                                {{ $charger->location->nama_lokasi ?? 'Tidak diketahui' }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            {{ $charger->tipe_konektor }}
+                                        </td>
+
+                                        <td>
+                                            {{ $charger->daya_kw }} kW
+                                        </td>
+
+                                        <td>
+
+                                            @php
+                                                $statusClass = match ($charger->status) {
+                                                    'tersedia' => 'status-tersedia',
+                                                    'digunakan' => 'status-digunakan',
+                                                    'offline' => 'status-offline',
+                                                    'rusak' => 'status-rusak',
+                                                    default => 'status-offline',
+                                                };
+                                            @endphp
+
+                                            <span class="status {{ $statusClass }}">
+
+                                                <span class="status-dot"></span>
+
+                                                {{ ucfirst($charger->status) }}
+
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span style="
+                                                color: #999;
+                                                font-size: 12px;
+                                            ">
+                                                Segera tersedia
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                @endforeach
+
+                            </tbody>
+
+                        </table>
+
+                    @else
+
+                        <div class="empty-state">
+
+                            <div class="empty-icon">
+                                ⚡
+                            </div>
+
+                            <h3>
+                                Belum ada charger
+                            </h3>
+
+                            <p>
+                                Data charger belum tersedia atau tidak sesuai dengan filter.
+                            </p>
+
+                        </div>
+
+                    @endif
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
+
+
+========== FILE: resources\views\admin\dashboard.blade.php ==========
+
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard Admin - EVChargeHub</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8f7;
+            color: #163b35;
+        }
+
+        /* =========================
+           LAYOUT
+        ========================= */
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            width: 250px;
+            background: #00695c;
+            color: white;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .brand {
+            height: 86px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #20d890;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+        }
+
+        .brand-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .sidebar-content {
+            padding: 22px 10px;
+        }
+
+        .menu-title {
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #9bd4c9;
+            margin: 14px 12px 10px;
+            text-transform: uppercase;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            text-decoration: none;
+            color: white;
+            padding: 13px 14px;
+            margin-bottom: 4px;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .menu-item:hover {
+            background: rgba(255,255,255,0.10);
+        }
+
+        .menu-item.active {
+            background: #10aa79;
+            font-weight: bold;
+        }
+
+        .menu-icon {
+            width: 22px;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.15);
+            margin: 20px 8px;
+        }
+
+        .logout {
+            color: #ffe4e4;
+        }
+
+        /* =========================
+           MAIN CONTENT
+        ========================= */
+
+        .main {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            min-height: 100vh;
+        }
+
+        /* =========================
+           TOPBAR
+        ========================= */
+
+        .topbar {
+            height: 76px;
+            background: white;
+            border-bottom: 1px solid #e4ebe8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+        }
+
+        .page-title {
+            font-size: 21px;
+            font-weight: bold;
+            color: #123f37;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e9faf4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #dff7ed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+        }
+
+        .admin-name {
+            font-size: 13px;
+            font-weight: bold;
+            color: #16483f;
+        }
+
+        /* =========================
+           CONTENT
+        ========================= */
+
+        .content {
+            padding: 30px 32px 50px;
+        }
+
+        /* =========================
+           WELCOME BANNER
+        ========================= */
+
+        .welcome {
+            background: linear-gradient(
+                120deg,
+                #e7fff5,
+                #d4f7e9
+            );
+
+            border: 1px solid #bdebd9;
+            border-radius: 22px;
+            padding: 30px 34px;
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome::after {
+            content: "⚡";
+            position: absolute;
+            right: 80px;
+            bottom: -20px;
+            font-size: 130px;
+            opacity: 0.07;
+        }
+
+        .welcome-label {
+            display: inline-block;
+            background: #a9efd5;
+            color: #075c4e;
+            padding: 9px 17px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .welcome h1 {
+            font-size: 29px;
+            margin-bottom: 10px;
+            color: #07594d;
+        }
+
+        .welcome p {
+            max-width: 700px;
+            color: #315f57;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* =========================
+           SECTION TITLE
+        ========================= */
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 19px;
+            color: #124d43;
+            margin-bottom: 15px;
+        }
+
+        /* =========================
+           SUMMARY CARDS
+        ========================= */
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 17px;
+            padding: 20px;
+            border: 1px solid #e4eeeb;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .summary-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .icon-user {
+            background: #e0f7ef;
+        }
+
+        .icon-station {
+            background: #e1efff;
+        }
+
+        .icon-charger {
+            background: #fff2d7;
+        }
+
+        .icon-charging {
+            background: #f0e5ff;
+        }
+
+        .summary-info small {
+            display: block;
+            color: #6d8580;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .summary-info strong {
+            font-size: 25px;
+            color: #00896e;
+        }
+
+        /* =========================
+           QUICK ACCESS
+        ========================= */
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .quick-card {
+            background: white;
+            border: 1px solid #e4eeeb;
+            border-radius: 17px;
+            padding: 19px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.04);
+            transition: 0.2s;
+        }
+
+        .quick-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.07);
+        }
+
+        .quick-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            background: #e1f8ef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            flex-shrink: 0;
+        }
+
+        .quick-info {
+            flex: 1;
+        }
+
+        .quick-info strong {
+            display: block;
+            color: #00896e;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .quick-info span {
+            color: #718681;
+            font-size: 12px;
+        }
+
+        .arrow {
+            color: #00896e;
+            font-size: 22px;
+        }
+
+        /* =========================
+           SYSTEM INFORMATION
+        ========================= */
+
+        .info-card {
+            background: white;
+            border: 1px solid #e4eeeb;
+            border-radius: 17px;
+            padding: 22px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.04);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .info-item {
+            background: #f7fbfa;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .info-item small {
+            display: block;
+            color: #738782;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .info-item strong {
+            color: #126052;
+            font-size: 14px;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 1100px) {
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 800px) {
+
+            .sidebar {
+                width: 220px;
+            }
+
+            .main {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+            }
+
+            .quick-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                min-height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .layout {
+                display: block;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                padding: 0 18px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .admin-name {
+                display: none;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="layout">
+
+    <!-- =====================================
+         SIDEBAR ADMIN
+    ====================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                ⚡
+            </div>
+
+            <div class="brand-name">
+                EVChargeHub
+            </div>
+
+        </div>
+
+
+        <div class="sidebar-content">
+
+            <!-- MENU UTAMA -->
+
+            <div class="menu-title">
+                Menu Utama
+            </div>
+
+            <a href="{{ route('admin.dashboard') }}"
+               class="menu-item active">
+
+                <span class="menu-icon">🏠</span>
+
+                <span>Dashboard</span>
+
+            </a>
+
+
+            <!-- MANAJEMEN -->
+
+            <div class="menu-title">
+                Manajemen
+            </div>
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">👥</span>
+
+                <span>Kelola Pengguna</span>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">👨‍💼</span>
+
+                <span>Kelola Operator</span>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">📍</span>
+
+                <span>Charging Station</span>
+
+            </a>
+
+
+            <!-- KELola CHARGER -->
+
+            <a href="{{ route('admin.chargers.index') }}"
+               class="menu-item">
+
+                <span class="menu-icon">⚡</span>
+
+                <span>Kelola Charger</span>
+
+            </a>
+
+
+            <!-- OPERASIONAL -->
+
+            <div class="menu-title">
+                Operasional
+            </div>
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">⚡</span>
+
+                <span>Monitoring Charging</span>
+
+            </a>
+
+
+            <!-- LAPORAN & TRANSAKSI -->
+
+            <div class="menu-title">
+                Laporan & Transaksi
+            </div>
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">📊</span>
+
+                <span>Laporan</span>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">💰</span>
+
+                <span>Tarif Charging</span>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">💳</span>
+
+                <span>Refund Pembayaran</span>
+
+            </a>
+
+
+            <!-- KOMUNIKASI -->
+
+            <div class="menu-title">
+                Komunikasi
+            </div>
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">⭐</span>
+
+                <span>Ulasan & Feedback</span>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">🎁</span>
+
+                <span>Promosi</span>
+
+            </a>
+
+
+            <!-- SISTEM -->
+
+            <div class="menu-title">
+                Sistem
+            </div>
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">🔐</span>
+
+                <span>Hak Akses</span>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">🛡️</span>
+
+                <span>Audit Log</span>
+
+            </a>
+
+
+            <div class="sidebar-divider"></div>
+
+
+            <!-- LOGOUT -->
+
+            <form action="{{ route('logout') }}"
+                  method="POST">
+
+                @csrf
+
+                <button
+                    type="submit"
+                    class="menu-item logout"
+                    style="
+                        width: 100%;
+                        background: transparent;
+                        border: none;
+                        cursor: pointer;
+                        text-align: left;
+                    "
+                >
+
+                    <span class="menu-icon">🚪</span>
+
+                    <span>Logout</span>
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+    <main class="main">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="page-title">
+                Dashboard
+            </div>
+
+
+            <div class="admin-profile">
+
+                <div class="notification">
+                    🔔
+                </div>
+
+                <div class="profile-icon">
+                    👤
+                </div>
+
+                <div class="admin-name">
+                    {{ auth()->user()->nama }}
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+
+        <div class="content">
+
+            <!-- WELCOME -->
+
+            <section class="welcome">
+
+                <div class="welcome-label">
+                    ⚡ Admin Panel
+                </div>
+
+                <h1>
+                    Halo, Admin EVChargeHub!
+                </h1>
+
+                <p>
+                    Selamat datang di dashboard admin EVChargeHub.
+                    Kelola pengguna, charging station, charger,
+                    dan aktivitas charging dengan lebih mudah.
+                </p>
+
+            </section>
+
+
+            <!-- RINGKASAN SISTEM -->
+
+            <h2 class="section-title">
+                📊 Ringkasan Sistem
+            </h2>
+
+
+            <div class="summary-grid">
+
+                <div class="summary-card">
+
+                    <div class="summary-icon icon-user">
+                        👥
+                    </div>
+
+                    <div class="summary-info">
+
+                        <small>
+                            Total Pengguna
+                        </small>
+
+                        <strong>
+                            {{ $totalUsers }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-icon icon-station">
+                        📍
+                    </div>
+
+                    <div class="summary-info">
+
+                        <small>
+                            Charging Station
+                        </small>
+
+                        <strong>
+                            {{ $totalLocations }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-icon icon-charger">
+                        🔌
+                    </div>
+
+                    <div class="summary-info">
+
+                        <small>
+                            Total Charger
+                        </small>
+
+                        <strong>
+                            {{ $totalChargers }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-icon icon-charging">
+                        ⚡
+                    </div>
+
+                    <div class="summary-info">
+
+                        <small>
+                            Sesi Charging
+                        </small>
+
+                        <strong>
+                            {{ $totalSessions }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- AKSES CEPAT -->
+
+            <h2 class="section-title">
+                🚀 Akses Cepat
+            </h2>
+
+
+            <div class="quick-grid">
+
+
+                <!-- KELOLA PENGGUNA -->
+
+                <a href="#"
+                   class="quick-card">
+
+                    <div class="quick-icon">
+                        👥
+                    </div>
+
+                    <div class="quick-info">
+
+                        <strong>
+                            Kelola Pengguna
+                        </strong>
+
+                        <span>
+                            Kelola data pengguna EVChargeHub
+                        </span>
+
+                    </div>
+
+                    <div class="arrow">
+                        →
+                    </div>
+
+                </a>
+
+
+                <!-- CHARGING STATION -->
+
+                <a href="#"
+                   class="quick-card">
+
+                    <div class="quick-icon">
+                        📍
+                    </div>
+
+                    <div class="quick-info">
+
+                        <strong>
+                            Charging Station
+                        </strong>
+
+                        <span>
+                            Kelola lokasi charging station
+                        </span>
+
+                    </div>
+
+                    <div class="arrow">
+                        →
+                    </div>
+
+                </a>
+
+
+                <!-- KELOLA CHARGER -->
+
+                <a href="{{ route('admin.chargers.index') }}"
+                   class="quick-card">
+
+                    <div class="quick-icon">
+                        🔌
+                    </div>
+
+                    <div class="quick-info">
+
+                        <strong>
+                            Kelola Charger
+                        </strong>
+
+                        <span>
+                            Kelola perangkat charger
+                        </span>
+
+                    </div>
+
+                    <div class="arrow">
+                        →
+                    </div>
+
+                </a>
+
+
+                <!-- MONITORING -->
+
+                <a href="#"
+                   class="quick-card">
+
+                    <div class="quick-icon">
+                        ⚡
+                    </div>
+
+                    <div class="quick-info">
+
+                        <strong>
+                            Monitoring Charging
+                        </strong>
+
+                        <span>
+                            Pantau aktivitas charging
+                        </span>
+
+                    </div>
+
+                    <div class="arrow">
+                        →
+                    </div>
+
+                </a>
+
+
+            </div>
+
+
+            <!-- INFORMASI SISTEM -->
+
+            <h2 class="section-title">
+                📌 Informasi Sistem
+            </h2>
+
+
+            <div class="info-card">
+
+                <div class="info-grid">
+
+
+                    <div class="info-item">
+
+                        <small>
+                            Status Sistem
+                        </small>
+
+                        <strong>
+                            🟢 Sistem Berjalan Normal
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <small>
+                            Status Charging
+                        </small>
+
+                        <strong>
+                            ⚡ Siap Digunakan
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <small>
+                            Role Saat Ini
+                        </small>
+
+                        <strong>
+                            👑 Administrator
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>
+
+
+========== FILE: routes/web.php ==========
+
+
+<?php
+
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ChargerController;
+
+use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StationController;
+use App\Http\Controllers\ChargingController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\StationReviewController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OperatorDashboardController;
+use App\Http\Controllers\OperatorController;
+
+use App\Models\Notification;
+
+
+/*
+|--------------------------------------------------------------------------
+| HALAMAN UTAMA
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
+
+
+/*
+|--------------------------------------------------------------------------
+| AUTHENTICATION
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/login', [AuthController::class, 'showLogin'])
+    ->name('login');
+
+Route::post('/login', [AuthController::class, 'login'])
+    ->name('login.process');
+
+Route::post('/logout', [AuthController::class, 'logout'])
+    ->name('logout');
+
+Route::get('/register', [RegisterController::class, 'showRegister'])
+    ->name('register');
+
+Route::post('/register', [RegisterController::class, 'register'])
+    ->name('register.process');
+
+
+/*
+|--------------------------------------------------------------------------
+| FORGOT & RESET PASSWORD
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/forgot-password',
+    [ForgotPasswordController::class, 'showForgotPassword']
+)->name('password.request');
+
+Route::post(
+    '/forgot-password',
+    [ForgotPasswordController::class, 'sendResetLink']
+)->name('password.email');
+
+Route::get(
+    '/reset-password/{token}',
+    [ResetPasswordController::class, 'showResetPassword']
+)->name('password.reset');
+
+Route::post(
+    '/reset-password',
+    [ResetPasswordController::class, 'resetPassword']
+)->name('password.update');
+
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+    // Dashboard Admin
+    Route::get(
+        '/admin/dashboard',
+        [AdminController::class, 'index']
+    )->name('admin.dashboard');
+
+    // Kelola Charger
+    
+    Route::get('/admin/chargers', [ChargerController::class, 'index'])
+    ->name('admin.chargers.index');
+
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| USER / PENGEMUDI
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'role:user'])->group(function () {
+
+    // Dashboard User
+    Route::get('/user/dashboard', function () {
+
+        $userId = auth()->user()->id_user;
+
+        // Ambil maksimal 5 notifikasi terbaru
+        $notifications = Notification::where('user_id', $userId)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // Hitung notifikasi yang belum dibaca
+        $unreadNotifications = Notification::where('user_id', $userId)
+            ->where('is_read', false)
+            ->count();
+
+        return view(
+            'user.dashboard',
+            compact('notifications', 'unreadNotifications')
+        );
+
+    })->name('user.dashboard');
+
+
+    // Kendaraan
+    Route::resource(
+        '/user/vehicles',
+        VehicleController::class
+    )->names('vehicles');
+
+
+    // Profil User
+    Route::get(
+        '/user/profile',
+        [ProfileController::class, 'edit']
+    )->name('profile.edit');
+
+    Route::put(
+        '/user/profile',
+        [ProfileController::class, 'update']
+    )->name('profile.update');
+
+    Route::post(
+        '/user/profile/photo',
+        [ProfileController::class, 'updatePhoto']
+    )->name('profile.photo.update');
+
+    Route::get('/profile', function () {
+
+        $user = Auth::user();
+
+        return view('user.profile', compact('user'));
+
+    })->name('profile');
+
+
+    // Charging Station
+    Route::get(
+        '/user/stations',
+        [StationController::class, 'index']
+    )->name('stations.index');
+
+    Route::get(
+        '/user/stations/{id}',
+        [StationController::class, 'show']
+    )->name('stations.show');
+
+
+    // Rating & Review Station
+    Route::post(
+        '/user/stations/{id_station}/reviews',
+        [StationReviewController::class, 'store']
+    )->name('station.reviews.store');
+
+
+    // Charging
+    Route::get(
+        '/user/charging/{charger}/create',
+        [ChargingController::class, 'create']
+    )->name('charging.create');
+
+    Route::post(
+        '/user/charging/{charger}/start',
+        [ChargingController::class, 'start']
+    )->name('charging.start');
+
+    Route::get(
+        '/user/charging/{session}/monitor',
+        [ChargingController::class, 'monitor']
+    )->name('charging.monitor');
+
+    Route::post(
+        '/user/charging/{session}/stop',
+        [ChargingController::class, 'stop']
+    )->name('charging.stop');
+
+    Route::post(
+        '/user/charging/{session}/cancel',
+        [ChargingController::class, 'cancel']
+    )->name('charging.cancel');
+
+    Route::get(
+        '/user/history',
+        [ChargingController::class, 'history']
+    )->name('charging.history');
+
+
+    // Pembayaran
+    Route::get(
+        '/user/payment/{session}/create',
+        [PaymentController::class, 'create']
+    )->name('payment.create');
+
+    Route::post(
+        '/user/payment/{session}/process',
+        [PaymentController::class, 'process']
+    )->name('payment.process');
+
+    Route::get(
+        '/user/payment/{payment}/verify',
+        [PaymentController::class, 'verify']
+    )->name('payment.verify');
+
+    Route::post(
+        '/user/payment/{payment}/confirm',
+        [PaymentController::class, 'confirm']
+    )->name('payment.confirm');
+
+    Route::get(
+        '/user/payment/{payment}/status',
+        [PaymentController::class, 'status']
+    )->name('payment.status');
+
+    Route::get(
+        '/user/payment/{payment}/waiting',
+        [PaymentController::class, 'waiting']
+    )->name('payment.waiting');
+
+    Route::post(
+        '/user/payment/{payment}/fail',
+        [PaymentController::class, 'fail']
+    )->name('payment.fail');
+
+    Route::post(
+        '/user/payment/{payment}/complete',
+        [PaymentController::class, 'complete']
+    )->name('payment.complete');
+
+    Route::get(
+        '/user/payment/{payment}/invoice',
+        [PaymentController::class, 'invoice']
+    )->name('payment.invoice');
+
+
+    // Notifikasi
+    Route::get('/user/notifications', function () {
+
+        $userId = auth()->user()->id_user;
+
+        $notifications = Notification::where('user_id', $userId)
+            ->latest()
+            ->get();
+
+        return view(
+            'user.notification.index',
+            compact('notifications')
+        );
+
+    })->name('notifications.index');
+
+
+    // Tandai semua notifikasi sebagai dibaca
+    Route::post('/user/notifications/read', function () {
+
+        Notification::where(
+            'user_id',
+            auth()->user()->id_user
+        )
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        return response()->json([
+            'success' => true,
+        ]);
+
+    })->name('notifications.read');
+
+
+    // Tandai satu notifikasi sebagai dibaca
+    Route::post(
+        '/user/notifications/{notification}/read',
+        [NotificationController::class, 'read']
+    )->name('notifications.read.one');
+
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| OPERATOR
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'role:operator'])->group(function () {
+
+    // Profil Operator
+    Route::get(
+        '/operator/profile',
+        [OperatorController::class, 'profile']
+    )->name('operator.profile');
+
+    Route::put(
+        '/operator/profile',
+        [OperatorController::class, 'updateProfile']
+    )->name('operator.profile.update');
+
+
+    // Dashboard Operator
+    Route::get(
+        '/operator/dashboard',
+        [OperatorDashboardController::class, 'index']
+    )->name('operator.dashboard');
+
+
+    // Lihat Charging Station
+    Route::get(
+        '/operator/stations',
+        [OperatorController::class, 'stations']
+    )->name('operator.stations');
+
+
+    // Lihat Data Charger
+    Route::get(
+        '/operator/chargers',
+        [OperatorController::class, 'chargers']
+    )->name('operator.chargers');
+
+
+    // Monitor Status Charger
+    Route::get(
+        '/operator/charger-status',
+        [OperatorController::class, 'chargerStatus']
+    )->name('operator.charger-status');
+
+
+    // Update Status Charger
+    Route::patch(
+        '/operator/chargers/{charger}/status',
+        [OperatorController::class, 'updateChargerStatus']
+    )->name('operator.chargers.status');
+
+
+    // Monitor Sesi Charging
+    Route::get(
+        '/operator/sessions',
+        [OperatorController::class, 'sessions']
+    )->name('operator.sessions');
+
+
+    // Riwayat Sesi Charging
+    Route::get(
+        '/operator/history',
+        [OperatorController::class, 'history']
+    )->name('operator.history');
+
+
+    // Laporan Penggunaan Charger
+    Route::get(
+        '/operator/report',
+        [OperatorController::class, 'report']
+    )->name('operator.report');
+
+});
