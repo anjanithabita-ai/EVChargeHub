@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Charger;
 use App\Models\StationReview;
+use App\Models\Tariff;
 
 class Location extends Model
 {
@@ -43,4 +44,15 @@ class Location extends Model
             'id_location'
         );
     }
+
+    // Relasi: satu lokasi memiliki banyak tarif charging
+    public function tariffs()
+    {
+        return $this->hasMany(
+            Tariff::class,
+            'id_location',
+            'id_location'
+        );
+    }
 }
+

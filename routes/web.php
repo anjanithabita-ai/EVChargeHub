@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -87,13 +86,61 @@ Route::post(
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
-    // Dashboard Admin
+    // -------------------------------------------------
+    // DASHBOARD ADMIN
+    // -------------------------------------------------
+
     Route::get(
         '/admin/dashboard',
         [AdminController::class, 'index']
     )->name('admin.dashboard');
 
-    // Kelola Charger
+
+    // -------------------------------------------------
+    // CHARGING STATION
+    // -------------------------------------------------
+
+    // Daftar station
+    Route::get(
+        '/admin/charging-stations',
+        [\App\Http\Controllers\Admin\ChargingStationController::class, 'index']
+    )->name('admin.stations.index');
+
+    // Form tambah station
+    Route::get(
+        '/admin/charging-stations/create',
+        [\App\Http\Controllers\Admin\ChargingStationController::class, 'create']
+    )->name('admin.stations.create');
+
+    // Simpan station baru
+    Route::post(
+        '/admin/charging-stations',
+        [\App\Http\Controllers\Admin\ChargingStationController::class, 'store']
+    )->name('admin.stations.store');
+
+    // Detail station beserta data charger dan tarif
+    Route::get(
+        '/admin/charging-stations/{id}/detail',
+        [\App\Http\Controllers\Admin\ChargingStationController::class, 'show']
+    )->name('admin.stations.show');
+
+    // Form edit station
+    Route::get(
+        '/admin/charging-stations/{id}/edit',
+        [\App\Http\Controllers\Admin\ChargingStationController::class, 'edit']
+    )->name('admin.stations.edit');
+
+    // Simpan perubahan station
+    Route::put(
+        '/admin/charging-stations/{id}',
+        [\App\Http\Controllers\Admin\ChargingStationController::class, 'update']
+    )->name('admin.stations.update');
+
+
+    // -------------------------------------------------
+    // KELOLA CHARGER
+    // -------------------------------------------------
+
     Route::get(
         '/admin/chargers',
         [ChargerController::class, 'index']
@@ -172,7 +219,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
 
     // -------------------------------------------------
-    // CHARGING STATION
+    // CHARGING STATION UNTUK USER
     // -------------------------------------------------
 
     Route::get(
