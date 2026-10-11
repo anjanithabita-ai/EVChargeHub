@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Location;
+use App\Models\ChargingSession;
 
 class Charger extends Model
 {
@@ -22,9 +24,7 @@ class Charger extends Model
         'status',
     ];
 
-    /**
-     * Charger dimiliki oleh satu location.
-     */
+    // Relasi: satu charger berada di satu lokasi
     public function location()
     {
         return $this->belongsTo(
@@ -33,4 +33,15 @@ class Charger extends Model
             'id_location'
         );
     }
+
+    // Relasi: satu charger dapat memiliki banyak sesi charging
+    public function chargingSessions()
+    {
+        return $this->hasMany(
+            ChargingSession::class,
+            'id_charger',
+            'id_charger'
+        );
+    }
 }
+

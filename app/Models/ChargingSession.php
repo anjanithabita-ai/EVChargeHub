@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Payment;
+use App\Models\Charger;
+use App\Models\Vehicle;
+use App\Models\Tariff;
+use App\Models\User;
 
 class ChargingSession extends Model
 {

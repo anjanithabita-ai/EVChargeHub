@@ -475,7 +475,7 @@
                 🖨 Cetak Invoice
             </button>
 
-            <a
+            {{-- <a
                 href="{{ route(
                     'payment.status',
                     $payment->id_payment
@@ -483,7 +483,7 @@
                 class="btn btn-status"
             >
                 ← Status Pembayaran
-            </a>
+            </a> --}}
 
             <a
                 href="{{ route('stations.index') }}"

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
@@ -57,5 +60,44 @@ class ProfileController extends Controller
         return redirect()
             ->route('profile.edit')
             ->with('success', 'Profil berhasil diperbarui.');
+    }
+
+
+    public function updatePhoto(Request $request)
+    {
+        $request->validate([
+            'foto' => [
+                'required',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+            ],
+        ], [
+            'foto.required' => 'Silakan pilih foto terlebih dahulu.',
+            'foto.image' => 'File yang dipilih harus berupa gambar.',
+            'foto.mimes' => 'Format foto harus JPG, JPEG, PNG, atau WEBP.',
+            'foto.max' => 'Ukuran foto maksimal 2 MB.',
+        ]);
+
+        $user = Auth::user();
+
+        // Hapus foto lama jika ada
+        if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+            Storage::disk('public')->delete($user->foto);
+        }
+
+        // Simpan foto baru
+        $path = $request->file('foto')->store(
+            'profile',
+            'public'
+        );
+
+        $user->foto = $path;
+        $user->save();
+
+        return back()->with(
+            'success',
+            'Foto profil berhasil diperbarui.'
+        );
     }
 }
