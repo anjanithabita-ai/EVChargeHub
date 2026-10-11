@@ -10,16 +10,16 @@ use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
-    // ==========================================
-    // 19. PILIH METODE PEMBAYARAN
-    // ==========================================
+    // =========================================================
+    // 19. HALAMAN PILIH METODE PEMBAYARAN
+    // =========================================================
 
     public function create(ChargingSession $session)
     {
         // Cek apakah session milik user yang login
         $this->checkSessionOwner($session);
 
-        // Pembayaran hanya bisa dilakukan setelah charging selesai
+        // Pembayaran hanya dapat dilakukan setelah charging selesai
         if ($session->status !== 'selesai') {
             return back()->with(
                 'error',
@@ -27,12 +27,12 @@ class PaymentController extends Controller
             );
         }
 
-        // Cek apakah pembayaran sudah pernah dibuat
+        // Ambil payment yang sudah ada
         $session->load('payment');
 
         if ($session->payment) {
 
-            // Jika sudah berhasil
+            // Jika pembayaran sudah berhasil
             if ($session->payment->status === 'berhasil') {
                 return redirect()->route(
                     'payment.invoice',
@@ -48,10 +48,12 @@ class PaymentController extends Controller
                 );
             }
 
-            // Jika gagal, user dapat membuat pembayaran baru
+            // Jika gagal:
+            // tetap tampilkan halaman pilih metode
+            // dan payment akan digunakan kembali saat proses.
         }
 
-        // Load data yang dibutuhkan halaman pembayaran
+        // Load data transaksi
         $session->load([
             'charger',
             'vehicle',
@@ -65,9 +67,9 @@ class PaymentController extends Controller
     }
 
 
-    // ==========================================
+    // =========================================================
     // 20. PROSES PEMBAYARAN
-    // ==========================================
+    // =========================================================
 
     public function process(
         Request $request,
@@ -84,25 +86,22 @@ class PaymentController extends Controller
             );
         }
 
-        // ==========================================
+        // =====================================================
         // VALIDASI
-        // ==========================================
+        // =====================================================
 
         $validated = $request->validate([
-
             'metode' => [
                 'required',
-                'in:ewallet,card,qr,saldo',
+                'in:virtual_account,card,qr,saldo',
             ],
 
-            // E-Wallet
-            'ewallet' => [
+            'bank_va' => [
                 'nullable',
-                'required_if:metode,ewallet',
-                'in:gopay,ovo,dana,shopeepay',
+                'required_if:metode,virtual_account',
+                'in:bca,bni,bri,mandiri,cimb,permata,bsi,danamon',
             ],
 
-            // Kartu
             'card_type' => [
                 'nullable',
                 'required_if:metode,card',
@@ -110,10 +109,9 @@ class PaymentController extends Controller
             ],
         ]);
 
-
-        // ==========================================
-        // CEK PEMBAYARAN YANG SUDAH ADA
-        // ==========================================
+        // =====================================================
+        // CEK PAYMENT YANG SUDAH ADA
+        // =====================================================
 
         $session->load('payment');
 
@@ -134,44 +132,166 @@ class PaymentController extends Controller
                     $session->payment->id_payment
                 );
             }
-
-            // Jika gagal, lanjut membuat pembayaran baru
         }
 
+        // =====================================================
+        // DATA BANK
+        // =====================================================
 
-        // ==========================================
+        $bankNames = [
+            'bca' => 'BCA',
+            'bni' => 'BNI',
+            'bri' => 'BRI',
+            'mandiri' => 'Bank Mandiri',
+            'cimb' => 'CIMB Niaga',
+            'permata' => 'PermataBank',
+            'bsi' => 'Bank Syariah Indonesia',
+            'danamon' => 'Bank Danamon',
+        ];
+
+        $bankCodes = [
+            'bca' => '014',
+            'bni' => '009',
+            'bri' => '002',
+            'mandiri' => '008',
+            'cimb' => '022',
+            'permata' => '013',
+            'bsi' => '451',
+            'danamon' => '011',
+        ];
+
+        // =====================================================
         // REFERENSI PEMBAYARAN
-        // ==========================================
+        // =====================================================
 
         $referensi = 'SIM-' . strtoupper(
             substr(md5(uniqid()), 0, 13)
         );
 
+        // =====================================================
+        // JIKA VIRTUAL ACCOUNT
+        // =====================================================
 
-        // ==========================================
-        // BUAT PAYMENT
-        // ==========================================
+        if ($validated['metode'] === 'virtual_account') {
 
-        $payment = Payment::create([
+            $bank = $validated['bank_va'];
 
-            'id_session' => $session->id_session,
+            $bankCode = $bankCodes[$bank];
 
-            'metode' => $validated['metode'],
+            /*
+             * Nomor VA simulasi:
+             *
+             * 8808 + kode bank + ID session 6 digit
+             *
+             * Contoh:
+             * 8808 + 014 + 000054
+             *
+             * = 8808014000054
+             */
 
-            'jumlah' => $session->total_biaya,
+            $nomorVA =
+                '8808' .
+                $bankCode .
+                str_pad(
+                    $session->id_session,
+                    6,
+                    '0',
+                    STR_PAD_LEFT
+                );
 
-            'status' => 'pending',
+            /*
+             * Nomor VA disimpan sementara
+             * di referensi gateway.
+             *
+             * Contoh:
+             *
+             * VA|bca|BCA|8808014000054
+             */
 
-            'waktu_pembayaran' => null,
+            $referensi =
+                'VA|' .
+                $bank .
+                '|' .
+                $bankNames[$bank] .
+                '|' .
+                $nomorVA;
+        }
 
-            'referensi_gateway' => $referensi,
+        // =====================================================
+        // JIKA KARTU
+        // =====================================================
 
-        ]);
+        if ($validated['metode'] === 'card') {
 
+            $referensi =
+                'CARD|' .
+                strtoupper($validated['card_type']) .
+                '|' .
+                'SIM-' .
+                strtoupper(substr(md5(uniqid()), 0, 10));
+        }
 
-        // ==========================================
-        // KE HALAMAN WAITING
-        // ==========================================
+        // =====================================================
+        // JIKA QRIS
+        // =====================================================
+
+        if ($validated['metode'] === 'qr') {
+
+            $referensi =
+                'QRIS|SIM-' .
+                strtoupper(substr(md5(uniqid()), 0, 10));
+        }
+
+        // =====================================================
+        // JIKA SALDO
+        // =====================================================
+
+        if ($validated['metode'] === 'saldo') {
+
+            $referensi =
+                'SALDO|SIM-' .
+                strtoupper(substr(md5(uniqid()), 0, 10));
+        }
+
+        // =====================================================
+        // PAYMENT
+        // =====================================================
+
+        /*
+         * Jika sebelumnya ada payment dengan status gagal,
+         * gunakan kembali payment tersebut.
+         *
+         * Ini penting karena id_session pada tabel payments
+         * bersifat UNIQUE.
+         */
+
+        if ($session->payment) {
+
+            $payment = $session->payment;
+
+            $payment->update([
+                'metode' => $validated['metode'],
+                'jumlah' => $session->total_biaya,
+                'status' => 'pending',
+                'waktu_pembayaran' => null,
+                'referensi_gateway' => $referensi,
+            ]);
+
+        } else {
+
+            $payment = Payment::create([
+                'id_session' => $session->id_session,
+                'metode' => $validated['metode'],
+                'jumlah' => $session->total_biaya,
+                'status' => 'pending',
+                'waktu_pembayaran' => null,
+                'referensi_gateway' => $referensi,
+            ]);
+        }
+
+        // =====================================================
+        // KE HALAMAN MENUNGGU PEMBAYARAN
+        // =====================================================
 
         return redirect()
             ->route(
@@ -180,24 +300,23 @@ class PaymentController extends Controller
             )
             ->with(
                 'success',
-                'Pembayaran berhasil dibuat. Silakan selesaikan pembayaran dalam waktu 15 menit.'
+                'Pembayaran berhasil dibuat. Silakan selesaikan pembayaran.'
             );
     }
 
 
-    // ==========================================
+    // =========================================================
     // 21. HALAMAN MENUNGGU PEMBAYARAN
-    // ==========================================
+    // =========================================================
 
     public function waiting(Payment $payment)
     {
         // Cek pemilik payment
         $this->checkPaymentOwner($payment);
 
-
-        // ==========================================
-        // JIKA SUDAH BERHASIL
-        // ==========================================
+        // =====================================================
+        // JIKA BERHASIL
+        // =====================================================
 
         if ($payment->status === 'berhasil') {
             return redirect()->route(
@@ -206,12 +325,12 @@ class PaymentController extends Controller
             );
         }
 
-
-        // ==========================================
-        // JIKA SUDAH GAGAL
-        // ==========================================
+        // =====================================================
+        // JIKA GAGAL
+        // =====================================================
 
         if ($payment->status === 'gagal') {
+
             return redirect()
                 ->route(
                     'payment.create',
@@ -219,14 +338,13 @@ class PaymentController extends Controller
                 )
                 ->with(
                     'error',
-                    'Pembayaran sudah gagal. Silakan buat pembayaran kembali.'
+                    'Pembayaran gagal. Silakan pilih metode pembayaran kembali.'
                 );
         }
 
-
-        // ==========================================
+        // =====================================================
         // CEK BATAS 15 MENIT
-        // ==========================================
+        // =====================================================
 
         if ($payment->created_at) {
 
@@ -236,12 +354,11 @@ class PaymentController extends Controller
 
             if (now()->greaterThanOrEqualTo($batasWaktu)) {
 
-                // Ubah status pembayaran
                 $payment->update([
                     'status' => 'gagal',
                 ]);
 
-                // Buat notifikasi pembayaran kadaluarsa
+                // Buat notifikasi
                 $this->createNotification(
                     $payment,
                     'Pembayaran Kadaluarsa',
@@ -263,10 +380,9 @@ class PaymentController extends Controller
             }
         }
 
-
-        // ==========================================
+        // =====================================================
         // LOAD DATA
-        // ==========================================
+        // =====================================================
 
         $payment->load([
             'session.charger',
@@ -274,51 +390,89 @@ class PaymentController extends Controller
             'session.tariff',
         ]);
 
+        // =====================================================
+        // AMBIL DATA VA DARI REFERENSI
+        // =====================================================
 
-        // ==========================================
-        // TAMPILKAN WAITING
-        // ==========================================
+        $vaBank = null;
+        $vaBankName = null;
+        $vaNumber = null;
+
+        if (
+            $payment->metode === 'virtual_account' &&
+            str_starts_with(
+                $payment->referensi_gateway ?? '',
+                'VA|'
+            )
+        ) {
+
+            $vaData = explode(
+                '|',
+                $payment->referensi_gateway
+            );
+
+            if (count($vaData) >= 4) {
+
+                $vaBank = $vaData[1];
+
+                $vaBankName = $vaData[2];
+
+                $vaNumber = $vaData[3];
+            }
+        }
+
+        // =====================================================
+        // TAMPILKAN HALAMAN WAITING
+        // =====================================================
 
         return view(
             'user.payment.waiting',
-            compact('payment')
+            compact(
+                'payment',
+                'vaBank',
+                'vaBankName',
+                'vaNumber'
+            )
         );
     }
 
 
-    // ==========================================
+    // =========================================================
     // 22. SELESAIKAN PEMBAYARAN
-    // ==========================================
+    // =========================================================
 
     public function complete(Payment $payment)
     {
-        // Cek kepemilikan pembayaran
+        // Cek pemilik
         $this->checkPaymentOwner($payment);
 
-
-        // ==========================================
-        // CEK STATUS
-        // ==========================================
+        // =====================================================
+        // SUDAH BERHASIL
+        // =====================================================
 
         if ($payment->status === 'berhasil') {
+
             return redirect()->route(
                 'payment.invoice',
                 $payment->id_payment
             );
         }
 
+        // =====================================================
+        // HARUS PENDING
+        // =====================================================
 
         if ($payment->status !== 'pending') {
+
             return back()->with(
                 'error',
                 'Pembayaran tidak dapat diproses.'
             );
         }
 
-
-        // ==========================================
-        // CEK BATAS WAKTU 15 MENIT
-        // ==========================================
+        // =====================================================
+        // CEK 15 MENIT
+        // =====================================================
 
         if ($payment->created_at) {
 
@@ -332,7 +486,6 @@ class PaymentController extends Controller
                     'status' => 'gagal',
                 ]);
 
-                // Buat notifikasi
                 $this->createNotification(
                     $payment,
                     'Pembayaran Kadaluarsa',
@@ -354,20 +507,18 @@ class PaymentController extends Controller
             }
         }
 
-
-        // ==========================================
-        // SIMULASI PEMBAYARAN BERHASIL
-        // ==========================================
+        // =====================================================
+        // SIMULASI BERHASIL
+        // =====================================================
 
         $payment->update([
             'status' => 'berhasil',
             'waktu_pembayaran' => now(),
         ]);
 
-
-        // ==========================================
-        // NOTIFIKASI PEMBAYARAN BERHASIL
-        // ==========================================
+        // =====================================================
+        // NOTIFIKASI BERHASIL
+        // =====================================================
 
         $this->createNotification(
             $payment,
@@ -378,10 +529,9 @@ class PaymentController extends Controller
             'payment'
         );
 
-
-        // ==========================================
-        // LANGSUNG KE INVOICE
-        // ==========================================
+        // =====================================================
+        // KE INVOICE
+        // =====================================================
 
         return redirect()
             ->route(
@@ -395,20 +545,16 @@ class PaymentController extends Controller
     }
 
 
-    // ==========================================
+    // =========================================================
     // SIMULASI PEMBAYARAN GAGAL
-    // ==========================================
+    // =========================================================
 
     public function fail(Payment $payment)
     {
-        // Cek kepemilikan pembayaran
+        // Cek pemilik
         $this->checkPaymentOwner($payment);
 
-
-        // ==========================================
-        // PEMBAYARAN HARUS PENDING
-        // ==========================================
-
+        // Pembayaran harus pending
         if ($payment->status !== 'pending') {
 
             return back()->with(
@@ -417,57 +563,44 @@ class PaymentController extends Controller
             );
         }
 
-
-        // ==========================================
-        // UBAH STATUS MENJADI GAGAL
-        // ==========================================
-
+        // Ubah status
         $payment->update([
             'status' => 'gagal',
         ]);
 
-
-        // ==========================================
-        // BUAT NOTIFIKASI GAGAL
-        // ==========================================
-
+        // Buat notifikasi
         $this->createNotification(
-        $payment,
-        'Pembayaran Gagal',
-        'Pembayaran untuk sesi charging #' .
-        $payment->id_session .
-        ' gagal diproses. Silakan coba metode pembayaran kembali.',
-        'payment'
-    );
+            $payment,
+            'Pembayaran Gagal',
+            'Pembayaran untuk sesi charging #' .
+            $payment->id_session .
+            ' gagal diproses. Silakan coba metode pembayaran kembali.',
+            'payment'
+        );
 
-
-        // ==========================================
-        // KEMBALI KE HALAMAN NOTIFIKASI
-        // ==========================================
-
+        // Kembali ke halaman pembayaran
         return redirect()
-            ->route('notifications.index')
+            ->route(
+                'payment.create',
+                $payment->id_session
+            )
             ->with(
                 'error',
-                'Pembayaran gagal. Silakan cek notifikasi Anda.'
+                'Pembayaran gagal. Silakan pilih metode pembayaran kembali.'
             );
     }
 
 
-    // ==========================================
+    // =========================================================
     // 23. CEK STATUS PEMBAYARAN
-    // ==========================================
+    // =========================================================
 
     public function status(Payment $payment)
     {
-        // Cek pemilik payment
+        // Cek pemilik
         $this->checkPaymentOwner($payment);
 
-
-        // ==========================================
-        // JIKA PEMBAYARAN BERHASIL
-        // ==========================================
-
+        // Berhasil
         if ($payment->status === 'berhasil') {
 
             return redirect()->route(
@@ -476,11 +609,7 @@ class PaymentController extends Controller
             );
         }
 
-
-        // ==========================================
-        // JIKA MASIH MENUNGGU
-        // ==========================================
-
+        // Pending
         if ($payment->status === 'pending') {
 
             return redirect()->route(
@@ -489,11 +618,7 @@ class PaymentController extends Controller
             );
         }
 
-
-        // ==========================================
-        // JIKA GAGAL
-        // ==========================================
-
+        // Gagal
         return redirect()
             ->route(
                 'payment.create',
@@ -501,25 +626,21 @@ class PaymentController extends Controller
             )
             ->with(
                 'error',
-                'Pembayaran gagal atau sudah kadaluarsa. Silakan buat pembayaran kembali.'
+                'Pembayaran gagal atau sudah kadaluarsa. Silakan pilih metode pembayaran kembali.'
             );
     }
 
 
-    // ==========================================
+    // =========================================================
     // 24. INVOICE / STRUK
-    // ==========================================
+    // =========================================================
 
     public function invoice(Payment $payment)
     {
-        // Cek pemilik payment
+        // Cek pemilik
         $this->checkPaymentOwner($payment);
 
-
-        // ==========================================
-        // HARUS SUDAH BERHASIL
-        // ==========================================
-
+        // Harus berhasil
         if ($payment->status !== 'berhasil') {
 
             return back()->with(
@@ -528,11 +649,7 @@ class PaymentController extends Controller
             );
         }
 
-
-        // ==========================================
-        // LOAD RELASI
-        // ==========================================
-
+        // Load relasi
         $payment->load([
             'session.charger',
             'session.vehicle',
@@ -540,17 +657,7 @@ class PaymentController extends Controller
             'session.tariff',
         ]);
 
-
-        // ==========================================
-        // AMBIL SESSION
-        // ==========================================
-
         $session = $payment->session;
-
-
-        // ==========================================
-        // TAMPILKAN INVOICE
-        // ==========================================
 
         return view(
             'user.payment.invoice',
@@ -562,9 +669,9 @@ class PaymentController extends Controller
     }
 
 
-    // ==========================================
+    // =========================================================
     // MEMBUAT NOTIFIKASI
-    // ==========================================
+    // =========================================================
 
     private function createNotification(
         Payment $payment,
@@ -572,7 +679,6 @@ class PaymentController extends Controller
         string $message,
         string $type = 'payment'
     ) {
-        // Ambil user dari charging session
         $payment->loadMissing('session');
 
         if (!$payment->session) {
@@ -589,9 +695,9 @@ class PaymentController extends Controller
     }
 
 
-    // ==========================================
+    // =========================================================
     // CEK PEMILIK SESSION
-    // ==========================================
+    // =========================================================
 
     private function checkSessionOwner(
         ChargingSession $session
@@ -608,14 +714,13 @@ class PaymentController extends Controller
     }
 
 
-    // ==========================================
+    // =========================================================
     // CEK PEMILIK PAYMENT
-    // ==========================================
+    // =========================================================
 
     private function checkPaymentOwner(
         Payment $payment
     ) {
-        // Load session jika belum ada
         $payment->loadMissing('session');
 
         if (
