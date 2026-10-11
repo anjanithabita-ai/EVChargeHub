@@ -89,41 +89,45 @@
             color: rgba(255,255,255,0.6);
         }
 
+        .menu-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.18);
+            margin: 12px 24px;
+        }
+
         .menu-item {
             display: flex;
             align-items: center;
-            gap: 13px;
-            padding: 13px 22px;
+            gap: 12px;
+            width: calc(100% - 24px);
             margin: 4px 12px;
-            border-radius: 9px;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: transparent;
             color: white;
             text-decoration: none;
-            font-size: 14px;
-            transition: 0.2s;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+            box-sizing: border-box;
         }
 
         .menu-item:hover {
-            background: rgba(255,255,255,0.10);
-        }
-
-        .menu-item.active {
-            background: rgba(255,255,255,0.16);
-            font-weight: bold;
+            background: rgba(255, 255, 255, 0.12);
         }
 
         .menu-icon {
-            width: 30px;
-            min-width: 30px;
-            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .menu-icon svg {
             width: 21px;
             height: 21px;
-            stroke: white;
+            stroke: currentColor;
         }
 
         /* =========================
@@ -623,32 +627,56 @@
         </a>
 
 
-        <form method="POST" action="{{ route('logout') }}">
+        {{-- PEMISAH MENU --}}
+        <div class="menu-divider"></div>
+
+        {{-- LOGOUT --}}
+        <form
+            action="{{ route('logout') }}"
+            method="POST"
+        >
             @csrf
 
-            <button type="submit"
-                    class="menu-item"
-                    style="border:none; background:none; width:calc(100% - 24px); cursor:pointer; text-align:left;">
-
+            <button
+                type="submit"
+                class="menu-item"
+            >
                 <span class="menu-icon">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M10 17l5-5-5-5"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"/>
-                        <path d="M15 12H3"
-                              stroke-width="2"
-                              stroke-linecap="round"/>
-                        <path d="M21 3v18"
-                              stroke-width="2"
-                              stroke-linecap="round"/>
+                    <svg
+                        width="21"
+                        height="21"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M10 5H5C4.44772 5 4 5.44772 4 6V18C4 18.5523 4.44772 19 5 19H10"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
+
+                        <path
+                            d="M14 8L18 12L14 16"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+
+                        <path
+                            d="M9 12H18"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                        />
                     </svg>
                 </span>
 
-                Logout
-
+                <span>
+                    Logout
+                </span>
             </button>
-
         </form>
 
     </aside>

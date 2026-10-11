@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ChargerController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\VehicleController;
@@ -87,7 +88,9 @@ Route::post(
 // ADMIN
 // =====================================================
 
+
 Route::middleware(['auth', 'role:admin'])->group(function () {
+
 
     Route::get(
         '/admin/dashboard',

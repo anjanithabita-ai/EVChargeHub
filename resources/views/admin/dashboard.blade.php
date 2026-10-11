@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Dashboard Admin - EVChargeHub</title>
 
     <style>
+
         * {
             margin: 0;
             padding: 0;
@@ -14,29 +17,29 @@
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: Arial, sans-serif;
             background: #f4f8f7;
-            color: #173b35;
+            color: #163b35;
         }
 
-        /* ================================
+        /* =========================
            LAYOUT
-        ================================= */
+        ========================= */
 
-        .dashboard {
+        .layout {
             display: flex;
             min-height: 100vh;
         }
 
-        /* ================================
+        /* =========================
            SIDEBAR
-        ================================= */
+        ========================= */
 
         .sidebar {
-            width: 255px;
-            min-height: 100vh;
-            background: #006b5d;
+            width: 250px;
+            background: #00695c;
             color: white;
+            min-height: 100vh;
             position: fixed;
             left: 0;
             top: 0;
@@ -44,129 +47,110 @@
             overflow-y: auto;
         }
 
-        .logo {
+        .brand {
             height: 86px;
             display: flex;
             align-items: center;
+            gap: 12px;
             padding: 0 20px;
             border-bottom: 1px solid rgba(255,255,255,0.12);
         }
 
-        .logo-icon {
+        .brand-icon {
             width: 44px;
             height: 44px;
-            background: #25d39a;
             border-radius: 50%;
+            background: #20d890;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            margin-right: 10px;
+            font-size: 23px;
         }
 
-        .logo-text {
+        .brand-name {
             font-size: 20px;
             font-weight: bold;
         }
 
-        .sidebar-section {
-            padding: 26px 10px 0;
+        .sidebar-content {
+            padding: 22px 10px;
         }
 
-        .sidebar-title {
-            color: #8dd3c7;
+        .menu-title {
             font-size: 11px;
             font-weight: bold;
             letter-spacing: 1px;
-            margin: 0 14px 10px;
+            color: #9bd4c9;
+            margin: 14px 12px 10px;
             text-transform: uppercase;
         }
 
         .menu-item {
-            width: 100%;
             display: flex;
             align-items: center;
             gap: 13px;
-
             text-decoration: none;
-            color: rgba(255,255,255,0.9);
-
-            padding: 13px 16px;
+            color: white;
+            padding: 13px 14px;
+            margin-bottom: 4px;
             border-radius: 10px;
-
-            margin-bottom: 5px;
-
             font-size: 14px;
-
             transition: 0.2s;
         }
 
         .menu-item:hover {
             background: rgba(255,255,255,0.10);
-            color: white;
         }
 
         .menu-item.active {
-            background: #0ca878;
-            color: white;
+            background: #10aa79;
             font-weight: bold;
         }
 
         .menu-icon {
-            width: 25px;
+            width: 22px;
             text-align: center;
-            font-size: 18px;
+            font-size: 17px;
         }
 
         .sidebar-divider {
             height: 1px;
-            background: rgba(255,255,255,0.12);
-            margin: 20px 18px;
+            background: rgba(255,255,255,0.15);
+            margin: 20px 8px;
         }
 
-        .logout-button {
-            color: #ffd6d6 !important;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            text-align: left;
-            font-family: inherit;
+        .logout {
+            color: #ffe4e4;
         }
 
-        .logout-button:hover {
-            background: rgba(220,53,69,0.15);
-        }
-
-        /* ================================
-           MAIN
-        ================================= */
+        /* =========================
+           MAIN CONTENT
+        ========================= */
 
         .main {
-            margin-left: 255px;
-            width: calc(100% - 255px);
+            margin-left: 250px;
+            width: calc(100% - 250px);
             min-height: 100vh;
         }
 
-        /* ================================
+        /* =========================
            TOPBAR
-        ================================= */
+        ========================= */
 
         .topbar {
             height: 76px;
             background: white;
-            border-bottom: 1px solid #e5ecea;
-
+            border-bottom: 1px solid #e4ebe8;
             display: flex;
             align-items: center;
             justify-content: space-between;
-
-            padding: 0 35px;
+            padding: 0 32px;
         }
 
         .page-title {
             font-size: 21px;
             font-weight: bold;
-            color: #064f46;
+            color: #123f37;
         }
 
         .admin-profile {
@@ -178,383 +162,276 @@
         .notification {
             width: 40px;
             height: 40px;
-
-            background: #ecfaf5;
             border-radius: 50%;
-
+            background: #e9faf4;
             display: flex;
             align-items: center;
             justify-content: center;
-
             font-size: 18px;
         }
 
         .profile-icon {
-            width: 42px;
-            height: 42px;
-
-            background: #d9f7ec;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-
+            background: #dff7ed;
             display: flex;
             align-items: center;
             justify-content: center;
-
             font-size: 19px;
         }
 
-        .admin-info {
-            display: flex;
-            flex-direction: column;
-        }
-
         .admin-name {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
-            color: #064f46;
+            color: #16483f;
         }
 
-        .admin-role {
-            font-size: 11px;
-            color: #78908a;
-            margin-top: 3px;
-        }
-
-        /* ================================
+        /* =========================
            CONTENT
-        ================================= */
+        ========================= */
 
-        .content-wrapper {
-            padding: 32px 38px 45px;
+        .content {
+            padding: 30px 32px 50px;
         }
 
-        /* ================================
-           WELCOME
-        ================================= */
+        /* =========================
+           WELCOME BANNER
+        ========================= */
 
         .welcome {
             background: linear-gradient(
-                110deg,
-                #e8fff5,
-                #d5f7e9
+                120deg,
+                #e7fff5,
+                #d4f7e9
             );
 
-            border: 1px solid #c7ecdf;
-
+            border: 1px solid #bdebd9;
             border-radius: 22px;
-
-            padding: 30px 35px;
-
-            min-height: 180px;
-
-            margin-bottom: 30px;
-
+            padding: 30px 34px;
+            margin-bottom: 28px;
             position: relative;
             overflow: hidden;
         }
 
         .welcome::after {
             content: "⚡";
-
             position: absolute;
-
-            right: 55px;
-            bottom: -30px;
-
-            font-size: 150px;
-
+            right: 80px;
+            bottom: -20px;
+            font-size: 130px;
             opacity: 0.07;
         }
 
         .welcome-label {
             display: inline-block;
-
-            background: #9cefd0;
-            color: #006b5d;
-
+            background: #a9efd5;
+            color: #075c4e;
             padding: 9px 17px;
-
-            border-radius: 30px;
-
+            border-radius: 20px;
             font-size: 13px;
-            font-weight: bold;
-
-            margin-bottom: 13px;
+            margin-bottom: 10px;
         }
 
         .welcome h1 {
-            color: #064f46;
             font-size: 29px;
-            margin-bottom: 9px;
+            margin-bottom: 10px;
+            color: #07594d;
         }
 
         .welcome p {
-            color: #456c65;
+            max-width: 700px;
+            color: #315f57;
             font-size: 14px;
             line-height: 1.6;
-
-            max-width: 650px;
         }
 
-        /* ================================
+        /* =========================
            SECTION TITLE
-        ================================= */
+        ========================= */
 
         .section-title {
             display: flex;
             align-items: center;
-            gap: 9px;
-
-            margin-bottom: 16px;
+            gap: 10px;
+            font-size: 19px;
+            color: #124d43;
+            margin-bottom: 15px;
         }
 
-        .section-title h2 {
-            color: #064f46;
-            font-size: 20px;
-        }
+        /* =========================
+           SUMMARY CARDS
+        ========================= */
 
-        .section-icon {
-            font-size: 21px;
-        }
-
-        /* ================================
-           STATISTIC CARD
-        ================================= */
-
-        .stats {
+        .summary-grid {
             display: grid;
-
             grid-template-columns: repeat(4, 1fr);
-
-            gap: 18px;
-
-            margin-bottom: 32px;
+            gap: 16px;
+            margin-bottom: 30px;
         }
 
-        .stat-card {
+        .summary-card {
             background: white;
-
-            border: 1px solid #e8eeec;
-
             border-radius: 17px;
-
-            padding: 21px;
-
+            padding: 20px;
+            border: 1px solid #e4eeeb;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.04);
             display: flex;
             align-items: center;
-
             gap: 15px;
-
-            box-shadow: 0 5px 18px rgba(0,0,0,0.045);
-
-            transition: 0.2s;
         }
 
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.07);
-        }
-
-        .stat-icon {
-            width: 54px;
-            height: 54px;
-
+        .summary-icon {
+            width: 52px;
+            height: 52px;
             border-radius: 14px;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
-            font-size: 23px;
-
+            font-size: 22px;
             flex-shrink: 0;
         }
 
-        .user-icon {
-            background: #e3f7ef;
+        .icon-user {
+            background: #e0f7ef;
         }
 
-        .station-icon {
-            background: #e2f2ff;
+        .icon-station {
+            background: #e1efff;
         }
 
-        .charger-icon {
-            background: #fff3d8;
+        .icon-charger {
+            background: #fff2d7;
         }
 
-        .charging-icon {
-            background: #f0e7ff;
+        .icon-charging {
+            background: #f0e5ff;
         }
 
-        .stat-info h3 {
-            color: #70827e;
+        .summary-info small {
+            display: block;
+            color: #6d8580;
             font-size: 12px;
-            font-weight: normal;
-            margin-bottom: 5px;
+            margin-bottom: 7px;
         }
 
-        .number {
-            color: #087f6d;
-            font-size: 27px;
-            font-weight: bold;
+        .summary-info strong {
+            font-size: 25px;
+            color: #00896e;
         }
 
-        /* ================================
-           QUICK MENU
-        ================================= */
+        /* =========================
+           QUICK ACCESS
+        ========================= */
 
-        .quick-menu {
+        .quick-grid {
             display: grid;
-
             grid-template-columns: repeat(2, 1fr);
-
-            gap: 17px;
-
+            gap: 16px;
             margin-bottom: 30px;
         }
 
         .quick-card {
             background: white;
-
-            border: 1px solid #e8eeec;
-
+            border: 1px solid #e4eeeb;
             border-radius: 17px;
-
-            padding: 20px;
-
+            padding: 19px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-
+            gap: 15px;
             text-decoration: none;
-
+            color: inherit;
             box-shadow: 0 5px 18px rgba(0,0,0,0.04);
-
             transition: 0.2s;
         }
 
         .quick-card:hover {
-            transform: translateY(-3px);
-
-            border-color: #a9dfcf;
-
-            box-shadow: 0 10px 25px rgba(0,0,0,0.07);
-        }
-
-        .quick-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.07);
         }
 
         .quick-icon {
-            width: 52px;
-            height: 52px;
-
+            width: 50px;
+            height: 50px;
             border-radius: 14px;
-
             background: #e1f8ef;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
-            font-size: 22px;
+            font-size: 21px;
+            flex-shrink: 0;
         }
 
-        .quick-text h3 {
-            color: #087f6d;
-            font-size: 15px;
+        .quick-info {
+            flex: 1;
+        }
+
+        .quick-info strong {
+            display: block;
+            color: #00896e;
+            font-size: 14px;
             margin-bottom: 5px;
         }
 
-        .quick-text p {
-            color: #82918e;
+        .quick-info span {
+            color: #718681;
             font-size: 12px;
         }
 
         .arrow {
-            color: #0b9875;
+            color: #00896e;
             font-size: 22px;
         }
 
-        /* ================================
+        /* =========================
            SYSTEM INFORMATION
-        ================================= */
+        ========================= */
 
-        .system-card {
+        .info-card {
             background: white;
-
-            border: 1px solid #e8eeec;
-
+            border: 1px solid #e4eeeb;
             border-radius: 17px;
-
-            padding: 23px;
-
+            padding: 22px;
             box-shadow: 0 5px 18px rgba(0,0,0,0.04);
         }
 
-        .system-row {
-            display: flex;
-            justify-content: space-between;
-
-            padding: 13px 0;
-
-            border-bottom: 1px solid #edf1f0;
-
-            font-size: 13px;
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
         }
 
-        .system-row:last-child {
-            border-bottom: none;
+        .info-item {
+            background: #f7fbfa;
+            border-radius: 12px;
+            padding: 15px;
         }
 
-        .system-label {
-            color: #71827e;
+        .info-item small {
+            display: block;
+            color: #738782;
+            font-size: 12px;
+            margin-bottom: 7px;
         }
 
-        .system-value {
-            color: #087f6d;
-            font-weight: bold;
+        .info-item strong {
+            color: #126052;
+            font-size: 14px;
         }
 
-        .status {
-            display: inline-flex;
-
-            align-items: center;
-
-            gap: 6px;
-
-            background: #e1f8ef;
-
-            color: #087f6d;
-
-            padding: 5px 10px;
-
-            border-radius: 20px;
-
-            font-size: 11px;
-        }
-
-        .status-dot {
-            width: 7px;
-            height: 7px;
-
-            border-radius: 50%;
-
-            background: #14a875;
-        }
-
-        /* ================================
+        /* =========================
            RESPONSIVE
-        ================================= */
+        ========================= */
 
         @media (max-width: 1100px) {
 
-            .stats {
+            .summary-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
 
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 800px) {
@@ -568,21 +445,15 @@
                 width: calc(100% - 220px);
             }
 
-            .content-wrapper {
-                padding: 25px;
+            .quick-grid {
+                grid-template-columns: 1fr;
             }
-
         }
 
-        @media (max-width: 650px) {
-
-            .dashboard {
-                display: block;
-            }
+        @media (max-width: 600px) {
 
             .sidebar {
                 position: relative;
-
                 width: 100%;
                 min-height: auto;
             }
@@ -592,200 +463,254 @@
                 width: 100%;
             }
 
+            .layout {
+                display: block;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
             .topbar {
-                padding: 18px 20px;
-                height: auto;
+                padding: 0 18px;
             }
 
-            .admin-info {
-                display: none;
-            }
-
-            .content-wrapper {
+            .content {
                 padding: 20px;
             }
 
-            .stats {
-                grid-template-columns: 1fr;
+            .admin-name {
+                display: none;
             }
-
-            .quick-menu {
-                grid-template-columns: 1fr;
-            }
-
-            .welcome {
-                padding: 25px;
-            }
-
-            .welcome h1 {
-                font-size: 23px;
-            }
-
         }
+
     </style>
+
 </head>
 
 
 <body>
 
-<div class="dashboard">
+<div class="layout">
 
-
-    <!-- ==================================
-         SIDEBAR
-    =================================== -->
+    <!-- =====================================
+         SIDEBAR ADMIN
+    ====================================== -->
 
     <aside class="sidebar">
 
-        <div class="logo">
+        <div class="brand">
 
-            <div class="logo-icon">
+            <div class="brand-icon">
                 ⚡
             </div>
 
-            <div class="logo-text">
+            <div class="brand-name">
                 EVChargeHub
             </div>
 
         </div>
 
 
-        <!-- MENU UTAMA -->
+        <div class="sidebar-content">
 
-        <div class="sidebar-section">
+            <!-- MENU UTAMA -->
 
-            <div class="sidebar-title">
+            <div class="menu-title">
                 Menu Utama
             </div>
 
-            <a href="#" class="menu-item active">
+            <a href="{{ route('admin.dashboard') }}"
+               class="menu-item active">
 
-                <span class="menu-icon">
-                    🏠
-                </span>
+                <span class="menu-icon">🏠</span>
 
-                <span>
-                    Dashboard
-                </span>
+                <span>Dashboard</span>
 
             </a>
 
-        </div>
 
+            <!-- MANAJEMEN -->
 
-        <!-- MANAJEMEN -->
-
-        <div class="sidebar-section">
-
-            <div class="sidebar-title">
+            <div class="menu-title">
                 Manajemen
             </div>
 
+            <a href="#"
+               class="menu-item">
 
-            <a href="#" class="menu-item">
+                <span class="menu-icon">👥</span>
 
-                <span class="menu-icon">
-                    👥
-                </span>
-
-                <span>
-                    Kelola Pengguna
-                </span>
+                <span>Kelola Pengguna</span>
 
             </a>
 
 
-            <a href="#" class="menu-item">
+            <a href="#"
+               class="menu-item">
 
-                <span class="menu-icon">
-                    📍
-                </span>
+                <span class="menu-icon">👨‍💼</span>
 
-                <span>
-                    Charging Station
-                </span>
+                <span>Kelola Operator</span>
 
             </a>
 
 
-            <a href="#" class="menu-item">
+            <a href="#"
+               class="menu-item">
 
-                <span class="menu-icon">
-                    🔌
-                </span>
+                <span class="menu-icon">📍</span>
 
-                <span>
-                    Kelola Charger
-                </span>
+                <span>Charging Station</span>
 
             </a>
 
-        </div>
+
+            <!-- KELola CHARGER -->
+
+            <a href="{{ route('admin.chargers.index') }}"
+               class="menu-item">
+
+                <span class="menu-icon">⚡</span>
+
+                <span>Kelola Charger</span>
+
+            </a>
 
 
-        <!-- DATA -->
+            <!-- OPERASIONAL -->
 
-        <div class="sidebar-section">
-
-            <div class="sidebar-title">
-                Data Sistem
+            <div class="menu-title">
+                Operasional
             </div>
 
+            <a href="#"
+               class="menu-item">
 
-            <a href="#" class="menu-item">
+                <span class="menu-icon">⚡</span>
 
-                <span class="menu-icon">
-                    ⚡
-                </span>
-
-                <span>
-                    Data Charging
-                </span>
+                <span>Monitoring Charging</span>
 
             </a>
 
 
-            <a href="#" class="menu-item">
+            <!-- LAPORAN & TRANSAKSI -->
 
-                <span class="menu-icon">
-                    📊
-                </span>
+            <div class="menu-title">
+                Laporan & Transaksi
+            </div>
 
-                <span>
-                    Laporan
-                </span>
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">📊</span>
+
+                <span>Laporan</span>
 
             </a>
 
-        </div>
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">💰</span>
+
+                <span>Tarif Charging</span>
+
+            </a>
 
 
-        <div class="sidebar-divider"></div>
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">💳</span>
+
+                <span>Refund Pembayaran</span>
+
+            </a>
 
 
-        <!-- LOGOUT -->
+            <!-- KOMUNIKASI -->
 
-        <div class="sidebar-section" style="padding-top: 0;">
+            <div class="menu-title">
+                Komunikasi
+            </div>
 
-            <form
-                action="{{ route('logout') }}"
-                method="POST"
-            >
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">⭐</span>
+
+                <span>Ulasan & Feedback</span>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">🎁</span>
+
+                <span>Promosi</span>
+
+            </a>
+
+
+            <!-- SISTEM -->
+
+            <div class="menu-title">
+                Sistem
+            </div>
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">🔐</span>
+
+                <span>Hak Akses</span>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item">
+
+                <span class="menu-icon">🛡️</span>
+
+                <span>Audit Log</span>
+
+            </a>
+
+
+            <div class="sidebar-divider"></div>
+
+
+            <!-- LOGOUT -->
+
+            <form action="{{ route('logout') }}"
+                  method="POST">
 
                 @csrf
 
                 <button
                     type="submit"
-                    class="menu-item logout-button"
+                    class="menu-item logout"
+                    style="
+                        width: 100%;
+                        background: transparent;
+                        border: none;
+                        cursor: pointer;
+                        text-align: left;
+                    "
                 >
 
-                    <span class="menu-icon">
-                        🚪
-                    </span>
+                    <span class="menu-icon">🚪</span>
 
-                    <span>
-                        Logout
-                    </span>
+                    <span>Logout</span>
 
                 </button>
 
@@ -796,13 +721,11 @@
     </aside>
 
 
-
-    <!-- ==================================
+    <!-- =====================================
          MAIN CONTENT
-    =================================== -->
+    ====================================== -->
 
     <main class="main">
-
 
         <!-- TOPBAR -->
 
@@ -819,22 +742,12 @@
                     🔔
                 </div>
 
-
                 <div class="profile-icon">
                     👤
                 </div>
 
-
-                <div class="admin-info">
-
-                    <div class="admin-name">
-                        {{ auth()->user()->nama }}
-                    </div>
-
-                    <div class="admin-role">
-                        Administrator EVChargeHub
-                    </div>
-
+                <div class="admin-name">
+                    {{ auth()->user()->nama }}
                 </div>
 
             </div>
@@ -842,11 +755,9 @@
         </header>
 
 
-
         <!-- CONTENT -->
 
-        <div class="content-wrapper">
-
+        <div class="content">
 
             <!-- WELCOME -->
 
@@ -856,11 +767,9 @@
                     ⚡ Admin Panel
                 </div>
 
-
                 <h1>
-                    Halo, {{ auth()->user()->nama }}!
+                    Halo, Admin EVChargeHub!
                 </h1>
-
 
                 <p>
                     Selamat datang di dashboard admin EVChargeHub.
@@ -871,334 +780,280 @@
             </section>
 
 
+            <!-- RINGKASAN SISTEM -->
 
-            <!-- RINGKASAN -->
-
-            <div class="section-title">
-
-                <span class="section-icon">
-                    📊
-                </span>
-
-                <h2>
-                    Ringkasan Sistem
-                </h2>
-
-            </div>
+            <h2 class="section-title">
+                📊 Ringkasan Sistem
+            </h2>
 
 
-            <section class="stats">
+            <div class="summary-grid">
 
+                <div class="summary-card">
 
-                <!-- PENGGUNA -->
-
-                <div class="stat-card">
-
-                    <div class="stat-icon user-icon">
+                    <div class="summary-icon icon-user">
                         👥
                     </div>
 
-                    <div class="stat-info">
+                    <div class="summary-info">
 
-                        <h3>
+                        <small>
                             Total Pengguna
-                        </h3>
+                        </small>
 
-                        <div class="number">
-                            -
-                        </div>
+                        <strong>
+                            {{ $totalUsers }}
+                        </strong>
 
                     </div>
 
                 </div>
 
 
-                <!-- STATION -->
+                <div class="summary-card">
 
-                <div class="stat-card">
-
-                    <div class="stat-icon station-icon">
+                    <div class="summary-icon icon-station">
                         📍
                     </div>
 
-                    <div class="stat-info">
+                    <div class="summary-info">
 
-                        <h3>
+                        <small>
                             Charging Station
-                        </h3>
+                        </small>
 
-                        <div class="number">
-                            -
-                        </div>
+                        <strong>
+                            {{ $totalLocations }}
+                        </strong>
 
                     </div>
 
                 </div>
 
 
-                <!-- CHARGER -->
+                <div class="summary-card">
 
-                <div class="stat-card">
-
-                    <div class="stat-icon charger-icon">
+                    <div class="summary-icon icon-charger">
                         🔌
                     </div>
 
-                    <div class="stat-info">
+                    <div class="summary-info">
 
-                        <h3>
+                        <small>
                             Total Charger
-                        </h3>
+                        </small>
 
-                        <div class="number">
-                            -
-                        </div>
+                        <strong>
+                            {{ $totalChargers }}
+                        </strong>
 
                     </div>
 
                 </div>
 
 
-                <!-- CHARGING -->
+                <div class="summary-card">
 
-                <div class="stat-card">
-
-                    <div class="stat-icon charging-icon">
+                    <div class="summary-icon icon-charging">
                         ⚡
                     </div>
 
-                    <div class="stat-info">
+                    <div class="summary-info">
 
-                        <h3>
+                        <small>
                             Sesi Charging
-                        </h3>
+                        </small>
 
-                        <div class="number">
-                            -
-                        </div>
+                        <strong>
+                            {{ $totalSessions }}
+                        </strong>
 
                     </div>
 
                 </div>
 
-            </section>
-
+            </div>
 
 
             <!-- AKSES CEPAT -->
 
-            <div class="section-title">
+            <h2 class="section-title">
+                🚀 Akses Cepat
+            </h2>
 
-                <span class="section-icon">
-                    🚀
-                </span>
 
-                <h2>
-                    Akses Cepat
-                </h2>
+            <div class="quick-grid">
+
+
+                <!-- KELOLA PENGGUNA -->
+
+                <a href="#"
+                   class="quick-card">
+
+                    <div class="quick-icon">
+                        👥
+                    </div>
+
+                    <div class="quick-info">
+
+                        <strong>
+                            Kelola Pengguna
+                        </strong>
+
+                        <span>
+                            Kelola data pengguna EVChargeHub
+                        </span>
+
+                    </div>
+
+                    <div class="arrow">
+                        →
+                    </div>
+
+                </a>
+
+
+                <!-- CHARGING STATION -->
+
+                <a href="#"
+                   class="quick-card">
+
+                    <div class="quick-icon">
+                        📍
+                    </div>
+
+                    <div class="quick-info">
+
+                        <strong>
+                            Charging Station
+                        </strong>
+
+                        <span>
+                            Kelola lokasi charging station
+                        </span>
+
+                    </div>
+
+                    <div class="arrow">
+                        →
+                    </div>
+
+                </a>
+
+
+                <!-- KELOLA CHARGER -->
+
+                <a href="{{ route('admin.chargers.index') }}"
+                   class="quick-card">
+
+                    <div class="quick-icon">
+                        🔌
+                    </div>
+
+                    <div class="quick-info">
+
+                        <strong>
+                            Kelola Charger
+                        </strong>
+
+                        <span>
+                            Kelola perangkat charger
+                        </span>
+
+                    </div>
+
+                    <div class="arrow">
+                        →
+                    </div>
+
+                </a>
+
+
+                <!-- MONITORING -->
+
+                <a href="#"
+                   class="quick-card">
+
+                    <div class="quick-icon">
+                        ⚡
+                    </div>
+
+                    <div class="quick-info">
+
+                        <strong>
+                            Monitoring Charging
+                        </strong>
+
+                        <span>
+                            Pantau aktivitas charging
+                        </span>
+
+                    </div>
+
+                    <div class="arrow">
+                        →
+                    </div>
+
+                </a>
+
 
             </div>
-
-
-            <section class="quick-menu">
-
-
-                <!-- PENGGUNA -->
-
-                <a href="#" class="quick-card">
-
-                    <div class="quick-left">
-
-                        <div class="quick-icon">
-                            👥
-                        </div>
-
-                        <div class="quick-text">
-
-                            <h3>
-                                Kelola Pengguna
-                            </h3>
-
-                            <p>
-                                Kelola data pengguna EVChargeHub
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="arrow">
-                        →
-                    </div>
-
-                </a>
-
-
-
-                <!-- STATION -->
-
-                <a href="#" class="quick-card">
-
-                    <div class="quick-left">
-
-                        <div class="quick-icon">
-                            📍
-                        </div>
-
-                        <div class="quick-text">
-
-                            <h3>
-                                Charging Station
-                            </h3>
-
-                            <p>
-                                Kelola lokasi charging station
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="arrow">
-                        →
-                    </div>
-
-                </a>
-
-
-
-                <!-- CHARGER -->
-
-                <a href="#" class="quick-card">
-
-                    <div class="quick-left">
-
-                        <div class="quick-icon">
-                            🔌
-                        </div>
-
-                        <div class="quick-text">
-
-                            <h3>
-                                Kelola Charger
-                            </h3>
-
-                            <p>
-                                Kelola perangkat charger
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="arrow">
-                        →
-                    </div>
-
-                </a>
-
-
-
-                <!-- DATA CHARGING -->
-
-                <a href="#" class="quick-card">
-
-                    <div class="quick-left">
-
-                        <div class="quick-icon">
-                            ⚡
-                        </div>
-
-                        <div class="quick-text">
-
-                            <h3>
-                                Data Charging
-                            </h3>
-
-                            <p>
-                                Lihat aktivitas pengisian kendaraan
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="arrow">
-                        →
-                    </div>
-
-                </a>
-
-            </section>
-
 
 
             <!-- INFORMASI SISTEM -->
 
-            <div class="section-title">
+            <h2 class="section-title">
+                📌 Informasi Sistem
+            </h2>
 
-                <span class="section-icon">
-                    📌
-                </span>
 
-                <h2>
-                    Informasi Sistem
-                </h2>
+            <div class="info-card">
+
+                <div class="info-grid">
+
+
+                    <div class="info-item">
+
+                        <small>
+                            Status Sistem
+                        </small>
+
+                        <strong>
+                            🟢 Sistem Berjalan Normal
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <small>
+                            Status Charging
+                        </small>
+
+                        <strong>
+                            ⚡ Siap Digunakan
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <small>
+                            Role Saat Ini
+                        </small>
+
+                        <strong>
+                            👑 Administrator
+                        </strong>
+
+                    </div>
+
+
+                </div>
 
             </div>
-
-
-            <section class="system-card">
-
-
-                <div class="system-row">
-
-                    <span class="system-label">
-                        Sistem
-                    </span>
-
-                    <span class="system-value">
-                        EVChargeHub
-                    </span>
-
-                </div>
-
-
-                <div class="system-row">
-
-                    <span class="system-label">
-                        Login sebagai
-                    </span>
-
-                    <span class="system-value">
-                        Administrator
-                    </span>
-
-                </div>
-
-
-                <div class="system-row">
-
-                    <span class="system-label">
-                        Status Sistem
-                    </span>
-
-                    <span class="status">
-
-                        <span class="status-dot"></span>
-
-                        Aktif
-
-                    </span>
-
-                </div>
-
-
-            </section>
 
 
         </div>
@@ -1208,4 +1063,5 @@
 </div>
 
 </body>
+
 </html>
