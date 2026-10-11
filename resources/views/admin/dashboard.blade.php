@@ -79,6 +79,26 @@
             font-size: 17px;
         }
 
+        .logout-button {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 12px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+            border: none;
+            background: transparent;
+        }
+
+        .logout-button:hover {
+            background: rgba(255,255,255,.2);
+        }
+
         .main {
             margin-left: 250px;
             padding: 30px;
@@ -303,23 +323,27 @@
 
         <div class="menu-title">Menu Utama</div>
 
-        <a href="{{ route('admin.dashboard') }}" class="menu-item active">
+        <a href="{{ route('admin.dashboard') }}"
+           class="menu-item active">
             <span class="menu-icon">📊</span>
             <span>Dashboard</span>
         </a>
 
-        <a href="{{ route('admin.stations.index') }}" class="menu-item">
+        <a href="{{ route('admin.stations.index') }}"
+           class="menu-item">
             <span class="menu-icon">📍</span>
             <span>Charging Station</span>
         </a>
 
-        <a href="{{ route('admin.chargers.index') }}" class="menu-item">
+        <a href="{{ route('admin.chargers.index') }}"
+           class="menu-item">
             <span class="menu-icon">🔌</span>
             <span>Kelola Charger</span>
         </a>
 
-        <a href="#" class="menu-item"
-            onclick="alert('Fitur Tarif Charging belum tersedia.'); return false;">
+        {{-- Menu Tarif Charging sudah terhubung ke route --}}
+        <a href="{{ route('admin.tariffs.index') }}"
+           class="menu-item">
             <span class="menu-icon">💰</span>
             <span>Tarif Charging</span>
         </a>
@@ -328,9 +352,8 @@
 
         <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button type="submit"
-                class="menu-item"
-                style="width:100%;border:0;background:transparent;color:white;text-align:left;cursor:pointer;font-size:14px;">
+
+            <button type="submit" class="logout-button">
                 <span class="menu-icon">🚪</span>
                 <span>Logout</span>
             </button>
@@ -393,7 +416,8 @@
             <h2 class="section-title">Akses Cepat</h2>
 
             <div class="quick-grid">
-                <a href="{{ route('admin.stations.index') }}" class="quick-card">
+                <a href="{{ route('admin.stations.index') }}"
+                   class="quick-card">
                     <div class="quick-icon">📍</div>
                     <div>
                         <h3>Charging Station</h3>
@@ -401,7 +425,8 @@
                     </div>
                 </a>
 
-                <a href="{{ route('admin.chargers.index') }}" class="quick-card">
+                <a href="{{ route('admin.chargers.index') }}"
+                   class="quick-card">
                     <div class="quick-icon">🔌</div>
                     <div>
                         <h3>Kelola Charger</h3>
@@ -409,7 +434,8 @@
                     </div>
                 </a>
 
-                <a href="{{ url('/admin/tariffs') }}" class="quick-card">
+                <a href="{{ route('admin.tariffs.index') }}"
+                   class="quick-card">
                     <div class="quick-icon">💰</div>
                     <div>
                         <h3>Tarif Charging</h3>
@@ -417,7 +443,8 @@
                     </div>
                 </a>
 
-                <a href="{{ route('admin.dashboard') }}" class="quick-card">
+                <a href="{{ route('admin.dashboard') }}"
+                   class="quick-card">
                     <div class="quick-icon">💳</div>
                     <div>
                         <h3>Pembayaran</h3>
@@ -425,7 +452,8 @@
                     </div>
                 </a>
 
-                <a href="{{ route('admin.dashboard') }}" class="quick-card">
+                <a href="{{ route('admin.dashboard') }}"
+                   class="quick-card">
                     <div class="quick-icon">📈</div>
                     <div>
                         <h3>Laporan</h3>
@@ -433,7 +461,8 @@
                     </div>
                 </a>
 
-                <a href="{{ route('admin.dashboard') }}" class="quick-card">
+                <a href="{{ route('admin.dashboard') }}"
+                   class="quick-card">
                     <div class="quick-icon">⚙️</div>
                     <div>
                         <h3>Pengaturan Sistem</h3>
@@ -448,8 +477,9 @@
             <p>
                 Dashboard ini digunakan administrator untuk memantau
                 data utama EVChargeHub dan mengakses fitur pengelolaan.
-                Gunakan menu Charging Station untuk mengelola lokasi stasiun
-                dan menu Kelola Charger untuk mengelola perangkat charger.
+                Gunakan menu Charging Station untuk mengelola lokasi stasiun,
+                menu Kelola Charger untuk mengelola perangkat charger,
+                dan menu Tarif Charging untuk mengatur tarif pengisian daya.
             </p>
         </section>
 
