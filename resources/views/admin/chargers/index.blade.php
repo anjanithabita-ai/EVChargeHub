@@ -1,9 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Kelola Charger - EVChargeHub</title>
 
     <style>
@@ -14,172 +14,265 @@
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f4f7f6;
-            color: #333;
+            font-family: Arial, sans-serif;
+            background: #f4f8f7;
+            color: #163b35;
         }
 
-        /* =========================
-           SIDEBAR
-        ========================= */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR - SAMA DENGAN DASHBOARD */
         .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
             width: 250px;
-            height: 100vh;
             background: #00695c;
             color: white;
-            padding: 25px 18px;
+            min-height: 100vh;
+            position: fixed;
+            inset: 0 auto 0 0;
             overflow-y: auto;
+            z-index: 100;
         }
 
         .brand {
-            font-size: 22px;
+            min-height: 86px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(255,255,255,.12);
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #20d890;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+            flex-shrink: 0;
+        }
+
+        .brand-name {
+            font-size: 20px;
             font-weight: bold;
-            margin-bottom: 35px;
-            padding: 0 12px;
+        }
+
+        .sidebar-content {
+            padding: 22px 10px;
         }
 
         .menu-title {
             font-size: 11px;
             font-weight: bold;
-            color: #b2dfdb;
-            margin: 22px 12px 10px;
-            text-transform: uppercase;
             letter-spacing: 1px;
+            color: #9bd4c9;
+            margin: 14px 12px 10px;
+            text-transform: uppercase;
         }
 
-        .menu {
-            list-style: none;
-        }
-
-        .menu li {
-            margin-bottom: 5px;
-        }
-
-        .menu a {
+        .menu-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 11px 12px;
-            color: white;
+            gap: 13px;
             text-decoration: none;
-            border-radius: 8px;
+            color: white;
+            padding: 13px 14px;
+            margin-bottom: 4px;
+            border-radius: 10px;
             font-size: 14px;
-            transition: 0.2s;
+            font-family: inherit;
+            transition: .2s;
         }
 
-        .menu a:hover,
-        .menu a.active {
-            background: rgba(255, 255, 255, 0.15);
+        .menu-item:hover {
+            background: rgba(255,255,255,.12);
+        }
+
+        .menu-item.active {
+            background: #10aa79;
+            font-weight: bold;
         }
 
         .menu-icon {
-            width: 20px;
+            width: 22px;
             text-align: center;
-            font-size: 16px;
+            font-size: 17px;
+            flex-shrink: 0;
         }
 
-        /* =========================
-           MAIN CONTENT
-        ========================= */
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255,255,255,.15);
+            margin: 20px 8px;
+        }
+
+        .logout {
+            color: #ffe4e4;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .menu-item:focus-visible {
+            outline: 3px solid #20d890;
+            outline-offset: 3px;
+        }
+
+        /* MAIN DAN TOPBAR */
         .main {
             margin-left: 250px;
+            width: calc(100% - 250px);
             min-height: 100vh;
         }
 
-        /* TOPBAR */
         .topbar {
-            height: 70px;
+            min-height: 76px;
             background: white;
-            border-bottom: 1px solid #e5e5e5;
+            border-bottom: 1px solid #e4ebe8;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 35px;
+            gap: 20px;
+            padding: 15px 32px;
         }
 
-        .topbar h2 {
-            font-size: 20px;
-            color: #333;
+        .page-title {
+            font-size: 21px;
+            font-weight: bold;
+            color: #123f37;
         }
 
         .admin-profile {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            color: #555;
+            gap: 12px;
         }
 
+        .notification,
         .profile-icon {
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: #e0f2f1;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #00695c;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .notification {
+            background: #e9faf4;
+        }
+
+        .profile-icon {
+            background: #dff7ed;
+        }
+
+        .admin-name {
+            font-size: 13px;
             font-weight: bold;
+            color: #16483f;
         }
 
-        /* CONTENT */
         .content {
-            padding: 35px;
+            padding: 30px 32px 50px;
         }
 
+        /* HEADER HALAMAN */
         .page-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            gap: 20px;
             margin-bottom: 25px;
         }
 
         .page-header h1 {
-            font-size: 27px;
-            color: #222;
-            margin-bottom: 7px;
+            font-size: 28px;
+            color: #07594d;
+            margin-bottom: 9px;
         }
 
         .page-header p {
-            color: #777;
+            color: #718681;
             font-size: 14px;
+            line-height: 1.7;
         }
 
-        /* BUTTON */
-        .btn-add {
+        .page-label {
+            display: inline-block;
+            background: #a9efd5;
+            color: #075c4e;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        /* TOMBOL */
+        .btn {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 7px;
-            background: #00695c;
-            color: white;
+            border: 0;
+            border-radius: 9px;
+            padding: 11px 15px;
             text-decoration: none;
-            padding: 11px 17px;
-            border-radius: 8px;
-            font-size: 14px;
+            font-family: inherit;
+            font-size: 13px;
             font-weight: bold;
-            border: none;
             cursor: pointer;
+            transition: .2s;
+            white-space: nowrap;
         }
 
+        .btn-primary,
+        .btn-add {
+            background: #00896e;
+            color: white;
+        }
+
+        .btn-primary:hover,
         .btn-add:hover {
-            background: #00564d;
+            background: #00695c;
         }
 
-        /* FILTER CARD */
+        .btn-light {
+            background: white;
+            color: #36534d;
+            border: 1px solid #dce4e1;
+        }
+
+        .btn-light:hover {
+            background: #f0faf6;
+            border-color: #bdebd9;
+        }
+
+        /* FILTER */
         .filter-card {
             background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 22px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e4eeeb;
+            border-radius: 17px;
+            padding: 21px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 18px rgba(0,0,0,.04);
+        }
+
+        .filter-heading {
+            font-size: 16px;
+            font-weight: bold;
+            color: #124d43;
+            margin-bottom: 17px;
         }
 
         .filter-form {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr auto;
+            grid-template-columns: minmax(160px, 2fr) minmax(140px, 1fr) minmax(130px, 1fr) auto;
             gap: 12px;
             align-items: end;
         }
@@ -187,70 +280,66 @@
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 7px;
+            gap: 8px;
+            min-width: 0;
         }
 
         .form-group label {
             font-size: 12px;
             font-weight: bold;
-            color: #555;
+            color: #4f625d;
         }
 
         .form-control {
-            height: 42px;
+            width: 100%;
+            height: 43px;
             padding: 0 12px;
-            border: 1px solid #ddd;
-            border-radius: 7px;
+            border: 1px solid #d9e4e0;
+            border-radius: 9px;
+            font-family: inherit;
             font-size: 13px;
             outline: none;
             background: white;
+            color: #163b35;
         }
 
         .form-control:focus {
-            border-color: #00695c;
+            border-color: #10aa79;
+            box-shadow: 0 0 0 3px rgba(16,170,121,.12);
         }
 
-        .btn-filter {
-            height: 42px;
-            padding: 0 18px;
-            border: none;
-            border-radius: 7px;
-            background: #00695c;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .btn-reset {
-            height: 42px;
-            padding: 0 18px;
-            border: 1px solid #ddd;
-            border-radius: 7px;
-            background: white;
-            color: #555;
-            text-decoration: none;
+        .filter-actions {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
+            gap: 8px;
         }
 
-        /* TABLE */
+        /* TABEL */
         .table-card {
             background: white;
-            border-radius: 12px;
+            border: 1px solid #e4eeeb;
+            border-radius: 17px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 5px 18px rgba(0,0,0,.04);
         }
 
         .table-header {
-            padding: 20px 22px;
-            border-bottom: 1px solid #eee;
+            padding: 21px 22px;
+            border-bottom: 1px solid #edf0ef;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
         }
 
         .table-header h3 {
             font-size: 17px;
-            color: #333;
+            color: #124d43;
+        }
+
+        .table-count {
+            font-size: 12px;
+            color: #718681;
+            font-weight: normal;
         }
 
         .table-wrapper {
@@ -263,24 +352,24 @@
         }
 
         thead {
-            background: #f8faf9;
+            background: #f7fbfa;
         }
 
         th {
             padding: 14px 18px;
             text-align: left;
             font-size: 12px;
-            color: #666;
+            color: #6d8580;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
+            letter-spacing: .4px;
             white-space: nowrap;
         }
 
         td {
             padding: 16px 18px;
-            border-top: 1px solid #eee;
-            font-size: 14px;
-            color: #444;
+            border-top: 1px solid #edf0ef;
+            font-size: 13px;
+            color: #465b55;
             white-space: nowrap;
         }
 
@@ -290,20 +379,20 @@
 
         .charger-code {
             font-weight: bold;
-            color: #00695c;
+            color: #00896e;
         }
 
         .station-name {
-            font-weight: 600;
-            color: #333;
+            font-weight: bold;
+            color: #16483f;
         }
 
-        /* STATUS */
+        /* STATUS CHARGER */
         .status {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 10px;
+            padding: 7px 10px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: bold;
@@ -316,16 +405,16 @@
         }
 
         .status-tersedia {
-            background: #e8f5e9;
-            color: #2e7d32;
+            background: #e1f8ed;
+            color: #18794e;
         }
 
         .status-tersedia .status-dot {
-            background: #43a047;
+            background: #20a464;
         }
 
         .status-digunakan {
-            background: #e3f2fd;
+            background: #e1efff;
             color: #1565c0;
         }
 
@@ -334,8 +423,8 @@
         }
 
         .status-offline {
-            background: #f5f5f5;
-            color: #616161;
+            background: #f1f4f3;
+            color: #616e69;
         }
 
         .status-offline .status-dot {
@@ -344,303 +433,295 @@
 
         .status-rusak {
             background: #ffebee;
-            color: #c62828;
+            color: #b42318;
         }
 
         .status-rusak .status-dot {
             background: #e53935;
         }
 
-        /* EMPTY STATE */
+        /* DATA KOSONG */
         .empty-state {
             text-align: center;
             padding: 55px 20px;
-            color: #888;
+            color: #718681;
         }
 
         .empty-icon {
-            font-size: 40px;
-            margin-bottom: 12px;
+            font-size: 44px;
+            margin-bottom: 13px;
         }
 
         .empty-state h3 {
-            color: #555;
-            margin-bottom: 7px;
+            color: #124d43;
+            margin-bottom: 9px;
+            font-size: 19px;
         }
 
         .empty-state p {
             font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .alert {
+            padding: 14px 17px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background: #e8f5e9;
+            color: #256b32;
+            border: 1px solid #c8e6c9;
+            font-size: 13px;
         }
 
         /* RESPONSIVE */
-        @media (max-width: 900px) {
-            .sidebar {
-                width: 210px;
-            }
-
-            .main {
-                margin-left: 210px;
-            }
-
+        @media (max-width: 1200px) {
             .filter-form {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .content {
+                padding-left: 24px;
+                padding-right: 24px;
             }
         }
 
-        @media (max-width: 650px) {
+        @media (max-width: 900px) {
             .sidebar {
-                display: none;
+                width: 220px;
+            }
+
+            .main {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+            }
+
+            .page-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .topbar {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .layout {
+                display: block;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                min-height: auto;
+                max-height: none;
+            }
+
+            .sidebar-content {
+                padding-top: 12px;
             }
 
             .main {
                 margin-left: 0;
+                width: 100%;
             }
 
             .content {
-                padding: 20px;
+                padding: 20px 16px 35px;
             }
 
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
+            .topbar {
+                min-height: 68px;
+                padding: 14px 18px;
+            }
+
+            .page-title {
+                font-size: 19px;
+            }
+
+            .admin-name {
+                display: none;
             }
 
             .filter-form {
                 grid-template-columns: 1fr;
             }
 
-            .topbar {
-                padding: 0 20px;
+            .filter-actions {
+                width: 100%;
+            }
+
+            .filter-actions .btn {
+                flex: 1;
+            }
+
+            .filter-card {
+                padding: 17px;
+            }
+
+            .page-header h1 {
+                font-size: 24px;
             }
         }
     </style>
 </head>
 
 <body>
+<div class="layout">
 
-    <!-- =========================
-         SIDEBAR
-    ========================== -->
+    <!-- SIDEBAR -->
     <aside class="sidebar">
-
         <div class="brand">
-            ⚡ EVChargeHub
+            <div class="brand-icon">⚡</div>
+            <div class="brand-name">EVChargeHub</div>
         </div>
 
-        <div class="menu-title">
-            Menu Utama
+        <div class="sidebar-content">
+            <div class="menu-title">Menu Utama</div>
+
+            <a href="{{ route('admin.dashboard') }}" class="menu-item">
+                <span class="menu-icon">🏠</span>
+                <span>Dashboard</span>
+            </a>
+
+            <div class="menu-title">Manajemen</div>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">👥</span>
+                <span>Kelola Pengguna</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">👨‍💼</span>
+                <span>Kelola Operator</span>
+            </a>
+
+            <a href="{{ route('admin.charging-stations.index') }}"
+               class="menu-item">
+                <span class="menu-icon">📍</span>
+                <span>Charging Station</span>
+            </a>
+
+            <a href="{{ route('admin.chargers.index') }}"
+               class="menu-item active"
+               aria-current="page">
+                <span class="menu-icon">🔌</span>
+                <span>Kelola Charger</span>
+            </a>
+
+            <div class="menu-title">Operasional</div>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">⚡</span>
+                <span>Monitoring Charging</span>
+            </a>
+
+            <div class="menu-title">Laporan & Transaksi</div>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📊</span>
+                <span>Laporan</span>
+            </a>
+
+            <a href="{{ route('admin.charging-stations.index') }}"
+               class="menu-item">
+                <span class="menu-icon">💰</span>
+                <span>Tarif per Station</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">💳</span>
+                <span>Refund Pembayaran</span>
+            </a>
+
+            <div class="menu-title">Komunikasi</div>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">⭐</span>
+                <span>Ulasan & Feedback</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🎁</span>
+                <span>Promosi</span>
+            </a>
+
+            <div class="menu-title">Sistem</div>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🔐</span>
+                <span>Hak Akses</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🛡️</span>
+                <span>Audit Log</span>
+            </a>
+
+            <div class="sidebar-divider"></div>
+
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button
+                    type="submit"
+                    class="menu-item logout"
+                    style="width:100%;background:transparent;border:none;cursor:pointer;text-align:left;"
+                >
+                    <span class="menu-icon">🚪</span>
+                    <span>Logout</span>
+                </button>
+            </form>
         </div>
-
-        <ul class="menu">
-            <li>
-                <a href="{{ route('admin.dashboard') }}">
-                    <span class="menu-icon">▦</span>
-                    Dashboard
-                </a>
-            </li>
-        </ul>
-
-        <div class="menu-title">
-            Manajemen
-        </div>
-
-        <ul class="menu">
-            <li>
-                <a href="#">
-                    <span class="menu-icon">👥</span>
-                    Kelola Pengguna
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <span class="menu-icon">🧑‍💼</span>
-                    Kelola Operator
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <span class="menu-icon">📍</span>
-                    Charging Station
-                </a>
-            </li>
-
-            <li>
-                <a href="{{ route('admin.chargers.index') }}" class="active">
-                    <span class="menu-icon">⚡</span>
-                    Kelola Charger
-                </a>
-            </li>
-        </ul>
-
-        <div class="menu-title">
-            Operasional
-        </div>
-
-        <ul class="menu">
-            <li>
-                <a href="#">
-                    <span class="menu-icon">📊</span>
-                    Monitoring Charging
-                </a>
-            </li>
-        </ul>
-
-        <div class="menu-title">
-            Laporan & Transaksi
-        </div>
-
-        <ul class="menu">
-            <li>
-                <a href="#">
-                    <span class="menu-icon">📄</span>
-                    Laporan
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <span class="menu-icon">💰</span>
-                    Tarif Charging
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <span class="menu-icon">↩️</span>
-                    Refund Pembayaran
-                </a>
-            </li>
-        </ul>
-
-        <div class="menu-title">
-            Komunikasi
-        </div>
-
-        <ul class="menu">
-            <li>
-                <a href="#">
-                    <span class="menu-icon">💬</span>
-                    Ulasan & Feedback
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <span class="menu-icon">📢</span>
-                    Promosi
-                </a>
-            </li>
-        </ul>
-
-        <div class="menu-title">
-            Sistem
-        </div>
-
-        <ul class="menu">
-            <li>
-                <a href="#">
-                    <span class="menu-icon">🔐</span>
-                    Hak Akses
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <span class="menu-icon">📝</span>
-                    Audit Log
-                </a>
-            </li>
-
-            <li>
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-
-                    <button type="submit"
-                            style="
-                                width: 100%;
-                                border: none;
-                                background: transparent;
-                                color: white;
-                                display: flex;
-                                align-items: center;
-                                gap: 12px;
-                                padding: 11px 12px;
-                                border-radius: 8px;
-                                font-size: 14px;
-                                cursor: pointer;
-                                text-align: left;
-                            ">
-                        <span class="menu-icon">🚪</span>
-                        Logout
-                    </button>
-                </form>
-            </li>
-        </ul>
-
     </aside>
 
-
-    <!-- =========================
-         MAIN
-    ========================== -->
+    <!-- KONTEN UTAMA -->
     <main class="main">
-
-        <!-- TOPBAR -->
         <header class="topbar">
-
-            <h2>Kelola Charger</h2>
+            <div class="page-title">Kelola Charger</div>
 
             <div class="admin-profile">
-                <div class="profile-icon">
-                    A
+                <div class="notification">🔔</div>
+                <div class="profile-icon">👤</div>
+                <div class="admin-name">
+                    {{ auth()->user()->nama ?? auth()->user()->name ?? 'Admin' }}
                 </div>
-
-                <span>
-                    {{ auth()->user()->nama ?? 'Administrator' }}
-                </span>
             </div>
-
         </header>
 
-
-        <!-- CONTENT -->
         <section class="content">
 
-            <!-- PAGE HEADER -->
+            @if(session('success'))
+                <div class="alert">
+                    ✓ {{ session('success') }}
+                </div>
+            @endif
+
             <div class="page-header">
-
                 <div>
+                    <span class="page-label">🔌 Manajemen Perangkat</span>
                     <h1>Kelola Charger</h1>
-
                     <p>
-                        Kelola dan pantau seluruh perangkat charger pada charging station.
+                        Kelola dan pantau seluruh perangkat charger
+                        yang terhubung ke charging station.
                     </p>
                 </div>
 
-                <a href="#" class="btn-add">
+                <a href="#" class="btn btn-add">
                     ＋ Tambah Charger
                 </a>
-
             </div>
 
-
-            <!-- FILTER -->
+            <!-- FILTER CHARGER -->
             <div class="filter-card">
+                <div class="filter-heading">🔎 Cari dan Filter Charger</div>
 
                 <form action="{{ route('admin.chargers.index') }}"
                       method="GET"
                       class="filter-form">
 
-                    <!-- SEARCH -->
                     <div class="form-group">
-
-                        <label for="search">
-                            Cari Charger
-                        </label>
-
+                        <label for="search">Cari Charger</label>
                         <input
                             type="text"
                             id="search"
@@ -649,59 +730,28 @@
                             placeholder="Cari berdasarkan kode charger..."
                             value="{{ request('search') }}"
                         >
-
                     </div>
 
-
-                    <!-- LOCATION -->
                     <div class="form-group">
+                        <label for="location">Charging Station</label>
+                        <select id="location" name="location" class="form-control">
+                            <option value="">Semua Station</option>
 
-                        <label for="location">
-                            Charging Station
-                        </label>
-
-                        <select
-                            id="location"
-                            name="location"
-                            class="form-control"
-                        >
-
-                            <option value="">
-                                Semua Station
-                            </option>
-
-                            @foreach ($locations as $location)
-
+                            @foreach($locations as $location)
                                 <option
                                     value="{{ $location->id_location }}"
                                     {{ request('location') == $location->id_location ? 'selected' : '' }}
                                 >
                                     {{ $location->nama_lokasi }}
                                 </option>
-
                             @endforeach
-
                         </select>
-
                     </div>
 
-
-                    <!-- STATUS -->
                     <div class="form-group">
-
-                        <label for="status">
-                            Status
-                        </label>
-
-                        <select
-                            id="status"
-                            name="status"
-                            class="form-control"
-                        >
-
-                            <option value="">
-                                Semua Status
-                            </option>
+                        <label for="status">Status Charger</label>
+                        <select id="status" name="status" class="form-control">
+                            <option value="">Semua Status</option>
 
                             <option value="tersedia"
                                 {{ request('status') == 'tersedia' ? 'selected' : '' }}>
@@ -722,60 +772,37 @@
                                 {{ request('status') == 'rusak' ? 'selected' : '' }}>
                                 Rusak
                             </option>
-
                         </select>
-
                     </div>
 
-
-                    <!-- BUTTON -->
-                    <div style="display: flex; gap: 8px;">
-
-                        <button type="submit" class="btn-filter">
+                    <div class="filter-actions">
+                        <button type="submit" class="btn btn-primary">
                             Filter
                         </button>
 
-                        <a
-                            href="{{ route('admin.chargers.index') }}"
-                            class="btn-reset"
-                        >
+                        <a href="{{ route('admin.chargers.index') }}"
+                           class="btn btn-light">
                             Reset
                         </a>
-
                     </div>
-
                 </form>
-
             </div>
 
-
-            <!-- TABLE -->
+            <!-- TABEL CHARGER -->
             <div class="table-card">
-
                 <div class="table-header">
-
                     <h3>
                         Daftar Charger
-                        <span style="
-                            color: #888;
-                            font-size: 13px;
-                            font-weight: normal;
-                        ">
+                        <span class="table-count">
                             ({{ $chargers->count() }} charger)
                         </span>
                     </h3>
-
                 </div>
 
-
                 <div class="table-wrapper">
-
-                    @if ($chargers->count() > 0)
-
+                    @if($chargers->count() > 0)
                         <table>
-
                             <thead>
-
                                 <tr>
                                     <th>No</th>
                                     <th>Kode Charger</th>
@@ -785,18 +812,12 @@
                                     <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
-
                             </thead>
 
                             <tbody>
-
-                                @foreach ($chargers as $index => $charger)
-
+                                @foreach($chargers as $index => $charger)
                                     <tr>
-
-                                        <td>
-                                            {{ $index + 1 }}
-                                        </td>
+                                        <td>{{ $index + 1 }}</td>
 
                                         <td>
                                             <span class="charger-code">
@@ -810,16 +831,10 @@
                                             </span>
                                         </td>
 
-                                        <td>
-                                            {{ $charger->tipe_konektor }}
-                                        </td>
+                                        <td>{{ $charger->tipe_konektor }}</td>
+                                        <td>{{ $charger->daya_kw }} kW</td>
 
                                         <td>
-                                            {{ $charger->daya_kw }} kW
-                                        </td>
-
-                                        <td>
-
                                             @php
                                                 $statusClass = match ($charger->status) {
                                                     'tersedia' => 'status-tersedia',
@@ -831,61 +846,35 @@
                                             @endphp
 
                                             <span class="status {{ $statusClass }}">
-
                                                 <span class="status-dot"></span>
-
                                                 {{ ucfirst($charger->status) }}
-
                                             </span>
-
                                         </td>
 
                                         <td>
-
-                                            <span style="
-                                                color: #999;
-                                                font-size: 12px;
-                                            ">
+                                            <span style="color:#718681;font-size:12px;">
                                                 Segera tersedia
                                             </span>
-
                                         </td>
-
                                     </tr>
-
                                 @endforeach
-
                             </tbody>
-
                         </table>
-
                     @else
-
                         <div class="empty-state">
-
-                            <div class="empty-icon">
-                                ⚡
-                            </div>
-
-                            <h3>
-                                Belum ada charger
-                            </h3>
-
+                            <div class="empty-icon">🔌</div>
+                            <h3>Belum Ada Charger</h3>
                             <p>
-                                Data charger belum tersedia atau tidak sesuai dengan filter.
+                                Data charger belum tersedia atau tidak sesuai
+                                dengan filter pencarian.
                             </p>
-
                         </div>
-
                     @endif
-
                 </div>
-
             </div>
 
         </section>
-
     </main>
-
+</div>
 </body>
 </html>
