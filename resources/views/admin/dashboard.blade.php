@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -24,16 +24,13 @@
             min-height: 100vh;
         }
 
-        /* SIDEBAR */
         .sidebar {
             width: 250px;
             background: #00695c;
             color: white;
             min-height: 100vh;
             position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
+            inset: 0 auto 0 0;
             overflow-y: auto;
             z-index: 100;
         }
@@ -44,7 +41,7 @@
             align-items: center;
             gap: 12px;
             padding: 0 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.12);
+            border-bottom: 1px solid rgba(255,255,255,.12);
         }
 
         .brand-icon {
@@ -87,11 +84,11 @@
             margin-bottom: 4px;
             border-radius: 10px;
             font-size: 14px;
-            transition: 0.2s;
+            transition: .2s;
         }
 
         .menu-item:hover {
-            background: rgba(255,255,255,0.12);
+            background: rgba(255,255,255,.12);
         }
 
         .menu-item.active {
@@ -108,7 +105,7 @@
 
         .sidebar-divider {
             height: 1px;
-            background: rgba(255,255,255,0.15);
+            background: rgba(255,255,255,.15);
             margin: 20px 8px;
         }
 
@@ -118,14 +115,12 @@
             font-size: 14px;
         }
 
-        /* MAIN CONTENT */
         .main {
             margin-left: 250px;
             width: calc(100% - 250px);
             min-height: 100vh;
         }
 
-        /* TOPBAR */
         .topbar {
             min-height: 76px;
             background: white;
@@ -175,7 +170,6 @@
             color: #16483f;
         }
 
-        /* CONTENT */
         .content {
             padding: 30px 32px 50px;
         }
@@ -196,7 +190,7 @@
             right: 55px;
             bottom: -20px;
             font-size: 130px;
-            opacity: 0.07;
+            opacity: .07;
             pointer-events: none;
         }
 
@@ -236,7 +230,6 @@
             margin-bottom: 16px;
         }
 
-        /* SUMMARY CARDS */
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -249,7 +242,7 @@
             border-radius: 17px;
             padding: 20px;
             border: 1px solid #e4eeeb;
-            box-shadow: 0 5px 18px rgba(0,0,0,0.04);
+            box-shadow: 0 5px 18px rgba(0,0,0,.04);
             display: flex;
             align-items: center;
             gap: 15px;
@@ -267,21 +260,10 @@
             flex-shrink: 0;
         }
 
-        .icon-user {
-            background: #e0f7ef;
-        }
-
-        .icon-station {
-            background: #e1efff;
-        }
-
-        .icon-charger {
-            background: #fff2d7;
-        }
-
-        .icon-charging {
-            background: #f0e5ff;
-        }
+        .icon-user { background: #e0f7ef; }
+        .icon-station { background: #e1efff; }
+        .icon-charger { background: #fff2d7; }
+        .icon-charging { background: #f0e5ff; }
 
         .summary-info {
             min-width: 0;
@@ -299,7 +281,6 @@
             color: #00896e;
         }
 
-        /* QUICK ACCESS */
         .quick-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -317,18 +298,19 @@
             gap: 15px;
             text-decoration: none;
             color: inherit;
-            box-shadow: 0 5px 18px rgba(0,0,0,0.04);
-            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 18px rgba(0,0,0,.04);
+            transition: transform .2s, box-shadow .2s;
             min-width: 0;
         }
 
         .quick-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 22px rgba(0,0,0,.08);
             border-color: #bdebd9;
         }
 
-        .quick-card:focus-visible {
+        .quick-card:focus-visible,
+        .menu-item:focus-visible {
             outline: 3px solid #20d890;
             outline-offset: 3px;
         }
@@ -369,13 +351,12 @@
             flex-shrink: 0;
         }
 
-        /* SYSTEM INFORMATION */
         .info-card {
             background: white;
             border: 1px solid #e4eeeb;
             border-radius: 17px;
             padding: 22px;
-            box-shadow: 0 5px 18px rgba(0,0,0,0.04);
+            box-shadow: 0 5px 18px rgba(0,0,0,.04);
         }
 
         .info-grid {
@@ -404,7 +385,6 @@
             line-height: 1.5;
         }
 
-        /* RESPONSIVE */
         @media (max-width: 1200px) {
             .summary-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -509,7 +489,6 @@
 <body>
 <div class="layout">
 
-    <!-- SIDEBAR ADMIN -->
     <aside class="sidebar">
         <div class="brand">
             <div class="brand-icon">⚡</div>
@@ -536,7 +515,6 @@
                 <span>Kelola Operator</span>
             </a>
 
-            <!-- LINK CHARGING STATION -->
             <a href="{{ route('admin.charging-stations.index') }}" class="menu-item">
                 <span class="menu-icon">📍</span>
                 <span>Charging Station</span>
@@ -561,9 +539,9 @@
                 <span>Laporan</span>
             </a>
 
-            <a href="#" class="menu-item">
+            <a href="{{ route('admin.charging-stations.index') }}" class="menu-item">
                 <span class="menu-icon">💰</span>
-                <span>Tarif Charging</span>
+                <span>Tarif per Station</span>
             </a>
 
             <a href="#" class="menu-item">
@@ -611,9 +589,7 @@
         </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
     <main class="main">
-
         <header class="topbar">
             <div class="page-title">Dashboard</div>
 
@@ -627,8 +603,6 @@
         </header>
 
         <div class="content">
-
-            <!-- WELCOME -->
             <section class="welcome">
                 <div class="welcome-label">⚡ Admin Panel</div>
 
@@ -643,7 +617,6 @@
                 </p>
             </section>
 
-            <!-- RINGKASAN SISTEM -->
             <h2 class="section-title">📊 Ringkasan Sistem</h2>
 
             <div class="summary-grid">
@@ -680,11 +653,9 @@
                 </div>
             </div>
 
-            <!-- AKSES CEPAT -->
             <h2 class="section-title">🚀 Akses Cepat</h2>
 
             <div class="quick-grid">
-
                 <a href="#" class="quick-card">
                     <div class="quick-icon">👥</div>
                     <div class="quick-info">
@@ -694,7 +665,6 @@
                     <div class="arrow">→</div>
                 </a>
 
-                <!-- KARTU CHARGING STATION -->
                 <a href="{{ route('admin.charging-stations.index') }}" class="quick-card">
                     <div class="quick-icon">📍</div>
                     <div class="quick-info">
@@ -721,15 +691,12 @@
                     </div>
                     <div class="arrow">→</div>
                 </a>
-
             </div>
 
-            <!-- INFORMASI SISTEM -->
             <h2 class="section-title">📌 Informasi Sistem</h2>
 
             <div class="info-card">
                 <div class="info-grid">
-
                     <div class="info-item">
                         <small>Status Sistem</small>
                         <strong>🟢 Sistem Berjalan Normal</strong>
@@ -744,13 +711,10 @@
                         <small>Role Saat Ini</small>
                         <strong>👑 Administrator</strong>
                     </div>
-
                 </div>
             </div>
-
         </div>
     </main>
 </div>
 </body>
 </html>
-```
