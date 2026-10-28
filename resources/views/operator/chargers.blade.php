@@ -566,7 +566,7 @@
             <span class="menu-label">Sesi Charging</span>
         </a>
 
-        <a href="#" class="menu-item">
+        <a href="{{ route('operator.history') }}" class="menu-item">
             <span class="menu-icon">
                 <svg viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="12" r="8" stroke-width="2"/>
@@ -577,9 +577,14 @@
             <span class="menu-label">Riwayat Charging</span>
         </a>
 
+        <a href="{{ route('operator.charger-reports.index') }}" class="menu-item">
+            <span class="menu-icon">🔧</span>
+            <span class="menu-label">Laporan Kerusakan</span>
+        </a>
+        
         <div class="menu-title">LAPORAN</div>
 
-        <a href="#" class="menu-item">
+        <a href="{{ route('operator.report') }}" class="menu-item">
             <span class="menu-icon">
                 <svg viewBox="0 0 24 24" fill="none">
                     <path d="M4 19V5M4 19h17"

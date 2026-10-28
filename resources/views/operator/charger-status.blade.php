@@ -659,7 +659,7 @@
             Sesi Charging
         </a>
 
-        <a href="#" class="menu-item">
+        <a href="{{ route('operator.history') }}" class="menu-item">
             <span class="menu-icon">
                 <svg viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="12" r="8" stroke-width="2"/>
@@ -670,9 +670,14 @@
             Riwayat Charging
         </a>
 
+        <a href="{{ route('operator.charger-reports.index') }}" class="menu-item">
+            <span class="menu-icon">🔧</span>
+            <span class="menu-label">Laporan Kerusakan</span>
+        </a>
+
         <div class="menu-title">LAPORAN</div>
 
-        <a href="#" class="menu-item">
+        <a href="{{ route('operator.report') }}" class="menu-item">
             <span class="menu-icon">
                 <svg viewBox="0 0 24 24" fill="none">
                     <path d="M4 19V5M4 19h17"
@@ -743,6 +748,13 @@
 
         {{-- CONTENT --}}
         <section class="content">
+            @if(session('success'))
+                <div style="margin:15px 0;padding:12px 16px;background:#dcfce7;color:#166534;border-radius:8px;">{{ session('success') }}</div>
+            @endif
+            @if($errors->any())
+                <div style="margin:15px 0;padding:12px 16px;background:#fee2e2;color:#991b1b;border-radius:8px;">{{ $errors->first() }}</div>
+            @endif
+
 
             <div class="welcome">
                 <h2>Monitoring Status Charger</h2>
@@ -822,7 +834,8 @@
                                     <th>No.</th>
                                     <th>Kode Charger</th>
                                     <th>Charging Station</th>
-                                    <th>Status</th>
+                                    <th>Status Saat Ini</th>
+                                    <th>Ubah Status</th>
                                     <th>Terakhir Diperbarui</th>
                                 </tr>
                             </thead>
@@ -856,6 +869,22 @@
                                                 <span class="status-dot"></span>
                                                 {{ $charger->status ? ucfirst($charger->status) : 'Belum diketahui' }}
                                             </span>
+                                        </td>
+
+                                        <td>
+                                            <form method="POST" action="{{ route('operator.chargers.status', $charger->id_charger) }}" style="display:flex;gap:8px;align-items:center;min-width:220px;">
+                                                @csrf
+                                                @method('PATCH')
+                                                <select name="status" required style="padding:8px;border:1px solid #ccd6d3;border-radius:7px;">
+                                                    @foreach(['tersedia' => 'Tersedia', 'digunakan' => 'Digunakan', 'offline' => 'Offline', 'rusak' => 'Rusak'] as $value => $label)
+                                                        <option value="{{ $value }}" @selected(old('status', $charger->status) === $value)>{{ $label }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <button type="submit" style="padding:8px 11px;background:#006b59;color:white;border:0;border-radius:7px;cursor:pointer;">Simpan</button>
+                                            </form>
+                                            @error('status')
+                                                <small style="display:block;color:#b91c1c;margin-top:5px;">{{ $message }}</small>
+                                            @enderror
                                         </td>
 
                                         <td>

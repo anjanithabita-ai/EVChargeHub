@@ -89,45 +89,41 @@
             color: rgba(255,255,255,0.6);
         }
 
-        .menu-divider {
-            height: 1px;
-            background: rgba(255, 255, 255, 0.18);
-            margin: 12px 24px;
-        }
-
         .menu-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            width: calc(100% - 24px);
+            gap: 13px;
+            padding: 13px 22px;
             margin: 4px 12px;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            background: transparent;
+            border-radius: 9px;
             color: white;
             text-decoration: none;
-            font: inherit;
-            text-align: left;
-            cursor: pointer;
-            box-sizing: border-box;
+            font-size: 14px;
+            transition: 0.2s;
         }
 
         .menu-item:hover {
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255,255,255,0.10);
+        }
+
+        .menu-item.active {
+            background: rgba(255,255,255,0.16);
+            font-weight: bold;
         }
 
         .menu-icon {
+            width: 30px;
+            min-width: 30px;
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
         }
 
         .menu-icon svg {
             width: 21px;
             height: 21px;
-            stroke: currentColor;
+            stroke: white;
         }
 
         /* =========================
@@ -569,19 +565,28 @@
 
 
 
-        <a href="#" class="menu-item">
+
+        {{-- Riwayat Charging --}}
+        <a href="{{ route('operator.history') }}"
+        class="menu-item {{ request()->routeIs('operator.history') ? 'active' : '' }}">
 
             <span class="menu-icon">
                 <svg viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="12" r="8"
                             stroke-width="2"/>
                     <path d="M12 7v5l3 2"
-                          stroke-width="2"
-                          stroke-linecap="round"/>
+                        stroke-width="2"
+                        stroke-linecap="round"/>
                 </svg>
             </span>
 
-            Riwayat Charging
+            <span>Riwayat Charging</span>
+        </a>
+
+
+        <a href="{{ route('operator.charger-reports.index') }}" class="menu-item">
+            <span class="menu-icon">🔧</span>
+            <span class="menu-label">Laporan Kerusakan</span>
         </a>
 
 
@@ -589,22 +594,27 @@
             LAPORAN
         </div>
 
-        <a href="#" class="menu-item">
+
+        {{-- Laporan Penggunaan Charger --}}
+        <a href="{{ route('operator.report') }}"
+        class="menu-item {{ request()->routeIs('operator.report') ? 'active' : '' }}">
 
             <span class="menu-icon">
                 <svg viewBox="0 0 24 24" fill="none">
                     <path d="M4 19V5M4 19h17"
-                          stroke-width="2"
-                          stroke-linecap="round"/>
+                        stroke-width="2"
+                        stroke-linecap="round"/>
+
                     <path d="M7 15l4-4 3 2 5-6"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"/>
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"/>
                 </svg>
             </span>
 
-            Laporan
+            <span class="menu-label">Laporan</span>
         </a>
+
 
 
         <div class="menu-title">
@@ -627,56 +637,32 @@
         </a>
 
 
-        {{-- PEMISAH MENU --}}
-        <div class="menu-divider"></div>
-
-        {{-- LOGOUT --}}
-        <form
-            action="{{ route('logout') }}"
-            method="POST"
-        >
+        <form method="POST" action="{{ route('logout') }}">
             @csrf
 
-            <button
-                type="submit"
-                class="menu-item"
-            >
+            <button type="submit"
+                    class="menu-item"
+                    style="border:none; background:none; width:calc(100% - 24px); cursor:pointer; text-align:left;">
+
                 <span class="menu-icon">
-                    <svg
-                        width="21"
-                        height="21"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path
-                            d="M10 5H5C4.44772 5 4 5.44772 4 6V18C4 18.5523 4.44772 19 5 19H10"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                        />
-
-                        <path
-                            d="M14 8L18 12L14 16"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-
-                        <path
-                            d="M9 12H18"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                        />
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M10 17l5-5-5-5"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"/>
+                        <path d="M15 12H3"
+                              stroke-width="2"
+                              stroke-linecap="round"/>
+                        <path d="M21 3v18"
+                              stroke-width="2"
+                              stroke-linecap="round"/>
                     </svg>
                 </span>
 
-                <span>
-                    Logout
-                </span>
+                Logout
+
             </button>
+
         </form>
 
     </aside>

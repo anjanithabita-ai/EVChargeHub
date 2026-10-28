@@ -19,6 +19,8 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OperatorDashboardController;
 use App\Http\Controllers\OperatorController;
 use App\Models\Notification;
+use App\Http\Controllers\ChargerReportController;
+use App\Http\Controllers\OperatorChargerReportController;
 
 
 // =====================================================
@@ -98,6 +100,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     )->name('admin.dashboard');
 
 });
+
+Route::get('/admin/chargers', [ChargerController::class, 'index'])
+    ->name('admin.chargers.index');
 
 
 // =====================================================
@@ -333,6 +338,16 @@ Route::middleware(['auth', 'role:user'])->group(function () {
         [NotificationController::class, 'read']
     )->name('notifications.read.one');
 
+    //Laporan charger rusak
+    Route::get('/user/charger-reports', [ChargerReportController::class, 'index'])
+    ->name('charger-reports.index');
+
+    Route::get('/user/charger-reports/create', [ChargerReportController::class, 'create'])
+        ->name('charger-reports.create');
+
+    Route::post('/user/charger-reports', [ChargerReportController::class, 'store'])
+        ->name('charger-reports.store');
+
 });
 
 
@@ -448,6 +463,12 @@ Route::middleware(['auth', 'role:operator'])->group(function () {
         '/operator/report',
         [OperatorController::class, 'report']
     )->name('operator.report');
+
+    Route::get('/operator/charger-reports', [OperatorChargerReportController::class, 'index'])
+    ->name('operator.charger-reports.index');
+
+Route::patch('/operator/charger-reports/{report}', [OperatorChargerReportController::class, 'update'])
+    ->name('operator.charger-reports.update');
 
 });
 
