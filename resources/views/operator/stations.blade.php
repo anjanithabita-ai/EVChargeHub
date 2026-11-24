@@ -604,6 +604,11 @@
             Riwayat Charging
         </a>
 
+        <a href="{{ route('operator.charger-reports.index') }}" class="menu-item">
+            <span class="menu-icon">🔧</span>
+            <span class="menu-label">Laporan Kerusakan</span>
+        </a>
+
         <div class="menu-title">LAPORAN</div>
 
         <a href="{{ route('operator.report') }}" class="menu-item">

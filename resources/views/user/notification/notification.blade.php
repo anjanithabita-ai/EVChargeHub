@@ -876,6 +876,19 @@
 
         </a>
 
+        
+        
+        
+<a href="{{ route('charger-reports.create') }}"
+   class="menu-item {{ request()->routeIs('charger-reports.*') ? 'active' : '' }}">
+    <span class="menu-icon">🔧</span>
+    <span>Pelaporan Kerusakan</span>
+    <span class="menu-arrow">›</span>
+</a>
+
+
+
+
 
         <!-- NOTIFIKASI -->
 
@@ -894,6 +907,14 @@
 
         </a>
 
+        <a 
+            href="{{ route('charger-reports.index') }}" class="menu-item">
+            <span class="menu-icon">🔧</span>
+            <span>Pelaporan Charger</span>
+            <span class="menu-arrow">›</span>
+        </a>
+
+       
 
         <!-- LOGOUT -->
 

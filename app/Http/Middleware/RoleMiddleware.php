@@ -13,6 +13,7 @@ class RoleMiddleware
         Closure $next,
         ...$roles
     ): Response {
+
         if (!auth()->check()) {
             return redirect()->route('login');
         }

@@ -1463,6 +1463,9 @@
 
         </a>
 
+        
+
+
 
         <!-- NOTIFIKASI AKTIF -->
 
@@ -1530,6 +1533,14 @@
 
             @endif
 
+        </a>
+
+         <a href="{{ route('charger-reports.index') }}" class="menu-item">
+            <span class="menu-icon">🔧</span>
+            <span>Pelaporan Charger</span>
+             <span class="menu-arrow">
+                ›
+            </span>
         </a>
 
 

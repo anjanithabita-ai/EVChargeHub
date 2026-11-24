@@ -565,19 +565,28 @@
 
 
 
-        <a href="#" class="menu-item">
+
+        {{-- Riwayat Charging --}}
+        <a href="{{ route('operator.history') }}"
+        class="menu-item {{ request()->routeIs('operator.history') ? 'active' : '' }}">
 
             <span class="menu-icon">
                 <svg viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="12" r="8"
                             stroke-width="2"/>
                     <path d="M12 7v5l3 2"
-                          stroke-width="2"
-                          stroke-linecap="round"/>
+                        stroke-width="2"
+                        stroke-linecap="round"/>
                 </svg>
             </span>
 
-            Riwayat Charging
+            <span>Riwayat Charging</span>
+        </a>
+
+
+        <a href="{{ route('operator.charger-reports.index') }}" class="menu-item">
+            <span class="menu-icon">🔧</span>
+            <span class="menu-label">Laporan Kerusakan</span>
         </a>
 
 
@@ -585,22 +594,27 @@
             LAPORAN
         </div>
 
-        <a href="#" class="menu-item">
+
+        {{-- Laporan Penggunaan Charger --}}
+        <a href="{{ route('operator.report') }}"
+        class="menu-item {{ request()->routeIs('operator.report') ? 'active' : '' }}">
 
             <span class="menu-icon">
                 <svg viewBox="0 0 24 24" fill="none">
                     <path d="M4 19V5M4 19h17"
-                          stroke-width="2"
-                          stroke-linecap="round"/>
+                        stroke-width="2"
+                        stroke-linecap="round"/>
+
                     <path d="M7 15l4-4 3 2 5-6"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"/>
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"/>
                 </svg>
             </span>
 
-            Laporan
+            <span class="menu-label">Laporan</span>
         </a>
+
 
 
         <div class="menu-title">

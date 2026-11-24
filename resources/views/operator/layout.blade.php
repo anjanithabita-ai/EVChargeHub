@@ -8,104 +8,169 @@
     <title>@yield('title', 'Dashboard Operator') - EVChargeHub</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #f5f7f7;
+            background: #f4f7f7;
             color: #183b3b;
         }
 
+        /* SIDEBAR */
         .sidebar {
             position: fixed;
-            left: 0;
             top: 0;
-            width: 270px;
-            height: 100vh;
-            background: #00695c;
-            color: white;
+            left: 0;
+            bottom: 0;
+            width: 252px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #006b59 0%, #005747 55%, #00453b 100%);
+            color: #fff;
             overflow-y: auto;
+            overflow-x: hidden;
             z-index: 1000;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,.35) transparent;
         }
 
         .sidebar-header {
-            padding: 25px 25px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
+            min-height: 110px;
+            display: flex;
+            align-items: center;
+            padding: 22px;
+            border-bottom: 1px solid rgba(255,255,255,.12);
         }
 
-        .sidebar-header h4 {
-            margin: 0;
+        .logo-circle {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            border-radius: 50%;
+            background: #fff;
+            color: #006b59;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 17px;
             font-weight: 700;
         }
 
-        .sidebar-header small {
-            color: rgba(255,255,255,0.75);
+        .logo-text h4 {
+            margin: 0 0 4px;
+            font-size: 18px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .logo-text small {
+            color: rgba(255,255,255,.8);
+            font-size: 12px;
         }
 
         .menu-title {
-            padding: 25px 25px 10px;
-            font-size: 12px;
-            font-weight: bold;
-            color: rgba(255,255,255,0.55);
-            text-transform: uppercase;
+            padding: 25px 22px 10px;
+            color: rgba(255,255,255,.62);
+            font-size: 11px;
+            font-weight: 700;
             letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .menu-item {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin: 5px 12px;
-            padding: 13px 18px;
-            color: white;
+            gap: 13px;
+            min-height: 48px;
+            margin: 4px 9px;
+            padding: 10px 15px;
+            border: 0;
+            border-radius: 9px;
+            background: transparent;
+            color: #fff;
             text-decoration: none;
-            border-radius: 10px;
-            transition: 0.2s;
+            font-size: 14px;
+            line-height: 1.4;
+            transition: background .2s ease;
+            cursor: pointer;
         }
 
         .menu-item:hover {
-            background: rgba(255,255,255,0.12);
-            color: white;
+            background: rgba(255,255,255,.10);
+            color: #fff;
         }
 
         .menu-item.active {
-            background: rgba(255,255,255,0.15);
-            font-weight: bold;
+            background: rgba(255,255,255,.16);
+            color: #fff;
+            font-weight: 700;
         }
 
         .menu-item i {
-            font-size: 19px;
-            width: 22px;
+            width: 25px;
+            min-width: 25px;
+            font-size: 20px;
+            text-align: center;
         }
 
+        .menu-icon {
+            width: 25px;
+            min-width: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-icon svg {
+            width: 21px;
+            height: 21px;
+            stroke: currentColor;
+        }
+
+        .logout-form {
+            margin: 4px 0 18px;
+        }
+
+        .logout-button {
+            width: calc(100% - 18px);
+            text-align: left;
+            font-family: inherit;
+        }
+
+        /* KONTEN UTAMA */
         .main-content {
-            margin-left: 270px;
             min-height: 100vh;
+            margin-left: 252px;
         }
 
+        /* HEADER ATAS */
         .topbar {
-            height: 85px;
-            background: white;
-            border-bottom: 1px solid #e5e5e5;
+            min-height: 85px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 40px;
+            gap: 20px;
+            padding: 15px 30px;
+            background: #fff;
+            border-bottom: 1px solid #e5eaea;
         }
 
         .topbar-title h3 {
             margin: 0;
+            color: #183b3b;
             font-size: 24px;
             font-weight: 700;
         }
 
         .topbar-title p {
-            margin: 3px 0 0;
-            color: #7a8585;
+            margin: 4px 0 0;
+            color: #788787;
             font-size: 14px;
         }
 
@@ -113,61 +178,185 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            flex-shrink: 0;
         }
 
         .operator-avatar {
             width: 45px;
             height: 45px;
-            background: #00796b;
-            color: white;
-            border-radius: 50%;
+            min-width: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
+            border-radius: 50%;
+            background: #008577;
+            color: #fff;
+            font-size: 17px;
+            font-weight: 700;
         }
 
         .operator-name {
-            font-weight: bold;
+            color: #183b3b;
+            font-size: 14px;
+            font-weight: 700;
         }
 
         .operator-role {
-            font-size: 13px;
-            color: #7a8585;
+            margin-top: 2px;
+            color: #788787;
+            font-size: 12px;
         }
 
+        /* AREA HALAMAN */
         .content {
-            padding: 30px 40px;
+            padding: 30px;
+            min-width: 0;
         }
 
-        .logout-form {
-            margin: 0;
+        .content .container-fluid {
+            padding-right: 0;
+            padding-left: 0;
         }
 
-        .logout-button {
+        .content h2 {
+            color: #183b3b;
+        }
+
+        .content .card {
+            border-radius: 10px;
+        }
+
+        .content .table-responsive {
             width: 100%;
-            border: none;
-            background: transparent;
-            color: white;
-            text-align: left;
-            cursor: pointer;
         }
 
+        .content .table {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        .content .table thead th {
+            color: #183b3b;
+            font-size: 13px;
+            font-weight: 700;
+            background: #f3f6f6;
+        }
+
+        .content .table tbody td {
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .content .btn-outline-success {
+            color: #00796b;
+            border-color: #00796b;
+        }
+
+        .content .btn-outline-success:hover {
+            background: #00796b;
+            color: #fff;
+        }
+
+        /* RESPONSIVE */
         @media (max-width: 900px) {
             .sidebar {
-                width: 220px;
+                width: 225px;
             }
 
             .main-content {
-                margin-left: 220px;
+                margin-left: 225px;
             }
 
             .topbar {
-                padding: 0 20px;
+                padding: 15px 20px;
             }
 
             .content {
-                padding: 20px;
+                padding: 22px 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .sidebar {
+                width: 76px;
+            }
+
+            .sidebar-header {
+                min-height: 85px;
+                justify-content: center;
+                padding: 12px 5px;
+            }
+
+            .logo-circle {
+                width: 42px;
+                height: 42px;
+                min-width: 42px;
+                margin: 0;
+            }
+
+            .logo-text,
+            .menu-title,
+            .menu-item span:not(.menu-icon) {
+                display: none;
+            }
+
+            .menu-item {
+                justify-content: center;
+                gap: 0;
+                margin: 5px 7px;
+                padding: 12px 5px;
+            }
+
+            .menu-item i,
+            .menu-icon {
+                width: 25px;
+                min-width: 25px;
+            }
+
+            .logout-button {
+                width: calc(100% - 14px);
+            }
+
+            .main-content {
+                margin-left: 76px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                padding: 15px;
+            }
+
+            .topbar-title h3 {
+                font-size: 18px;
+            }
+
+            .topbar-title p {
+                font-size: 12px;
+            }
+
+            .operator-info {
+                gap: 7px;
+            }
+
+            .operator-avatar {
+                width: 35px;
+                height: 35px;
+                min-width: 35px;
+                font-size: 14px;
+            }
+
+            .operator-name {
+                max-width: 90px;
+                overflow-wrap: anywhere;
+                font-size: 11px;
+            }
+
+            .operator-role {
+                font-size: 10px;
+            }
+
+            .content {
+                padding: 15px 12px;
             }
         }
     </style>
@@ -179,14 +368,15 @@
     <aside class="sidebar">
 
         <div class="sidebar-header">
-            <h4>EVChargeHub</h4>
-            <small>Operator Dashboard</small>
+            <div class="logo-circle">EV</div>
+            <div class="logo-text">
+                <h4>EVChargeHub</h4>
+                <small>Operator Dashboard</small>
+            </div>
         </div>
 
         {{-- MENU UTAMA --}}
-        <div class="menu-title">
-            Menu Utama
-        </div>
+        <div class="menu-title">Menu Utama</div>
 
         <a href="{{ route('operator.dashboard') }}"
            class="menu-item {{ request()->routeIs('operator.dashboard') ? 'active' : '' }}">
@@ -194,11 +384,8 @@
             <span>Dashboard</span>
         </a>
 
-
         {{-- OPERASIONAL --}}
-        <div class="menu-title">
-            Operasional
-        </div>
+        <div class="menu-title">Operasional</div>
 
         <a href="{{ route('operator.stations') }}"
            class="menu-item {{ request()->routeIs('operator.stations') ? 'active' : '' }}">
@@ -214,43 +401,53 @@
 
         <a href="{{ route('operator.sessions') }}"
            class="menu-item {{ request()->routeIs('operator.sessions') ? 'active' : '' }}">
-            <i class="bi bi-clock"></i>
+            <i class="bi bi-clock-history"></i>
             <span>Monitoring Charging</span>
+        </a>
+
+        <a href="{{ route('operator.sessions') }}"
+           class="menu-item {{ request()->routeIs('operator.sessions') && !request()->routeIs('operator.history') ? 'active' : '' }}">
+            <i class="bi bi-ev-front"></i>
+            <span>Sesi Charging</span>
         </a>
 
         <a href="{{ route('operator.history') }}"
            class="menu-item {{ request()->routeIs('operator.history') ? 'active' : '' }}">
             <i class="bi bi-receipt"></i>
-            <span>Sesi Charging</span>
+            <span>Riwayat Charging</span>
         </a>
-
 
         {{-- LAPORAN --}}
-        <div class="menu-title">
-            Laporan
-        </div>
-
         <a href="{{ route('operator.report') }}"
-           class="menu-item {{ request()->routeIs('operator.report') ? 'active' : '' }}">
-            <i class="bi bi-graph-up"></i>
-            <span>Laporan</span>
+        class="menu-item {{ request()->routeIs('operator.report') ? 'active' : '' }}">
+
+            <span class="menu-icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M4 19V5M4 19h17"
+                        stroke-width="2"
+                        stroke-linecap="round"/>
+
+                    <path d="M7 15l4-4 3 2 5-6"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"/>
+                </svg>
+            </span>
+
+            <span class="menu-label">Laporan</span>
         </a>
 
-
         {{-- AKUN --}}
-        <div class="menu-title">
-            Akun
-        </div>
+        <div class="menu-title">Akun</div>
 
         <a href="{{ route('operator.profile') }}"
            class="menu-item {{ request()->routeIs('operator.profile') ? 'active' : '' }}">
-            <i class="bi bi-person"></i>
+            <i class="bi bi-person-circle"></i>
             <span>Profil</span>
         </a>
 
         <form action="{{ route('logout') }}" method="POST" class="logout-form">
             @csrf
-
             <button type="submit" class="menu-item logout-button">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Logout</span>
@@ -259,58 +456,44 @@
 
     </aside>
 
-
     {{-- KONTEN UTAMA --}}
     <main class="main-content">
 
-        {{-- TOPBAR --}}
+        {{-- HEADER ATAS --}}
         <header class="topbar">
-
             <div class="topbar-title">
                 <h3>@yield('page-title', 'Dashboard Operator')</h3>
-
-                <p>
-                    Kelola aktivitas charging station
-                </p>
+                <p>@yield('page-description', 'Kelola aktivitas charging station')</p>
             </div>
 
-
-            {{-- INFO OPERATOR --}}
             @auth
-                <div class="operator-info">
+                @php
+                    $operatorName = auth()->user()->nama
+                        ?? auth()->user()->username
+                        ?? 'Operator';
+                @endphp
 
+                <div class="operator-info">
                     <div class="operator-avatar">
-                        {{ strtoupper(substr(auth()->user()->nama, 0, 1)) }}
+                        {{ strtoupper(substr($operatorName, 0, 1)) }}
                     </div>
 
                     <div>
-                        <div class="operator-name">
-                            {{ auth()->user()->nama }}
-                        </div>
-
-                        <div class="operator-role">
-                            Operator
-                        </div>
+                        <div class="operator-name">{{ $operatorName }}</div>
+                        <div class="operator-role">Operator</div>
                     </div>
-
                 </div>
             @endauth
-
         </header>
-
 
         {{-- ISI HALAMAN --}}
         <section class="content">
-
             @yield('content')
-
         </section>
 
     </main>
 
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-
 </html>
