@@ -1,5 +1,4 @@
-
-<?php
+﻿<?php
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -9,6 +8,10 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ChargerController;
 use App\Http\Controllers\Admin\ChargingStationController;
+use App\Http\Controllers\Admin\MonitoringChargingController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\PaymentManagementController;
+use App\Http\Controllers\Admin\TariffController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\VehicleController;
@@ -94,16 +97,23 @@ Route::post(
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
+// Laporan Admin
+    Route::get(
+        '/admin/laporan',
+        [ReportController::class, 'index']
+    )->name('admin.reports.index');
+
     // Dashboard Admin
     Route::get(
         '/admin/dashboard',
         [AdminController::class, 'index']
     )->name('admin.dashboard');
 
+
     // Kelola Charger
-    
     Route::get('/admin/chargers', [ChargerController::class, 'index'])
-    ->name('admin.chargers.index');
+        ->name('admin.chargers.index');
+
 
     // Kelola Charging Station
     Route::resource(
@@ -113,6 +123,31 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         ->parameters(['charging-stations' => 'station'])
         ->names('admin.charging-stations')
         ->except(['destroy']);
+
+
+    // Kelola Tarif
+    Route::resource(
+        '/admin/tariffs',
+        TariffController::class
+    )
+        ->parameters(['tariffs' => 'id'])
+        ->names('admin.tariffs')
+        ->except(['show', 'destroy']);
+
+
+    // Monitoring Charging
+    Route::get(
+        '/admin/monitoring-charging',
+        [MonitoringChargingController::class, 'index']
+    )->name('admin.monitoring.index');
+
+    // Kelola Pembayaran
+    // PEMBAYARAN
+    Route::get('/admin/pembayaran', [PaymentManagementController::class, 'index'])
+        ->name('admin.payments.index');
+
+    Route::post('/admin/pembayaran/{id}/refund', [PaymentManagementController::class, 'refund'])
+        ->name('admin.payments.refund');
 
 });
 

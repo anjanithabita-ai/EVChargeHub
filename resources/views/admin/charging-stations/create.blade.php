@@ -6,7 +6,11 @@
     <title>Tambah Station - EVChargeHub</title>
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -14,19 +18,35 @@
             color: #263b37;
         }
 
+        /* SIDEBAR */
         .sidebar {
             position: fixed;
-            inset: 0 auto 0 0;
-            width: 225px;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
             background: #00695c;
             color: white;
             padding: 25px 16px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 1000;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,.25);
+            border-radius: 10px;
         }
 
         .brand {
             font-size: 21px;
             font-weight: bold;
             margin: 0 10px 34px;
+            white-space: nowrap;
         }
 
         .menu-title {
@@ -38,23 +58,54 @@
             letter-spacing: .8px;
         }
 
-        .menu { list-style: none; }
-        .menu li { margin: 4px 0; }
+        .menu {
+            list-style: none;
+        }
 
-        .menu a, .logout {
-            display: block;
+        .menu li {
+            margin: 4px 0;
+        }
+
+        .menu a,
+        .menu-item-disabled,
+        .logout {
+            display: flex;
+            align-items: center;
+            width: 100%;
             padding: 11px 12px;
             border-radius: 8px;
             color: white;
             text-decoration: none;
             font-size: 13px;
+            font-family: inherit;
+            transition: background .2s ease;
         }
 
-        .menu a:hover, .menu a.active {
+        .menu a:hover,
+        .menu a.active {
+            background: #10aa79;
+        }
+
+        .menu-item-disabled {
+            cursor: default;
+        }
+
+        .logout {
+            background: transparent;
+            border: 0;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .logout:hover {
             background: rgba(255,255,255,.16);
         }
 
-        .main { margin-left: 225px; min-height: 100vh; }
+        /* MAIN CONTENT */
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
 
         .topbar {
             height: 64px;
@@ -66,7 +117,9 @@
             padding: 0 30px;
         }
 
-        .topbar h2 { font-size: 18px; }
+        .topbar h2 {
+            font-size: 18px;
+        }
 
         .profile {
             display: flex;
@@ -86,7 +139,9 @@
             font-weight: bold;
         }
 
-        .content { padding: 30px; }
+        .content {
+            padding: 30px;
+        }
 
         .breadcrumb {
             font-size: 13px;
@@ -99,7 +154,10 @@
             text-decoration: none;
         }
 
-        h1 { font-size: 26px; margin-bottom: 8px; }
+        h1 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
 
         .muted {
             font-size: 13px;
@@ -134,7 +192,9 @@
             gap: 8px;
         }
 
-        .full { grid-column: 1 / -1; }
+        .full {
+            grid-column: 1 / -1;
+        }
 
         label {
             font-size: 13px;
@@ -142,7 +202,9 @@
             color: #405650;
         }
 
-        .required { color: #d32f2f; }
+        .required {
+            color: #d32f2f;
+        }
 
         .control {
             width: 100%;
@@ -216,7 +278,14 @@
             cursor: pointer;
         }
 
-        .btn-primary { background: #00695c; color: white; }
+        .btn-primary {
+            background: #00695c;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #008577;
+        }
 
         .btn-light {
             background: white;
@@ -224,16 +293,36 @@
             color: #36534d;
         }
 
+        .btn-light:hover {
+            background: #f4f7f6;
+        }
+
         @media (max-width: 850px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .full { grid-column: auto; }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
         }
 
         @media (max-width: 650px) {
-            .sidebar { display: none; }
-            .main { margin-left: 0; }
-            .content { padding: 18px; }
-            .topbar { padding: 0 18px; }
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .content {
+                padding: 18px;
+            }
+
+            .topbar {
+                padding: 0 18px;
+            }
         }
     </style>
 </head>
@@ -245,44 +334,83 @@
 
     <div class="menu-title">Menu Utama</div>
     <ul class="menu">
-        <li><a href="{{ route('admin.dashboard') }}">▦ Dashboard</a></li>
+        <li>
+            <a href="{{ route('admin.dashboard') }}">
+                ▦ Dashboard
+            </a>
+        </li>
     </ul>
 
     <div class="menu-title">Manajemen</div>
     <ul class="menu">
-        <li><a href="#">👥 Kelola Pengguna</a></li>
-        <li><a href="#">🧑‍💼 Kelola Operator</a></li>
         <li>
-            <a class="active" href="{{ route('admin.charging-stations.index') }}">
+            <div class="menu-item-disabled">👥 Kelola Pengguna</div>
+        </li>
+        <li>
+            <div class="menu-item-disabled">🧑‍💼 Kelola Operator</div>
+        </li>
+        <li>
+            <a class="{{ request()->routeIs('admin.charging-stations.*') ? 'active' : '' }}"
+               href="{{ route('admin.charging-stations.index') }}">
                 📍 Charging Station
             </a>
         </li>
-        <li><a href="{{ route('admin.chargers.index') }}">⚡ Kelola Charger</a></li>
+        <li>
+            <a class="{{ request()->routeIs('admin.chargers.*') ? 'active' : '' }}"
+               href="{{ route('admin.chargers.index') }}">
+                ⚡ Kelola Charger
+            </a>
+        </li>
     </ul>
 
     <div class="menu-title">Operasional</div>
     <ul class="menu">
-        <li><a href="#">📊 Monitoring Charging</a></li>
+        <li>
+            <a class="{{ request()->routeIs('admin.monitoring.*') ? 'active' : '' }}"
+               href="{{ route('admin.monitoring.index') }}">
+                📊 Monitoring Charging
+            </a>
+        </li>
     </ul>
 
     <div class="menu-title">Laporan & Transaksi</div>
     <ul class="menu">
-        <li><a href="#">📄 Laporan</a></li>
         <li>
-            <a href="{{ route('admin.charging-stations.index') }}">
-                💰 Tarif Charging
+            <div class="menu-item-disabled">📄 Laporan</div>
+        </li>
+        <li>
+            <a class="{{ request()->routeIs('admin.tariffs.*') ? 'active' : '' }}"
+               href="{{ route('admin.tariffs.index') }}">
+                💰 Tarif per Station
             </a>
         </li>
-        <li><a href="#">↩️ Refund Pembayaran</a></li>
+        <li>
+            <div class="menu-item-disabled">↩️ Refund Pembayaran</div>
+        </li>
+    </ul>
+
+    <div class="menu-title">Komunikasi</div>
+    <ul class="menu">
+        <li>
+            <div class="menu-item-disabled">⭐ Ulasan & Feedback</div>
+        </li>
+        <li>
+            <div class="menu-item-disabled">🎁 Promosi</div>
+        </li>
     </ul>
 
     <div class="menu-title">Sistem</div>
     <ul class="menu">
         <li>
+            <div class="menu-item-disabled">🔐 Hak Akses</div>
+        </li>
+        <li>
+            <div class="menu-item-disabled">📋 Audit Log</div>
+        </li>
+        <li>
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button class="logout" type="submit"
-                        style="width:100%;background:transparent;border:0;text-align:left;cursor:pointer">
+                <button class="logout" type="submit">
                     🚪 Logout
                 </button>
             </form>

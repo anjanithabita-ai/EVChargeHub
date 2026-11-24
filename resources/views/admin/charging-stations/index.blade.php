@@ -1,4 +1,4 @@
-
+﻿
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -531,7 +531,7 @@
 
     <aside class="sidebar">
         <div class="brand">
-            <div class="brand-icon">⚡</div>
+            <div class="brand-icon">âš¡</div>
             <div class="brand-name">EVChargeHub</div>
         </div>
 
@@ -539,80 +539,80 @@
             <div class="menu-title">Menu Utama</div>
 
             <a href="{{ route('admin.dashboard') }}" class="menu-item">
-                <span class="menu-icon">🏠</span>
+                <span class="menu-icon">ðŸ </span>
                 <span>Dashboard</span>
             </a>
 
             <div class="menu-title">Manajemen</div>
 
             <a href="#" class="menu-item">
-                <span class="menu-icon">👥</span>
+                <span class="menu-icon">ðŸ‘¥</span>
                 <span>Kelola Pengguna</span>
             </a>
 
             <a href="#" class="menu-item">
-                <span class="menu-icon">👨‍💼</span>
+                <span class="menu-icon">ðŸ‘¨â€ðŸ’¼</span>
                 <span>Kelola Operator</span>
             </a>
 
             <a href="{{ route('admin.charging-stations.index') }}"
                class="menu-item active"
                aria-current="page">
-                <span class="menu-icon">📍</span>
+                <span class="menu-icon">ðŸ“</span>
                 <span>Charging Station</span>
             </a>
 
             <a href="{{ route('admin.chargers.index') }}" class="menu-item">
-                <span class="menu-icon">🔌</span>
+                <span class="menu-icon">ðŸ”Œ</span>
                 <span>Kelola Charger</span>
             </a>
 
             <div class="menu-title">Operasional</div>
 
             <a href="#" class="menu-item">
-                <span class="menu-icon">⚡</span>
+                <span class="menu-icon">âš¡</span>
                 <span>Monitoring Charging</span>
             </a>
 
             <div class="menu-title">Laporan & Transaksi</div>
 
             <a href="#" class="menu-item">
-                <span class="menu-icon">📊</span>
+                <span class="menu-icon">ðŸ“Š</span>
                 <span>Laporan</span>
             </a>
 
-            <a href="{{ route('admin.charging-stations.index') }}"
-               class="menu-item">
-                <span class="menu-icon">💰</span>
+            <a href="{{ route('admin.tariffs.index') }}"
+            class="menu-item">
+                <span class="menu-icon">ðŸ’°</span>
                 <span>Tarif per Station</span>
             </a>
 
             <a href="#" class="menu-item">
-                <span class="menu-icon">💳</span>
+                <span class="menu-icon">ðŸ’³</span>
                 <span>Refund Pembayaran</span>
             </a>
 
             <div class="menu-title">Komunikasi</div>
 
             <a href="#" class="menu-item">
-                <span class="menu-icon">⭐</span>
+                <span class="menu-icon">â­</span>
                 <span>Ulasan & Feedback</span>
             </a>
 
             <a href="#" class="menu-item">
-                <span class="menu-icon">🎁</span>
+                <span class="menu-icon">ðŸŽ</span>
                 <span>Promosi</span>
             </a>
 
             <div class="menu-title">Sistem</div>
 
             <a href="#" class="menu-item">
-                <span class="menu-icon">🔐</span>
+                <span class="menu-icon">ðŸ”</span>
                 <span>Hak Akses</span>
             </a>
 
             <a href="#" class="menu-item">
-                <span class="menu-icon">🛡️</span>
+                <span class="menu-icon">ðŸ›¡ï¸</span>
                 <span>Audit Log</span>
             </a>
 
@@ -625,7 +625,7 @@
                     class="menu-item logout"
                     style="width:100%;background:transparent;border:none;cursor:pointer;text-align:left;"
                 >
-                    <span class="menu-icon">🚪</span>
+                    <span class="menu-icon">ðŸšª</span>
                     <span>Logout</span>
                 </button>
             </form>
@@ -637,8 +637,8 @@
             <div class="page-title">Charging Station</div>
 
             <div class="admin-profile">
-                <div class="notification">🔔</div>
-                <div class="profile-icon">👤</div>
+                <div class="notification">ðŸ””</div>
+                <div class="profile-icon">ðŸ‘¤</div>
                 <div class="admin-name">
                     {{ auth()->user()->nama ?? auth()->user()->name ?? 'Admin' }}
                 </div>
@@ -655,7 +655,7 @@
 
             <div class="page-heading">
                 <div>
-                    <h1>📍 Charging Station</h1>
+                    <h1>ðŸ“ Charging Station</h1>
                     <p class="muted">
                         Kelola lokasi, status station, perangkat charger,
                         dan tarif charging EVChargeHub.
@@ -664,7 +664,7 @@
 
                 <a class="btn btn-primary"
                    href="{{ route('admin.charging-stations.create') }}">
-                    ＋ Tambah Station
+                    ï¼‹ Tambah Station
                 </a>
             </div>
 
@@ -706,7 +706,7 @@
                     </div>
 
                     <button class="btn btn-primary" type="submit">
-                        🔍 Filter
+                        ðŸ” Filter
                     </button>
 
                     <a class="btn btn-light"
@@ -724,7 +724,7 @@
 
                         <article class="station-card">
                             <div class="station-title">
-                                <div class="pin">📍</div>
+                                <div class="pin">ðŸ“</div>
 
                                 <div>
                                     <h3>{{ $station->nama_lokasi }}</h3>
@@ -735,17 +735,17 @@
                             <div class="chips">
                                 <span class="status {{ $station->status }}">
                                     @if($station->status === 'aktif')
-                                        ●
+                                        â—
                                     @elseif($station->status === 'tutup')
-                                        ●
+                                        â—
                                     @else
-                                        ●
+                                        â—
                                     @endif
                                     {{ ucfirst($station->status) }}
                                 </span>
 
                                 <span class="chip">
-                                    🕐
+                                    ðŸ•
                                     @if(
                                         substr((string) $station->jam_buka, 0, 5) === '00:00'
                                         && in_array(substr((string) $station->jam_tutup, 0, 8), ['23:59:59', '23:59'])
@@ -753,7 +753,7 @@
                                         Buka 24 jam
                                     @elseif($station->jam_buka && $station->jam_tutup)
                                         {{ substr($station->jam_buka, 0, 5) }}
-                                        –
+                                        â€“
                                         {{ substr($station->jam_tutup, 0, 5) }}
                                     @else
                                         Jam belum diatur
@@ -761,11 +761,11 @@
                                 </span>
 
                                 <span class="chip">
-                                    🔌 {{ $station->chargers_count }} Charger
+                                    ðŸ”Œ {{ $station->chargers_count }} Charger
                                 </span>
 
                                 <span class="chip">
-                                    💰
+                                    ðŸ’°
                                     @if($tariff)
                                         Rp{{ number_format((float) $tariff->harga_per_kwh, 0, ',', '.') }}
                                     @else
@@ -785,12 +785,12 @@
                             <div class="actions">
                                 <a class="btn btn-primary"
                                    href="{{ route('admin.charging-stations.show', $station->id_location) }}">
-                                    Lihat Detail →
+                                    Lihat Detail â†’
                                 </a>
 
                                 <a class="btn btn-light"
                                    href="{{ route('admin.charging-stations.edit', $station->id_location) }}">
-                                    ✏️ Edit
+                                    âœï¸ Edit
                                 </a>
                             </div>
                         </article>
@@ -804,7 +804,7 @@
 
             @else
                 <div class="empty">
-                    <div class="empty-icon">📍</div>
+                    <div class="empty-icon">ðŸ“</div>
 
                     <h3>Belum ada charging station</h3>
 
@@ -815,7 +815,7 @@
 
                     <a class="btn btn-primary"
                        href="{{ route('admin.charging-stations.create') }}">
-                        ＋ Tambah Station
+                        ï¼‹ Tambah Station
                     </a>
                 </div>
             @endif
